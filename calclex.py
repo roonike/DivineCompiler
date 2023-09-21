@@ -5,10 +5,10 @@
 # numbers and +,-,*,/
 # ------------------------------------------------------------
 
+import sys
 import ply.lex as lex
 
-import lex
-import yacc
+##import yacc
 
 # List of token names.   This is always required
 tokens = (
@@ -49,14 +49,14 @@ tokens = (
     'CASE',#'SCARMIGLIONE' 
     'BREAK',#
 )
-
+#TOKENS
 # Regular expression rules for simple tokens
 t_FOR = r'LASCIATE OGNE I SPERANZA VOI CHINTRATE'
 t_IF = r'INFERNO'
 t_WHILE = r'PURGATORIO'
 t_ELSE = r'PARADISO'
 t_DEF = r'MALACODA'
-t_SWITCH = r''
+t_SWITCH = r'GUARDA E PASSA'
 
 t_INT = r'DRAGHINAZZO'
 t_FLOAT = r'FARFARELLO'
@@ -70,13 +70,13 @@ t_DIVIDE  = r'BRUTUS'
 t_ASSIGN = r'BEATTRICE'
 t_LPAREN  = r'CALCABRINA'
 t_RPAREN  = r'CAGNAZZO'
-t_LBRACKET = r''
-t_RBRACKET = r''
+t_LBRACKET = r'IL SUPPORTO'
+t_RBRACKET = r'LA PARENTESI'
 t_TRUE = r'DANTE'
 t_FALSE = r'VERGIL'
 t_RETURN = r'COSA FATTA,CAPPO HA'
 t_CASE = r'SCARMIGLIONE'
-t_BREAK = r''
+t_BREAK = r'NON MI TANGE'
 
 def t_NUMERO(t):
     r'\d+' #numero
