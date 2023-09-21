@@ -58,10 +58,10 @@ t_ELSE = r'PARADISO'
 t_DEF = r'MALACODA'
 t_SWITCH = r'GUARDA E PASSA'
 
-t_INT = r'DRAGHINAZZO'
-t_FLOAT = r'FARFARELLO'
+##t_INT = r'DRAGHINAZZO'
+##t_FLOAT = r'FARFARELLO'
 t_BOOL = r'GRAFFICANE'
-t_STRING = r'CIRIATO'
+##t_STRING = r'CIRIATO'
 
 t_PLUS    = r'ALICHINO'
 t_MINUS   = r'BARBARICCIA'
@@ -74,9 +74,11 @@ t_LBRACKET = r'IL SUPPORTO'
 t_RBRACKET = r'LA PARENTESI'
 t_TRUE = r'DANTE'
 t_FALSE = r'VERGIL'
-t_RETURN = r'COSA FATTA,CAPPO HA'
+##t_RETURN = r'COSA FATTA,CAPPO HA'
 t_CASE = r'SCARMIGLIONE'
 t_BREAK = r'NON MI TANGE'
+
+
 
 def t_NUMERO(t):
     r'\d+' #numero
@@ -111,11 +113,11 @@ def t_NUMBER(t):
 
 # Define a rule so we can track line numbers
 def t_newline(t):
-    r'\n+'
+    r'n+'
     t.lexer.lineno += len(t.value)
 
 # A string containing ignored characters (spaces and tabs)
-t_ignore  = ' \t'
+t_ignore  = ' t'
 
 # Error handling rule
 def t_error(t):
