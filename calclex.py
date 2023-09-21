@@ -128,10 +128,7 @@ def t_error(t):
 lexer = lex.lex()
 
 # Test it out
-data = '''
-3 + 4 * 10
-  + -20 *2
-'''
+data = '''3ALICHINO4ARGENTI10ALICHINOBARBARICCIA20ARGENTI2'''
 
 # Give the lexer some input
 lexer.input(data)
