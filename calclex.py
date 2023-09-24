@@ -103,6 +103,7 @@ def t_RETURN(t):
     t.value = str(t.value)
     return t
 
+
 # Función para manejar tokens desconocidos
 def t_error(t):
     print("Carácter ilegal '%s'" % t.value[0])
