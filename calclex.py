@@ -103,6 +103,26 @@ def t_RETURN(t):
     t.value = str(t.value)
     return t
 
+# Función para manejar tokens desconocidos
+def t_error(t):
+    print("Carácter ilegal '%s'" % t.value[0])
+    t.lexer.skip(1)
+
+# Ignorar caracteres en blanco
+t_ignore = ' \t'
+
+# Construir el analizador léxico
+lexer = lex.lex()
+
+## Ejemplo de uso
+#code = "FOR IF DEF INT x = 42 + 3.14"
+#lexer.input(code)
+#while True:
+ #   token = lexer.token()
+ #   if not token:
+ #       break
+ #   print(token)#
+
 
 """"
 # A regular expression rule with some action code
