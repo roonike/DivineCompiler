@@ -102,7 +102,13 @@ def t_RETURN(t):
     r'COSA FATTA,CAPPO HA'
     t.value = str(t.value)
     return t
+ #A string containing ignored characters (spaces and tabs)
+t_ignore  = ' t'
 
+# Error handling rule
+def t_error(t):
+    print("Illegal character '%s'" % t.value[0])
+    t.lexer.skip(1)
 
 """"
 # A regular expression rule with some action code
@@ -116,19 +122,15 @@ def t_newline(t):
     r'n+'
     t.lexer.lineno += len(t.value)
 
-# A string containing ignored characters (spaces and tabs)
-t_ignore  = ' t'
+'
 
-# Error handling rule
-def t_error(t):
-    print("Illegal character '%s'" % t.value[0])
-    t.lexer.skip(1)
+
 """
 # Build the lexer
 lexer = lex.lex()
 
 # Test it out
-data = '''3ALICHINO4ARGENTI10ALICHINOBARBARICCIA20ARGENTI2'''
+data = '''3 ALICHINO 4 ARGENTI 10 ALICHINO BARBARICCIA 20 ARGENTI 2'''
 
 # Give the lexer some input
 lexer.input(data)
