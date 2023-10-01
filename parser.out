@@ -1,0 +1,87 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    ASSIGN
+    BREAK
+    CASE
+    DEF
+    DIVIDE
+    ELSE
+    FALSE
+    FOR
+    IF
+    MINUS
+    NUMERO
+    PLUS
+    REAL
+    SWITCH
+    TIMES
+    TRUE
+    WHILE
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     program -> bloque_compuesto
+Rule 2     bloque_compuesto -> declaracion_variable bloque_compuesto
+Rule 3     bloque_compuesto -> declaracion_funcion bloque_compuesto
+Rule 4     bloque_compuesto -> asignacion_variable bloque_compuesto
+Rule 5     bloque_compuesto -> llamada_funcion bloque_compuesto
+Rule 6     bloque_compuesto -> empty
+Rule 7     declaracion_funcion -> TEXT parametros LBRACKET bloque_compuesto retorno RBRACKET
+Rule 8     declaracion_funcion -> LPAREN INT TEXT COMA INT TEXT RPAREN
+Rule 9     declaracion_funcion -> LPAREN STRING TEXT COMA STRING TEXT RPAREN
+Rule 10    retorno -> RETURN INT
+Rule 11    retorno -> RETURN STRING
+Rule 12    retorno -> RETURN BOOL
+Rule 13    retorno -> RETURN FLOAT
+Rule 14    llamada_funcion -> TEXT
+Rule 15    declaracion_variable -> TEXT
+Rule 16    asignacion_variable -> TEXT
+Rule 17    empty -> <empty>
+
+Terminals, with rules where they appear
+
+ASSIGN               : 
+BOOL                 : 12
+BREAK                : 
+CASE                 : 
+COMA                 : 8 9
+DEF                  : 
+DIVIDE               : 
+ELSE                 : 
+FALSE                : 
+FLOAT                : 13
+FOR                  : 
+IF                   : 
+INT                  : 8 8 10
+LBRACKET             : 7
+LPAREN               : 8 9
+MINUS                : 
+NUMERO               : 
+PLUS                 : 
+RBRACKET             : 7
+REAL                 : 
+RETURN               : 10 11 12 13
+RPAREN               : 8 9
+STRING               : 9 9 11
+SWITCH               : 
+TEXT                 : 7 8 8 9 9 14 15 16
+TIMES                : 
+TRUE                 : 
+WHILE                : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+asignacion_variable  : 4
+bloque_compuesto     : 1 2 3 4 5 7
+declaracion_funcion  : 3
+declaracion_variable : 2
+empty                : 6
+llamada_funcion      : 5
+parametros           : 7
+program              : 0
+retorno              : 7
+

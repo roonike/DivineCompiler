@@ -9,7 +9,6 @@ import sys
 import ply.lex as lex
 import ply.yacc as yacc
 
-##import yacc
 
 # List of token names.   This is always required
 tokens = (
@@ -23,11 +22,10 @@ tokens = (
     
     
     #Variable
-    'INT'#'DRAGHIGNAZZO', 
-    'FLOAT'#'FARFARELLO', 
-    'BOOL'#'GRAFFIACANE', 
+    'INT',#'DRAGHIGNAZZO', 
+    'FLOAT',#'FARFARELLO', 
+    'BOOL',#'GRAFFIACANE', 
     'STRING', #'CIRIATO',
-    'BOOL', # 
    
     #IDs
     'TEXT',
@@ -40,6 +38,7 @@ tokens = (
     'TIMES', # * ARGENTI
     'DIVIDE', # BRUTUS
     'ASSIGN', # BEATRICCE 
+    'COMA', # ,
     'RPAREN', #'CAGNAZZO'
     'LPAREN', #'CALCABRINA'
     'RBRACKET',#
@@ -51,6 +50,9 @@ tokens = (
     'BREAK',#
 )
 
+
+# ----------------- LEXIC ANALYSYS -----------------
+
 # Regular expression rules for simple tokens
 t_FOR = r'LASCIATE OGNE I SPERANZA VOI CHINTRATE'
 t_IF = r'INFERNO'
@@ -59,10 +61,10 @@ t_ELSE = r'PARADISO'
 t_DEF = r'MALACODA'
 t_SWITCH = r'GUARDA E PASSA'
 
-##t_INT = r'DRAGHINAZZO'
-##t_FLOAT = r'FARFARELLO'
+t_INT = r'DRAGHINAZZO'
+t_FLOAT = r'FARFARELLO'
 t_BOOL = r'GRAFFICANE'
-##t_STRING = r'CIRIATO'
+t_STRING = r'CIRIATO'
 
 t_PLUS    = r'ALICHINO'
 t_MINUS   = r'BARBARICCIA'
@@ -73,9 +75,9 @@ t_LPAREN  = r'CALCABRINA'
 t_RPAREN  = r'CAGNAZZO'
 t_LBRACKET = r'IL SUPPORTO'
 t_RBRACKET = r'LA PARENTESI'
+t_COMA = r','
 t_TRUE = r'DANTE'
 t_FALSE = r'VERGIL'
-##t_RETURN = r'COSA FATTA,CAPPO HA'
 t_CASE = r'SCARMIGLIONE'
 t_BREAK = r'NON MI TANGE'
 
@@ -128,8 +130,56 @@ def t_newline(t):
 
 """
 
- 
+# ----------------- SYNTACTIC ANALYSIS -----------------
 
+
+def p_program(t):
+    'program : bloque_compuesto'
+    #t[0] = t[1]
+
+def p_bloque_compuesto(t):
+    '''bloque_compuesto : declaracion_variable bloque_compuesto 
+                        | declaracion_funcion bloque_compuesto
+                        | asignacion_variable bloque_compuesto
+                        | llamada_funcion bloque_compuesto
+                        | empty'''
+
+def p_declaracion_funcion(t):
+    '''declaracion_funcion : TEXT parametros LBRACKET bloque_compuesto retorno RBRACKET'''
+
+def p_parametros(t):
+    '''declaracion_funcion : LPAREN INT TEXT COMA INT TEXT RPAREN 
+                           | LPAREN STRING TEXT COMA STRING TEXT RPAREN'''
+
+
+def p_retorno(t):
+    '''retorno : RETURN INT
+                | RETURN STRING
+                | RETURN BOOL
+                | RETURN FLOAT '''
+#return 0
+
+def p_llamada_funcion(t):
+    'llamada_funcion : TEXT'
+# sumar(2,2)
+
+def p_declaracion_variable(t):
+    'declaracion_variable : TEXT'
+#int sumando
+
+def p_expresion(t):
+    'expresion : TEXT'  
+# 5 * 5 + 9(5-2)
+def p_asignacion_variable(t):
+    'asignacion_variable : TEXT'    
+#sumando = 5
+
+def p_empty(p):
+    'empty :'
+    pass
+
+def p_error(p):
+    print("Syntax error in input!")
 
 # -----------------  Build the lexer -----------------
 lexer = lex.lex()
@@ -146,4 +196,6 @@ while True:
     if not tok: break      # No more input
     print(tok)
 
-# -----------------  Build the lexer -----------------
+parser = yacc.yacc()
+parser.parse(data)
+# ----------------------------------------------------
