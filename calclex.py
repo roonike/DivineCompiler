@@ -7,8 +7,8 @@
 
 import sys
 import ply.lex as lex
+import ply.yacc as yacc
 
-##import yacc
 
 # List of token names.   This is always required
 tokens = (
@@ -22,11 +22,10 @@ tokens = (
     
     
     #Variable
-    'INT'#'DRAGHIGNAZZO', 
-    'FLOAT'#'FARFARELLO', 
-    'BOOL'#'GRAFFIACANE', 
+    'INT',#'DRAGHIGNAZZO', 
+    'FLOAT',#'FARFARELLO', 
+    'BOOL',#'GRAFFIACANE', 
     'STRING', #'CIRIATO',
-    'BOOL', # 
    
     #IDs
     'TEXT',
@@ -39,6 +38,7 @@ tokens = (
     'TIMES', # * ARGENTI
     'DIVIDE', # BRUTUS
     'ASSIGN', # BEATRICCE 
+    'COMA', # ,
     'RPAREN', #'CAGNAZZO'
     'LPAREN', #'CALCABRINA'
     'RBRACKET',#
@@ -49,7 +49,10 @@ tokens = (
     'CASE',#'SCARMIGLIONE' 
     'BREAK',#
 )
-#TOKENS
+
+
+# ----------------- LEXIC ANALYSYS -----------------
+
 # Regular expression rules for simple tokens
 t_FOR = r'LASCIATE OGNE I SPERANZA VOI CHINTRATE'
 t_IF = r'INFERNO'
@@ -58,10 +61,10 @@ t_ELSE = r'PARADISO'
 t_DEF = r'MALACODA'
 t_SWITCH = r'GUARDA E PASSA'
 
-##t_INT = r'DRAGHINAZZO'
-##t_FLOAT = r'FARFARELLO'
+t_INT = r'DRAGHINAZZO'
+t_FLOAT = r'FARFARELLO'
 t_BOOL = r'GRAFFICANE'
-##t_STRING = r'CIRIATO'
+t_STRING = r'CIRIATO'
 
 t_PLUS    = r'ALICHINO'
 t_MINUS   = r'BARBARICCIA'
@@ -72,9 +75,9 @@ t_LPAREN  = r'CALCABRINA'
 t_RPAREN  = r'CAGNAZZO'
 t_LBRACKET = r'IL SUPPORTO'
 t_RBRACKET = r'LA PARENTESI'
+t_COMA = r','
 t_TRUE = r'DANTE'
 t_FALSE = r'VERGIL'
-##t_RETURN = r'COSA FATTA,CAPPO HA'
 t_CASE = r'SCARMIGLIONE'
 t_BREAK = r'NON MI TANGE'
 
@@ -126,7 +129,59 @@ def t_newline(t):
 
 
 """
-# Build the lexer
+
+# ----------------- SYNTACTIC ANALYSIS -----------------
+
+
+def p_program(t):
+    'program : bloque_compuesto'
+    #t[0] = t[1]
+
+def p_bloque_compuesto(t):
+    '''bloque_compuesto : declaracion_variable bloque_compuesto 
+                        | declaracion_funcion bloque_compuesto
+                        | asignacion_variable bloque_compuesto
+                        | llamada_funcion bloque_compuesto
+                        | empty'''
+
+def p_declaracion_funcion(t):
+    '''declaracion_funcion : TEXT parametros LBRACKET bloque_compuesto retorno RBRACKET'''
+
+def p_parametros(t):
+    '''declaracion_funcion : LPAREN INT TEXT COMA INT TEXT RPAREN 
+                           | LPAREN STRING TEXT COMA STRING TEXT RPAREN'''
+
+
+def p_retorno(t):
+    '''retorno : RETURN INT
+                | RETURN STRING
+                | RETURN BOOL
+                | RETURN FLOAT '''
+#return 0
+
+def p_llamada_funcion(t):
+    'llamada_funcion : TEXT'
+# sumar(2,2)
+
+def p_declaracion_variable(t):
+    'declaracion_variable : TEXT'
+#int sumando
+
+def p_expresion(t):
+    'expresion : TEXT'  
+# 5 * 5 + 9(5-2)
+def p_asignacion_variable(t):
+    'asignacion_variable : TEXT'    
+#sumando = 5
+
+def p_empty(p):
+    'empty :'
+    pass
+
+def p_error(p):
+    print("Syntax error in input!")
+
+# -----------------  Build the lexer -----------------
 lexer = lex.lex()
 
 # Test it out
@@ -141,123 +196,6 @@ while True:
     if not tok: break      # No more input
     print(tok)
 
- 
-"""
-# ----------------- SYNTACTIC ANALYSIS -----------------
-
-states = []
-shapes = []
-spaceCount = 0
-
-
-def _log(value, reset=False):
-    global spaceCount
-    spaceCount += 1
-    if(reset):
-        spaceCount = 0
-    for x in range(spaceCount):
-        print(' ', end='')
-    print(value)
-    return
-
-def p_error(t):
-    print(t)
-    print("Syntax error at '%s'" % t.value)
-
-def p_ufo_file(t):
-    'ufo_file : state_list shape_list event_list'
-
-def p_state_list(t):
-    'state_list : STATES_LIST_OPEN state_element STATES_LIST_CLOSE'
-    global spaceCount
-    spaceCount = 0
-
-def p_state_element(t):
-    '''state_element : STATE_OPEN state STATE_CLOSE
-                     | state_element state_element'''
-
-
-def p_state(t):
-    'state : STATE'
-    states.append(t[1])
-    _log('<state>')
-
-def p_shape_list(t):
-    'shape_list : SHAPE_LIST_OPEN shape SHAPE_LIST_CLOSE'
-    global spaceCount
-    spaceCount = 0
-
-def p_shape(t):
-    'shape : SHAPE_EMPTY'
-def p_shape(t):
-    '''shape : SHAPE_OPEN SHAPE SHAPE_CLOSE
-                     | shape shape'''
-
-def p_event_list(t):
-    'event_list : event'
-
-def p_event(t):
-    'event : EVENT_OPEN link date time city state_element country shape duration summary posted images EVENT_CLOSE'
-    print('event')
-    global spaceCount
-    spaceCount = 0
-
-def p_event2(t):
-    'event : event event'
-    global spaceCount
-    spaceCount = 0
-
-def p_link(t):
-    'link : LINK_OPEN LINK LINK_CLOSE'
-    _log('<link>')
-
-def p_date_empty(t):
-    'date : DATE_EMPTY'
-    _log('<date>')
-def p_date(t):
-    'date : DATE_OPEN DATE DATE_CLOSE'
-    _log('<date>')
-
-def p_time(t):
-    'time : TIME_OPEN TIME TIME_CLOSE'
-    _log('<time>')
-
-def p_city_empty(t):
-    'city : CITY_EMPTY'
-    _log('<city>')
-def p_city(t):
-    'city : CITY_OPEN CITY CITY_CLOSE'
-    _log('<city>')
-
-def p_country(t):
-    'country : COUNTRY_OPEN COUNTRY COUNTRY_CLOSE'
-    _log('<country>')
-
-def p_duration(t):
-    'duration : DURATION_OPEN DURATION DURATION_CLOSE'
-    _log('<duration>')
-def p_duration_empty(t):
-    'duration : DURATION_EMPTY'
-    _log('<duration>')
-
-
-def p_summary_empty(t):
-    'summary : SUMMARY_EMPTY'
-    _log('<summary>')
-def p_summary(t):
-    'summary : SUMMARY_OPEN SUMMARY SUMMARY_CLOSE'
-    _log('<summary>')
-
-def p_posted(t):
-    'posted : POSTED_OPEN POSTED POSTED_CLOSE'
-    _log('<posted>')
-
-def p_images_empty(t):
-    'images : IMAGES_EMPTY'
-    _log('<images>')
-def p_images(t):
-    'images : IMAGES_OPEN IMAGES IMAGES_CLOSE'
-    _log('<images>')
-
-
-"""
+parser = yacc.yacc()
+parser.parse(data)
+# ----------------------------------------------------
