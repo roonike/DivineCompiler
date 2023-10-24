@@ -900,15 +900,5 @@ def TOKEN(r):
         return f
     return set_regex
 
-# Regla de declaración de variable
-def p_declaration(p):
-    '''declaration : ID EQUALS ID SEMICOLON'''
-    print(f"Variable declarada: {p[1]} = {p[3]}")
 
-
-# Manejo de errores de sintaxis
-def p_error(p):
-    if p:
-        print(f"Error de sintaxis en el token: {p.value}")
-    else:
-        print("Error de sintaxis al final del archivo")
+    

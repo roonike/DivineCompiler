@@ -150,6 +150,8 @@ def p_bloque_compuesto(t):
 
 def p_declaracion_funcion(t):
     '''declaracion_funcion : TEXT parametros LBRACKET bloque_compuesto retorno RBRACKET'''
+    '''declaration : ID EQUALS ID SEMICOLON'''
+    print(f"Variable declarada: {t[1]} = {t[3]}")
 
 def p_parametros(t):
     '''declaracion_funcion : LPAREN INT TEXT COMA INT TEXT RPAREN 
@@ -165,6 +167,18 @@ def p_retorno(t):
 
 def p_llamada_funcion(t):
     'llamada_funcion : TEXT'
+    '''llamada_funcion : ID LPAREN arg_list RPAREN'''
+    print(f"Llamada a función: {t[1]}({t[3]})")
+
+
+# Lista de argumentos separados por comas
+def p_arg_list(p):
+    '''arg_list : arg_list COMMA ID
+                | ID'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[3]]
 # sumar(2,2)
 
 def p_declaracion_variable(t):
@@ -182,8 +196,13 @@ def p_empty(p):
     'empty :'
     pass
 
+
+# Manejo de errores de sintaxis 
 def p_error(p):
-    print("Syntax error in input!")
+    if p:
+        print(f"Error de sintaxis en el token: {p.value}")
+    else:
+        print("Error de sintaxis al final del archivo")
 
 # -----------------  Build the lexer -----------------
 lexer = lex.lex()
