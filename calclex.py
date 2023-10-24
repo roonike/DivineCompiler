@@ -26,6 +26,9 @@ tokens = (
     'FLOAT',#'FARFARELLO', 
     'BOOL',#'GRAFFIACANE', 
     'STRING', #'CIRIATO',
+    'ID', #'VARIABLE_ID',
+
+    
    
     #IDs
     'TEXT',
@@ -65,6 +68,7 @@ t_INT = r'DRAGHINAZZO'
 t_FLOAT = r'FARFARELLO'
 t_BOOL = r'GRAFFICANE'
 t_STRING = r'CIRIATO'
+t_ID = r'VARIABLE_ID'
 
 t_PLUS    = r'ALICHINO'
 t_MINUS   = r'BARBARICCIA'
