@@ -10,6 +10,7 @@ import ply.lex as lex
 import ply.yacc as yacc
 
 
+
 # List of token names.   This is always required
 tokens = (
     #Control - Frases 
@@ -187,10 +188,65 @@ def p_declaracion_variable(t):
 
 def p_expresion(t):
     'expresion : TEXT'  
-# 5 * 5 + 9(5-2)
+    #expression PLUS expression
+    #LPAREN expression RPAREN'''
+    # 5 * 5 + 9(5-2)
+    # '''expression : NUMBER
+    #               | expression PLUS expression
+    #               | expression MINUS expression
+    #               | expression TIMES expression
+    #               | expression DIVIDE expression
+    #               | LPAREN expression RPAREN'''
+    # if len(t) == 2:
+    #     t[0] = t[1]
+    # elif t[2] == '+':
+    #     t[0] = t[1] + t[3]
+    # elif t[2] == '-':
+    #     t[0] = t[1] - t[3]
+    # elif t[2] == '*':
+    #     t[0] = t[1] * t[3]
+    # elif t[2] == '/':
+    #     t[0] = t[1] / t[3]
+    if len(t) == 2:
+        t[0] = t[1]
+    elif t[2] == '+':
+        t[0] = t[1] + t[3]
+
+# Función para analizar expresiones
+def parse_expression(expression):
+    return parser.parse(expression)
+
 def p_asignacion_variable(t):
-    'asignacion_variable : TEXT'    
-#sumando = 5
+    ''''assignment : TEXT ASSIGN TEXT SEMICOLON'''
+    variable_name = t[1]
+    variable_value = t[3]
+    print(f"Asignación de variable: {variable_name} = {variable_value}") 
+   
+# Función para analizar asignaciones de variables
+def parse_assignment(assignment):
+    return parser.parse(assignment)
+
+# Regla de condición
+def p_condition(t):
+    print("Expresión condicional:")
+    print(f"Expresión: {t[3]}")
+    print("Sentencias:")
+    for statement in t[6]:
+        print(f" - {statement}")
+
+# Regla de lista de sentencias
+def p_statements(p):
+    '''statements : statements statement
+                 | statement'''
+    if len(p) == 2:
+        p[0] = [p[1]]
+    else:
+        p[0] = p[1] + [p[2]]
+
+# Regla de sentencia
+def p_statement(p):
+    '''statement : TEXT SEMICOLON'''
+    p[0] = p[1]
 
 def p_empty(p):
     'empty :'
