@@ -2,7 +2,6 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    ASSIGN
     BREAK
     CASE
     DEF
@@ -37,13 +36,19 @@ Rule 11    retorno -> RETURN STRING
 Rule 12    retorno -> RETURN BOOL
 Rule 13    retorno -> RETURN FLOAT
 Rule 14    llamada_funcion -> TEXT
-Rule 15    declaracion_variable -> TEXT
-Rule 16    asignacion_variable -> TEXT
-Rule 17    empty -> <empty>
+Rule 15    arg_list -> arg_list COMMA ID
+Rule 16    arg_list -> ID
+Rule 17    declaracion_variable -> TEXT
+Rule 18    expresion -> TEXT
+Rule 19    asignacion_variable -> TEXT ASSIGN TEXT SEMICOLON
+Rule 20    statements -> statements statement
+Rule 21    statements -> statement
+Rule 22    statement -> TEXT SEMICOLON
+Rule 23    empty -> <empty>
 
 Terminals, with rules where they appear
 
-ASSIGN               : 
+ASSIGN               : 19
 BOOL                 : 12
 BREAK                : 
 CASE                 : 
@@ -54,6 +59,7 @@ ELSE                 :
 FALSE                : 
 FLOAT                : 13
 FOR                  : 
+ID                   : 15 16
 IF                   : 
 INT                  : 8 8 10
 LBRACKET             : 7
@@ -67,7 +73,7 @@ RETURN               : 10 11 12 13
 RPAREN               : 8 9
 STRING               : 9 9 11
 SWITCH               : 
-TEXT                 : 7 8 8 9 9 14 15 16
+TEXT                 : 7 8 8 9 9 14 17 18 19 19 22
 TIMES                : 
 TRUE                 : 
 WHILE                : 
@@ -75,13 +81,19 @@ error                :
 
 Nonterminals, with rules where they appear
 
+COMMA                : 15
+SEMICOLON            : 19 22
+arg_list             : 15
 asignacion_variable  : 4
 bloque_compuesto     : 1 2 3 4 5 7
 declaracion_funcion  : 3
 declaracion_variable : 2
 empty                : 6
+expresion            : 
 llamada_funcion      : 5
 parametros           : 7
 program              : 0
 retorno              : 7
+statement            : 20 21
+statements           : 20
 

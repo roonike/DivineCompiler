@@ -69,7 +69,7 @@ t_INT = r'DRAGHINAZZO'
 t_FLOAT = r'FARFARELLO'
 t_BOOL = r'GRAFFICANE'
 t_STRING = r'CIRIATO'
-t_ID = r'VARIABLE_ID'
+##t_ID = r'VARIABLE_ID'
 
 t_PLUS    = r'ALICHINO'
 t_MINUS   = r'BARBARICCIA'
@@ -138,38 +138,42 @@ def t_newline(t):
 # ----------------- SYNTACTIC ANALYSIS -----------------
 
 
-def p_program(t):
+def p_program(p):
     'program : bloque_compuesto'
-    #t[0] = t[1]
+    p[0] = {'name': p_program, p_bloque_compuesto:p[1]}
 
-def p_bloque_compuesto(t):
+def p_bloque_compuesto(p):
     '''bloque_compuesto : declaracion_variable bloque_compuesto 
                         | declaracion_funcion bloque_compuesto
                         | asignacion_variable bloque_compuesto
                         | llamada_funcion bloque_compuesto
                         | empty'''
+    if len(p) == 2:
+        p[0] = {'name': p_bloque_compuesto, p_declaracion_variable: p[1]}
+    else:
+        p[0] = {'name': p_bloque_compuesto, p_declaracion_variable: p[1]}
 
-def p_declaracion_funcion(t):
+def p_declaracion_funcion(p):
     '''declaracion_funcion : TEXT parametros LBRACKET bloque_compuesto retorno RBRACKET'''
     '''declaration : ID EQUALS ID SEMICOLON'''
-    print(f"Variable declarada: {t[1]} = {t[3]}")
+    print(f"Variable declarada: {p[1]} = {p[3]}")
 
-def p_parametros(t):
+def p_parametros(p):
     '''declaracion_funcion : LPAREN INT TEXT COMA INT TEXT RPAREN 
                            | LPAREN STRING TEXT COMA STRING TEXT RPAREN'''
 
 
-def p_retorno(t):
+def p_retorno(p):
     '''retorno : RETURN INT
                 | RETURN STRING
                 | RETURN BOOL
                 | RETURN FLOAT '''
 #return 0
 
-def p_llamada_funcion(t):
+def p_llamada_funcion(p):
     'llamada_funcion : TEXT'
     '''llamada_funcion : ID LPAREN arg_list RPAREN'''
-    print(f"Llamada a función: {t[1]}({t[3]})")
+    print(f"Llamada a función: {p[1]}({p[3]})")
 
 
 # Lista de argumentos separados por comas
@@ -182,11 +186,11 @@ def p_arg_list(p):
         p[0] = p[1] + [p[3]]
 # sumar(2,2)
 
-def p_declaracion_variable(t):
+def p_declaracion_variable(p):
     'declaracion_variable : TEXT'
 #int sumando
 
-def p_expresion(t):
+def p_expresion(p):
     'expresion : TEXT'  
     #expression PLUS expression
     #LPAREN expression RPAREN'''
@@ -207,19 +211,19 @@ def p_expresion(t):
     #     t[0] = t[1] * t[3]
     # elif t[2] == '/':
     #     t[0] = t[1] / t[3]
-    if len(t) == 2:
-        t[0] = t[1]
-    elif t[2] == '+':
-        t[0] = t[1] + t[3]
+    if len(p) == 2:
+        p[0] = p[1]
+    elif p[2] == '+':
+        p[0] = p[1] + p[3]
 
 # Función para analizar expresiones
 def parse_expression(expression):
     return parser.parse(expression)
 
-def p_asignacion_variable(t):
-    ''''assignment : TEXT ASSIGN TEXT SEMICOLON'''
-    variable_name = t[1]
-    variable_value = t[3]
+def p_asignacion_variable(p):
+    '''asignacion_variable : TEXT ASSIGN TEXT SEMICOLON'''
+    variable_name = p[1]
+    variable_value = p[3]
     print(f"Asignación de variable: {variable_name} = {variable_value}") 
    
 # Función para analizar asignaciones de variables
@@ -227,11 +231,11 @@ def parse_assignment(assignment):
     return parser.parse(assignment)
 
 # Regla de condición
-def p_condition(t):
+def p_condition(p):
     print("Expresión condicional:")
-    print(f"Expresión: {t[3]}")
+    print(f"Expresión: {p[3]}")
     print("Sentencias:")
-    for statement in t[6]:
+    for statement in p[6]:
         print(f" - {statement}")
 
 # Regla de lista de sentencias
