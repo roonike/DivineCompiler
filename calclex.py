@@ -10,6 +10,7 @@ import ply.lex as lex
 import ply.yacc as yacc
 
 
+
 # List of token names.   This is always required
 tokens = (
     #Control - Frases 
@@ -26,6 +27,9 @@ tokens = (
     'FLOAT',#'FARFARELLO', 
     'BOOL',#'GRAFFIACANE', 
     'STRING', #'CIRIATO',
+    'ID', #'VARIABLE_ID',
+
+    
    
     #IDs
     'TEXT',
@@ -35,17 +39,24 @@ tokens = (
     #Reserved
     'PLUS', # ALICHINO
     'MINUS', # BARBARICCIA
-    'TIMES', # * ARGENTI
+    'TIMES', # ARGENTI
     'DIVIDE', # BRUTUS
     'ASSIGN', # BEATRICCE 
     'COMA', # ,
+    'IGUALIGUAL',
+    'MAYORQUE',
+    'MENORQUE',
+    'AND',
+    'OR',
     'RPAREN', #'CAGNAZZO'
     'LPAREN', #'CALCABRINA'
     'RBRACKET',#
     'LBRACKET',#
+    'SINGLEQUOTES'
+    'DOUBLEQUOTES' 
     'TRUE', #'DANTE',
     'FALSE', #'VERGIL',
-    'RETURN', # 'COSA FATTA,CAPPO HA' # RETURN
+    'RETURN', # 'COSA FATTA,CAPPO HA' # RETUR N
     'CASE',#'SCARMIGLIONE' 
     'BREAK',#
 )
@@ -65,6 +76,7 @@ t_INT = r'DRAGHINAZZO'
 t_FLOAT = r'FARFARELLO'
 t_BOOL = r'GRAFFICANE'
 t_STRING = r'CIRIATO'
+##t_ID = r'VARIABLE_ID'
 
 t_PLUS    = r'ALICHINO'
 t_MINUS   = r'BARBARICCIA'
@@ -76,6 +88,13 @@ t_RPAREN  = r'CAGNAZZO'
 t_LBRACKET = r'IL SUPPORTO'
 t_RBRACKET = r'LA PARENTESI'
 t_COMA = r','
+t_IGUALIGUAL = r'=='
+t_MAYORQUE = r'<'
+t_MENORQUE = r'>'
+t_AND = r'E'
+t_OR = r'O'
+t_SINGLEQUOTEs = r'cherubino'
+t_DOUBLEQOTES = r'cherubinos'
 t_TRUE = r'DANTE'
 t_FALSE = r'VERGIL'
 t_CASE = r'SCARMIGLIONE'
@@ -113,79 +132,118 @@ def t_error(t):
     print("Illegal character '%s'" % t.value[0])
     t.lexer.skip(1)
 
-""""
-# A regular expression rule with some action code
-def t_NUMBER(t):
-    r'\d+'
-    t.value = int(t.value)    
-    return t
-
-# Define a rule so we can track line numbers
-def t_newline(t):
-    r'n+'
-    t.lexer.lineno += len(t.value)
-
-'
-
-
-"""
 
 # ----------------- SYNTACTIC ANALYSIS -----------------
 
+#raiz del programa
+def p_program(p):
+    'program : statement'
 
-def p_program(t):
-    'program : bloque_compuesto'
-    #t[0] = t[1]
+# Bloques de Codigo
 
-def p_bloque_compuesto(t):
-    '''bloque_compuesto : declaracion_variable bloque_compuesto 
-                        | declaracion_funcion bloque_compuesto
-                        | asignacion_variable bloque_compuesto
-                        | llamada_funcion bloque_compuesto
-                        | empty'''
+def p_statement(p):
+    '''statement : function_call
+                    |compound_statement
+                    |function_declaration
+                    |assign_statement
+                    |if_statement
+                    |cycle_statement'''
 
-def p_declaracion_funcion(t):
-    '''declaracion_funcion : TEXT parametros LBRACKET bloque_compuesto retorno RBRACKET'''
+def p_statement_list(p):
+    '''statement_list : statement
+                        | statement_list statement'''
+                        
+def p_compound_statement(p):
+    '''compound_statement : LPAREN RPAREN
+                            | LPAREN statement_list RPAREN'''
 
-def p_parametros(t):
-    '''declaracion_funcion : LPAREN INT TEXT COMA INT TEXT RPAREN 
-                           | LPAREN STRING TEXT COMA STRING TEXT RPAREN'''
+def p_assign_statement(p):
+    ''' assign_statement : var_declaration 
+                        | var_assign'''
+
+def p_parameters(p):
+    '''parametros : empty
+                    | var_declaration
+                    | parametros COMA var_declaration'''
+
+def p_cycle_statement(p):
+    '''ciclo : FOR LPAREN exp RPAREN LBRACK'''
+                
+
+# Funciones
+
+def p_function_declaration(p):
+    '''function_declaration : empty'''
+    
+#se puede declarar una variable nuevo o asignar una variable 
+def p_declaracion(p):
+    ''' declaracion : var_declaration
+                    | var_assignment'''
+                        
+#declarasion y declaracion con asignacion
+def p_var_declaration(p): 
+    '''var_declaration : type ID 
+                        | type var_assign'''
+
+#assignacion
+def p_var_assign(p):
+    '''var_assign : ID ASSIGN exp'''
+
+def p_type(p):
+    ''' type : INT 
+            | FLOAT
+            | BOOL
+            | STRING'''
+    p[0] = p[1]   
 
 
-def p_retorno(t):
-    '''retorno : RETURN INT
-                | RETURN STRING
-                | RETURN BOOL
-                | RETURN FLOAT '''
-#return 0
 
-def p_llamada_funcion(t):
+def p_retorno(p):
+    '''retorno : RETURN ID '''
+
+def p_llamada_funcion(p):
     'llamada_funcion : TEXT'
-# sumar(2,2)
+    '''llamada_funcion : ID LPAREN arg_list RPAREN'''
+    print(f"Llamada a función: {p[1]}({p[3]})")
 
-def p_declaracion_variable(t):
-    'declaracion_variable : TEXT'
-#int sumando
+def p_operador_binario(p):
+  '''operador_binario : exp TIMES exp
+           | exp PLUS exp
+           | exp DIVIDE exp
+           | exp MINUS exp
+           | var ASSIGN exp
+           | exp IGUALIGUAL exp
+           | exp MENORQUE exp
+           | exp MAYORQUE exp
+           | exp AND exp
+           | exp OR exp'''
 
-def p_expresion(t):
-    'expresion : TEXT'  
-# 5 * 5 + 9(5-2)
-def p_asignacion_variable(t):
-    'asignacion_variable : TEXT'    
-#sumando = 5
+def p_exp(p):
+    '''exp : INT 
+            | FLOAT'''
+
 
 def p_empty(p):
     'empty :'
     pass
 
+
+# Manejo de errores de sintaxis 
 def p_error(p):
-    print("Syntax error in input!")
+    if p:
+        print(f"Error de sintaxis en el token: {p.value}")
+    else:
+        print("Error de sintaxis al final del archivo")
 
 # -----------------  Build the lexer -----------------
 lexer = lex.lex()
 
 # Test it out
-data = '''3 ALICHINO 4 ARGENTI 10 ALICHINO BARBARICCIA 20 ARGENTI 2'''
+data = '''italia BEATRICCE 0
+            LASCIATE OGNE I SPERANZA VOI CHINTRATE CAGNAZZO 5 CALCABRINA
+            italia BEATRICCE ALICHINO 1
+            COSA FATTA,CAPPO HA italia'''
+            
 
 # Give the lexer some input
 lexer.input(data)
