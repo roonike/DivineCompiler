@@ -52,8 +52,8 @@ tokens = (
     'LPAREN', #'CALCABRINA'
     'RBRACKET',#
     'LBRACKET',#
-    'SINGLEQUOTES'
-    'DOUBLEQUOTES' 
+    'SINGLEQUOTES',
+    'DOUBLEQUOTES',
     'TRUE', #'DANTE',
     'FALSE', #'VERGIL',
     'RETURN', # 'COSA FATTA,CAPPO HA' # RETUR N
@@ -93,8 +93,8 @@ t_MAYORQUE = r'<'
 t_MENORQUE = r'>'
 t_AND = r'E'
 t_OR = r'O'
-t_SINGLEQUOTEs = r'cherubino'
-t_DOUBLEQOTES = r'cherubinos'
+t_SINGLEQUOTES = r'cherubino'
+t_DOUBLEQUOTES = r'cherubinos'
 t_TRUE = r'DANTE'
 t_FALSE = r'VERGIL'
 t_CASE = r'SCARMIGLIONE'
@@ -113,7 +113,7 @@ def t_REAL(t):
     return t
 
 def t_ID(t):
-    r'([a-z])'    
+    r'([a-zA-Z*])'    
     return t
 
 def t_TEXT(t):
@@ -282,3 +282,60 @@ def reserve_space(data_type):
 parser = yacc.yacc()
 parser.parse(data)
 # ----------------------------------------------------
+'''
+EJEMPLOS
+1)
+italia = 0
+for 5
+	italia = italia + 1
+return italia
+
+--------------------------------------------------------------
+italia beatricce 0
+lasciate ogne i speranza voi chintrate 5 
+	italia = italia alichino 1
+cosa fatta cappo ha italia
+
+2)
+roma = 476
+constantinopla = 1453
+constantino = 0
+
+if constantinopla > italia
+	constantino = constantinopla - roma
+return constantino
+
+---------------------------------------------------------------
+roma beatricce 476
+constantinopla beatricce 1453
+constantino beatricce 0
+
+inferno constantinopla > italia
+	constantino beatricce constantinopla barbariccia roma
+cosa fatta cappo ha constantino
+
+3)
+
+def ciao mondo()
+viaggiatore = true
+ciao mondo = ""
+if viaggiatore = true
+	ciao mondo = "ciao mondo"
+if viaggiatore = false
+	ciao mondo = "arrivederci"
+return ciao mondo
+
+----------------------------------------------------------------
+def ciao mondo cagnazzo calcabrina
+viggiatore beatricce dante
+ciao mondo beatricce cherubinos cherubinos
+inferno viaggiatore beatricce dante
+	ciao mondo beatricce cherubinos ciao mondo cherubinos
+inferno viaggiatore beatricce vergil
+	ciao mondo beatricce cherubinos arriverci cherubinos
+cosa fatta cappo ha ciao mondo
+
+
+
+
+'''
