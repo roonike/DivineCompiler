@@ -9,8 +9,9 @@ import sys
 import ply.lex as lex
 import ply.yacc as yacc
 
-
-
+#for symbol_table
+symbol_table = {}
+reserved = 0
 # List of token names.   This is always required
 tokens = (
     #Control - Frases 
@@ -285,6 +286,31 @@ while True:
     tok = lexer.token()
     if not tok: break      # No more input
     print(tok)
+
+#Symbol table
+def create_variable(name, data_type):
+    global reserved
+    if name in symbol_table:
+        return False, 0
+    else:
+        address = reserved
+        symbol_table[name] = (name, data_type, address)
+        reserve_space(data_type)
+        return True, reserved - address
+    
+#Symbol table
+def reserve_space(data_type):
+    global reserved
+    if data_type == "char":
+        reserved += 1
+    elif data_type == "int":
+        reserved += 4
+    elif data_type == "float":
+        reserved += 4
+    elif data_type == "string":
+        reserved += 8
+    elif data_type == "bool":
+        reserved += 1
 
 parser = yacc.yacc()
 parser.parse(data)
