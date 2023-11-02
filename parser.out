@@ -5,7 +5,6 @@ Unused terminals:
     BREAK
     CASE
     DEF
-    DIVIDE
     ELSE
     FALSE
     IF
@@ -16,7 +15,6 @@ Unused terminals:
     RBRACKET
     REAL
     SWITCH
-    TIMES
     TRUE
     WHILE
 
@@ -61,7 +59,7 @@ BREAK                :
 CASE                 : 
 COMA                 : 16
 DEF                  : 
-DIVIDE               : 
+DIVIDE               : 23
 ELSE                 : 
 FALSE                : 
 FLOAT                : 24

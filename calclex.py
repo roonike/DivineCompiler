@@ -39,17 +39,24 @@ tokens = (
     #Reserved
     'PLUS', # ALICHINO
     'MINUS', # BARBARICCIA
-    'TIMES', # * ARGENTI
+    'TIMES', # ARGENTI
     'DIVIDE', # BRUTUS
     'ASSIGN', # BEATRICCE 
     'COMA', # ,
+    'IGUALIGUAL',
+    'MAYORQUE',
+    'MENORQUE',
+    'AND',
+    'OR',
     'RPAREN', #'CAGNAZZO'
     'LPAREN', #'CALCABRINA'
     'RBRACKET',#
     'LBRACKET',#
+    'SINGLEQUOTES'
+    'DOUBLEQUOTES' 
     'TRUE', #'DANTE',
     'FALSE', #'VERGIL',
-    'RETURN', # 'COSA FATTA,CAPPO HA' # RETURN
+    'RETURN', # 'COSA FATTA,CAPPO HA' # RETUR N
     'CASE',#'SCARMIGLIONE' 
     'BREAK',#
 )
@@ -80,6 +87,14 @@ t_LPAREN  = r'CALCABRINA'
 t_RPAREN  = r'CAGNAZZO'
 t_LBRACKET = r'IL_SUPPORTO'
 t_RBRACKET = r'LA_PARENTESI'
+t_COMA = r','
+t_IGUALIGUAL = r'=='
+t_MAYORQUE = r'<'
+t_MENORQUE = r'>'
+t_AND = r'E'
+t_OR = r'O'
+t_SINGLEQUOTEs = r'cherubino'
+t_DOUBLEQOTES = r'cherubinos'
 t_TRUE = r'DANTE'
 t_FALSE = r'VERGIL'
 t_CASE = r'SCARMIGLIONE'
@@ -194,6 +209,22 @@ def p_llamada_funcion(p):
     'llamada_funcion : TEXT'
     '''llamada_funcion : ID LPAREN arg_list RPAREN'''
     print(f"Llamada a función: {p[1]}({p[3]})")
+
+def p_operador_binario(p):
+  '''operador_binario : exp TIMES exp
+           | exp PLUS exp
+           | exp DIVIDE exp
+           | exp MINUS exp
+           | var ASSIGN exp
+           | exp IGUALIGUAL exp
+           | exp MENORQUE exp
+           | exp MAYORQUE exp
+           | exp AND exp
+           | exp OR exp'''
+
+def p_exp(p):
+    '''exp : INT 
+            | FLOAT'''
 
 
 def p_empty(p):
