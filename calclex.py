@@ -39,7 +39,7 @@ tokens = (
     #Reserved
     'PLUS', # ALICHINO
     'MINUS', # BARBARICCIA
-    'TIMES', # * ARGENTI
+    'TIMES', # ARGENTI
     'DIVIDE', # BRUTUS
     'ASSIGN', # BEATRICCE 
     'COMA', # ,
@@ -52,9 +52,11 @@ tokens = (
     'LPAREN', #'CALCABRINA'
     'RBRACKET',#
     'LBRACKET',#
+    'SINGLEQUOTES'
+    'DOUBLEQUOTES' 
     'TRUE', #'DANTE',
     'FALSE', #'VERGIL',
-    'RETURN', # 'COSA FATTA,CAPPO HA' # RETURN
+    'RETURN', # 'COSA FATTA,CAPPO HA' # RETUR N
     'CASE',#'SCARMIGLIONE' 
     'BREAK',#
 )
@@ -91,6 +93,8 @@ t_MAYORQUE = r'<'
 t_MENORQUE = r'>'
 t_AND = r'E'
 t_OR = r'O'
+t_SINGLEQUOTEs = r'cherubino'
+t_DOUBLEQOTES = r'cherubinos'
 t_TRUE = r'DANTE'
 t_FALSE = r'VERGIL'
 t_CASE = r'SCARMIGLIONE'
