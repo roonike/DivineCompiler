@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'ASSIGN BOOL BREAK CASE DEF DIVIDE ELSE FALSE FLOAT FOR IF INT LBRACKET LPAREN MINUS NUMERO PLUS RBRACKET REAL RETURN RPAREN STRING SWITCH TEXT TIMES TRUE WHILEprogram : bloque_compuestobloque_compuesto : declaracion_variable bloque_compuesto \n                        | declaracion_funcion bloque_compuesto\n                        | asignacion_variable bloque_compuesto\n                        | llamada_funcion bloque_compuesto\n                        | emptydeclaracion_funcion : TEXT LPAREN llamada_funcion : declaracion_variable : expresion : asignacion_variable : empty :'
+_lr_signature = 'AND ASSIGN BOOL COMA DEF DIVIDE DOUBLEQUOTES ELSE FALSE FLOAT FOR ID IF IGUALIGUAL INT LBRACKET LPAREN MAYORQUE MENORQUE MINUS NUMERO OR PLUS RBRACKET REAL RETURN RPAREN SINGLEQUOTES STRING TEXT TIMES TRUE WHILEprogram : statementstatement : function_call\n                    | compound_statement\n                    | function_declaration\n                    | assign_statement\n                    | if_statement\n                    | cycle_statementstatement_list : statement\n                        | statement_list statementcompound_statement : LPAREN RPAREN\n                            | LPAREN statement_list RPAREN assign_statement : var_declaration \n                        | var_assignparameters : empty\n                    | var_declaration\n                    | parameters COMA var_declarationcycle_statement : FOR LPAREN NUMERO RPARENfunction_call : emptyfunction_declaration : DEF ID LPAREN parameters RPAREN compound_statementif_statement : emptyvar_declaration : type ID var_assign : ID ASSIGN exp type : INT \n            | FLOAT\n            | BOOL\n            | STRINGretorno : RETURN ID llamada_funcion : TEXToperador_binario : exp TIMES exp\n           | exp PLUS exp\n           | exp DIVIDE exp\n           | exp MINUS exp\n           | exp IGUALIGUAL exp\n           | exp MENORQUE exp\n           | exp MAYORQUE exp\n           | exp AND exp\n           | exp OR expexp : INT \n            | FLOATempty :'
     
-_lr_action_items = {'TEXT':([0,3,4,5,6,13,],[8,8,8,8,8,-7,]),'$end':([0,1,2,3,4,5,6,7,9,10,11,12,13,],[-8,0,-1,-8,-8,-8,-8,-6,-2,-3,-4,-5,-7,]),'LPAREN':([8,],[13,]),}
+_lr_action_items = {'LPAREN':([0,3,4,5,6,7,8,9,10,13,14,15,21,22,23,24,27,28,29,31,32,33,38,39,41,],[10,-2,-3,-4,-5,-6,-7,-18,10,-12,-13,26,-10,10,-8,30,-21,-11,-9,-22,-38,-39,-17,10,-19,]),'DEF':([0,3,4,5,6,7,8,9,10,13,14,21,22,23,27,28,29,31,32,33,38,41,],[11,-2,-3,-4,-5,-6,-7,-18,11,-12,-13,-10,11,-8,-21,-11,-9,-22,-38,-39,-17,-19,]),'FOR':([0,3,4,5,6,7,8,9,10,13,14,21,22,23,27,28,29,31,32,33,38,41,],[15,-2,-3,-4,-5,-6,-7,-18,15,-12,-13,-10,15,-8,-21,-11,-9,-22,-38,-39,-17,-19,]),'$end':([0,1,2,3,4,5,6,7,8,9,13,14,21,27,28,31,32,33,38,41,],[-40,0,-1,-2,-3,-4,-5,-6,-7,-18,-12,-13,-10,-21,-11,-22,-38,-39,-17,-19,]),'ID':([0,3,4,5,6,7,8,9,10,11,13,14,16,17,18,19,20,21,22,23,27,28,29,31,32,33,38,41,],[12,-2,-3,-4,-5,-6,-7,-18,12,24,-12,-13,27,-23,-24,-25,-26,-10,12,-8,-21,-11,-9,-22,-38,-39,-17,-19,]),'INT':([0,3,4,5,6,7,8,9,10,13,14,21,22,23,25,27,28,29,30,31,32,33,38,40,41,],[17,-2,-3,-4,-5,-6,-7,-18,17,-12,-13,-10,17,-8,32,-21,-11,-9,17,-22,-38,-39,-17,17,-19,]),'FLOAT':([0,3,4,5,6,7,8,9,10,13,14,21,22,23,25,27,28,29,30,31,32,33,38,40,41,],[18,-2,-3,-4,-5,-6,-7,-18,18,-12,-13,-10,18,-8,33,-21,-11,-9,18,-22,-38,-39,-17,18,-19,]),'BOOL':([0,3,4,5,6,7,8,9,10,13,14,21,22,23,27,28,29,30,31,32,33,38,40,41,],[19,-2,-3,-4,-5,-6,-7,-18,19,-12,-13,-10,19,-8,-21,-11,-9,19,-22,-38,-39,-17,19,-19,]),'STRING':([0,3,4,5,6,7,8,9,10,13,14,21,22,23,27,28,29,30,31,32,33,38,40,41,],[20,-2,-3,-4,-5,-6,-7,-18,20,-12,-13,-10,20,-8,-21,-11,-9,20,-22,-38,-39,-17,20,-19,]),'RPAREN':([3,4,5,6,7,8,9,10,13,14,21,22,23,27,28,29,30,31,32,33,34,35,36,37,38,41,42,],[-2,-3,-4,-5,-6,-7,-18,21,-12,-13,-10,28,-8,-21,-11,-9,-40,-22,-38,-39,38,39,-14,-15,-17,-19,-16,]),'ASSIGN':([12,],[25,]),'NUMERO':([26,],[34,]),'COMA':([27,30,35,36,37,42,],[-21,-40,40,-14,-15,-16,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,],[1,]),'bloque_compuesto':([0,3,4,5,6,],[2,9,10,11,12,]),'declaracion_variable':([0,3,4,5,6,],[3,3,3,3,3,]),'declaracion_funcion':([0,3,4,5,6,],[4,4,4,4,4,]),'asignacion_variable':([0,3,4,5,6,],[5,5,5,5,5,]),'llamada_funcion':([0,3,4,5,6,],[6,6,6,6,6,]),'empty':([0,3,4,5,6,],[7,7,7,7,7,]),}
+_lr_goto_items = {'program':([0,],[1,]),'statement':([0,10,22,],[2,23,29,]),'function_call':([0,10,22,],[3,3,3,]),'compound_statement':([0,10,22,39,],[4,4,4,41,]),'function_declaration':([0,10,22,],[5,5,5,]),'assign_statement':([0,10,22,],[6,6,6,]),'if_statement':([0,10,22,],[7,7,7,]),'cycle_statement':([0,10,22,],[8,8,8,]),'empty':([0,10,22,30,],[9,9,9,36,]),'var_declaration':([0,10,22,30,40,],[13,13,13,37,42,]),'var_assign':([0,10,22,],[14,14,14,]),'type':([0,10,22,30,40,],[16,16,16,16,16,]),'statement_list':([10,],[22,]),'exp':([25,],[31,]),'parameters':([30,],[35,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,16 +27,44 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> program","S'",1,None,None,None),
-  ('program -> bloque_compuesto','program',1,'p_program','calclex.py',136),
-  ('bloque_compuesto -> declaracion_variable bloque_compuesto','bloque_compuesto',2,'p_bloque_compuesto','calclex.py',140),
-  ('bloque_compuesto -> declaracion_funcion bloque_compuesto','bloque_compuesto',2,'p_bloque_compuesto','calclex.py',141),
-  ('bloque_compuesto -> asignacion_variable bloque_compuesto','bloque_compuesto',2,'p_bloque_compuesto','calclex.py',142),
-  ('bloque_compuesto -> llamada_funcion bloque_compuesto','bloque_compuesto',2,'p_bloque_compuesto','calclex.py',143),
-  ('bloque_compuesto -> empty','bloque_compuesto',1,'p_bloque_compuesto','calclex.py',144),
-  ('declaracion_funcion -> TEXT LPAREN','declaracion_funcion',2,'p_declaracion_funcion','calclex.py',147),
-  ('llamada_funcion -> <empty>','llamada_funcion',0,'p_llamada_funcion','calclex.py',153),
-  ('declaracion_variable -> <empty>','declaracion_variable',0,'p_declaracion_variable','calclex.py',157),
-  ('expresion -> <empty>','expresion',0,'p_expresion','calclex.py',161),
-  ('asignacion_variable -> <empty>','asignacion_variable',0,'p_asignacion_variable','calclex.py',164),
-  ('empty -> <empty>','empty',0,'p_empty','calclex.py',168),
+  ('program -> statement','program',1,'p_program','calclex.py',134),
+  ('statement -> function_call','statement',1,'p_statement','calclex.py',139),
+  ('statement -> compound_statement','statement',1,'p_statement','calclex.py',140),
+  ('statement -> function_declaration','statement',1,'p_statement','calclex.py',141),
+  ('statement -> assign_statement','statement',1,'p_statement','calclex.py',142),
+  ('statement -> if_statement','statement',1,'p_statement','calclex.py',143),
+  ('statement -> cycle_statement','statement',1,'p_statement','calclex.py',144),
+  ('statement_list -> statement','statement_list',1,'p_statement_list','calclex.py',147),
+  ('statement_list -> statement_list statement','statement_list',2,'p_statement_list','calclex.py',148),
+  ('compound_statement -> LPAREN RPAREN','compound_statement',2,'p_compound_statement','calclex.py',151),
+  ('compound_statement -> LPAREN statement_list RPAREN','compound_statement',3,'p_compound_statement','calclex.py',152),
+  ('assign_statement -> var_declaration','assign_statement',1,'p_assign_statement','calclex.py',155),
+  ('assign_statement -> var_assign','assign_statement',1,'p_assign_statement','calclex.py',156),
+  ('parameters -> empty','parameters',1,'p_parameters','calclex.py',159),
+  ('parameters -> var_declaration','parameters',1,'p_parameters','calclex.py',160),
+  ('parameters -> parameters COMA var_declaration','parameters',3,'p_parameters','calclex.py',161),
+  ('cycle_statement -> FOR LPAREN NUMERO RPAREN','cycle_statement',4,'p_cycle_statement','calclex.py',164),
+  ('function_call -> empty','function_call',1,'p_function_call','calclex.py',170),
+  ('function_declaration -> DEF ID LPAREN parameters RPAREN compound_statement','function_declaration',6,'p_function_declaration','calclex.py',173),
+  ('if_statement -> empty','if_statement',1,'p_if_statement','calclex.py',178),
+  ('var_declaration -> type ID','var_declaration',2,'p_var_declaration','calclex.py',183),
+  ('var_assign -> ID ASSIGN exp','var_assign',3,'p_var_assign','calclex.py',187),
+  ('type -> INT','type',1,'p_type','calclex.py',190),
+  ('type -> FLOAT','type',1,'p_type','calclex.py',191),
+  ('type -> BOOL','type',1,'p_type','calclex.py',192),
+  ('type -> STRING','type',1,'p_type','calclex.py',193),
+  ('retorno -> RETURN ID','retorno',2,'p_retorno','calclex.py',199),
+  ('llamada_funcion -> TEXT','llamada_funcion',1,'p_llamada_funcion','calclex.py',202),
+  ('operador_binario -> exp TIMES exp','operador_binario',3,'p_operador_binario','calclex.py',207),
+  ('operador_binario -> exp PLUS exp','operador_binario',3,'p_operador_binario','calclex.py',208),
+  ('operador_binario -> exp DIVIDE exp','operador_binario',3,'p_operador_binario','calclex.py',209),
+  ('operador_binario -> exp MINUS exp','operador_binario',3,'p_operador_binario','calclex.py',210),
+  ('operador_binario -> exp IGUALIGUAL exp','operador_binario',3,'p_operador_binario','calclex.py',211),
+  ('operador_binario -> exp MENORQUE exp','operador_binario',3,'p_operador_binario','calclex.py',212),
+  ('operador_binario -> exp MAYORQUE exp','operador_binario',3,'p_operador_binario','calclex.py',213),
+  ('operador_binario -> exp AND exp','operador_binario',3,'p_operador_binario','calclex.py',214),
+  ('operador_binario -> exp OR exp','operador_binario',3,'p_operador_binario','calclex.py',215),
+  ('exp -> INT','exp',1,'p_exp','calclex.py',218),
+  ('exp -> FLOAT','exp',1,'p_exp','calclex.py',219),
+  ('empty -> <empty>','empty',0,'p_empty','calclex.py',223),
 ]

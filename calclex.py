@@ -19,7 +19,6 @@ tokens = (
     'WHILE',#'PURGATORIO', 
     'ELSE',#'PARADISO', 
     'DEF', #'MALACODA', 
-    'SWITCH', #
     
     
     #Variable
@@ -52,13 +51,11 @@ tokens = (
     'LPAREN', #'CALCABRINA'
     'RBRACKET',#
     'LBRACKET',#
-    'SINGLEQUOTES'
-    'DOUBLEQUOTES' 
+    'SINGLEQUOTES',
+    'DOUBLEQUOTES' ,
     'TRUE', #'DANTE',
     'FALSE', #'VERGIL',
-    'RETURN', # 'COSA FATTA,CAPPO HA' # RETUR N
-    'CASE',#'SCARMIGLIONE' 
-    'BREAK',#
+    'RETURN', # 'COSA FATTA,CAPPO HA' 
 )
 
 
@@ -70,7 +67,6 @@ t_IF = r'INFERNO'
 t_WHILE = r'PURGATORIO'
 t_ELSE = r'PARADISO'
 t_DEF = r'MALACODA'
-t_SWITCH = r'GUARDA_E_PASSA'
 
 t_INT = r'DRAGHINAZZO'
 t_FLOAT = r'FARFARELLO'
@@ -93,12 +89,10 @@ t_MAYORQUE = r'<'
 t_MENORQUE = r'>'
 t_AND = r'E'
 t_OR = r'O'
-t_SINGLEQUOTEs = r'cherubino'
-t_DOUBLEQOTES = r'cherubinos'
+t_SINGLEQUOTES = r'cherubino'
+t_DOUBLEQUOTES = r'cherubinos'
 t_TRUE = r'DANTE'
 t_FALSE = r'VERGIL'
-t_CASE = r'SCARMIGLIONE'
-t_BREAK = r'NON_MI_TANGE'
 
 
 def t_RETURN(t):
@@ -106,7 +100,6 @@ def t_RETURN(t):
     t.value = str(t.value)
     return t
 
-t_COMA = r','
 def t_NUMERO(t):
     r'\d+' #numero
     t.value = int(t.value)    
@@ -163,12 +156,12 @@ def p_assign_statement(p):
                         | var_assign'''
 
 def p_parameters(p):
-    '''parametros : empty
+    '''parameters : empty
                     | var_declaration
-                    | parametros COMA var_declaration'''
+                    | parameters COMA var_declaration'''
 
 def p_cycle_statement(p):
-    '''cycle_statement : FOR LPAREN lit RPAREN LBRACK'''
+    '''cycle_statement : FOR LPAREN NUMERO RPAREN'''
                 
 
 # Funciones
@@ -177,7 +170,7 @@ def p_function_call(p):
     '''function_call : empty'''
 
 def p_function_declaration(p):
-    '''function_declaration : empty'''
+    '''function_declaration : DEF ID LPAREN parameters RPAREN compound_statement'''
     
 # IF ELSE
 
@@ -205,17 +198,11 @@ def p_type(p):
 def p_retorno(p):
     '''retorno : RETURN ID '''
 
-def p_llamada_funcion(p):
-    'llamada_funcion : TEXT'
-    '''llamada_funcion : ID LPAREN arg_list RPAREN'''
-    print(f"Llamada a función: {p[1]}({p[3]})")
-
 def p_operador_binario(p):
   '''operador_binario : exp TIMES exp
            | exp PLUS exp
            | exp DIVIDE exp
            | exp MINUS exp
-           | var ASSIGN exp
            | exp IGUALIGUAL exp
            | exp MENORQUE exp
            | exp MAYORQUE exp

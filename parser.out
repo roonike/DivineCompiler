@@ -2,19 +2,14 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    BREAK
-    CASE
-    DEF
+    DOUBLEQUOTES
     ELSE
     FALSE
     IF
     LBRACKET
-    MINUS
-    NUMERO
-    PLUS
     RBRACKET
     REAL
-    SWITCH
+    SINGLEQUOTES
     TRUE
     WHILE
 
@@ -34,12 +29,12 @@ Rule 10    compound_statement -> LPAREN RPAREN
 Rule 11    compound_statement -> LPAREN statement_list RPAREN
 Rule 12    assign_statement -> var_declaration
 Rule 13    assign_statement -> var_assign
-Rule 14    parametros -> empty
-Rule 15    parametros -> var_declaration
-Rule 16    parametros -> parametros COMA var_declaration
-Rule 17    cycle_statement -> FOR LPAREN lit RPAREN LBRACK
+Rule 14    parameters -> empty
+Rule 15    parameters -> var_declaration
+Rule 16    parameters -> parameters COMA var_declaration
+Rule 17    cycle_statement -> FOR LPAREN NUMERO RPAREN
 Rule 18    function_call -> empty
-Rule 19    function_declaration -> empty
+Rule 19    function_declaration -> DEF ID LPAREN parameters RPAREN compound_statement
 Rule 20    if_statement -> empty
 Rule 21    var_declaration -> type ID
 Rule 22    var_assign -> ID ASSIGN exp
@@ -49,55 +44,69 @@ Rule 25    type -> BOOL
 Rule 26    type -> STRING
 Rule 27    retorno -> RETURN ID
 Rule 28    llamada_funcion -> TEXT
-Rule 29    empty -> <empty>
+Rule 29    operador_binario -> exp TIMES exp
+Rule 30    operador_binario -> exp PLUS exp
+Rule 31    operador_binario -> exp DIVIDE exp
+Rule 32    operador_binario -> exp MINUS exp
+Rule 33    operador_binario -> exp IGUALIGUAL exp
+Rule 34    operador_binario -> exp MENORQUE exp
+Rule 35    operador_binario -> exp MAYORQUE exp
+Rule 36    operador_binario -> exp AND exp
+Rule 37    operador_binario -> exp OR exp
+Rule 38    exp -> INT
+Rule 39    exp -> FLOAT
+Rule 40    empty -> <empty>
 
 Terminals, with rules where they appear
 
+AND                  : 36
 ASSIGN               : 22
 BOOL                 : 25
-BREAK                : 
-CASE                 : 
 COMA                 : 16
-DEF                  : 
-DIVIDE               : 23
+DEF                  : 19
+DIVIDE               : 31
+DOUBLEQUOTES         : 
 ELSE                 : 
 FALSE                : 
-FLOAT                : 24
+FLOAT                : 24 39
 FOR                  : 17
-ID                   : 21 22 27
+ID                   : 19 21 22 27
 IF                   : 
-INT                  : 23
+IGUALIGUAL           : 33
+INT                  : 23 38
 LBRACKET             : 
-LPAREN               : 10 11 17
-MINUS                : 
-NUMERO               : 
-PLUS                 : 
+LPAREN               : 10 11 17 19
+MAYORQUE             : 35
+MENORQUE             : 34
+MINUS                : 32
+NUMERO               : 17
+OR                   : 37
+PLUS                 : 30
 RBRACKET             : 
 REAL                 : 
 RETURN               : 27
-RPAREN               : 10 11 17
+RPAREN               : 10 11 17 19
+SINGLEQUOTES         : 
 STRING               : 26
-SWITCH               : 
 TEXT                 : 28
-TIMES                : 
+TIMES                : 29
 TRUE                 : 
 WHILE                : 
 error                : 
 
 Nonterminals, with rules where they appear
 
-LBRACK               : 17
 assign_statement     : 5
-compound_statement   : 3
+compound_statement   : 3 19
 cycle_statement      : 7
-empty                : 14 18 19 20
-exp                  : 22
+empty                : 14 18 20
+exp                  : 22 29 29 30 30 31 31 32 32 33 33 34 34 35 35 36 36 37 37
 function_call        : 2
 function_declaration : 4
 if_statement         : 6
-lit                  : 17
 llamada_funcion      : 
-parametros           : 16
+operador_binario     : 
+parameters           : 16 19
 program              : 0
 retorno              : 
 statement            : 1 8 9
@@ -106,3 +115,725 @@ type                 : 21
 var_assign           : 13
 var_declaration      : 12 15 16
 
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . statement
+    (2) statement -> . function_call
+    (3) statement -> . compound_statement
+    (4) statement -> . function_declaration
+    (5) statement -> . assign_statement
+    (6) statement -> . if_statement
+    (7) statement -> . cycle_statement
+    (18) function_call -> . empty
+    (10) compound_statement -> . LPAREN RPAREN
+    (11) compound_statement -> . LPAREN statement_list RPAREN
+    (19) function_declaration -> . DEF ID LPAREN parameters RPAREN compound_statement
+    (12) assign_statement -> . var_declaration
+    (13) assign_statement -> . var_assign
+    (20) if_statement -> . empty
+    (17) cycle_statement -> . FOR LPAREN NUMERO RPAREN
+    (40) empty -> .
+    (21) var_declaration -> . type ID
+    (22) var_assign -> . ID ASSIGN exp
+    (23) type -> . INT
+    (24) type -> . FLOAT
+    (25) type -> . BOOL
+    (26) type -> . STRING
+
+    LPAREN          shift and go to state 10
+    DEF             shift and go to state 11
+    FOR             shift and go to state 15
+    $end            reduce using rule 40 (empty -> .)
+    ID              shift and go to state 12
+    INT             shift and go to state 17
+    FLOAT           shift and go to state 18
+    BOOL            shift and go to state 19
+    STRING          shift and go to state 20
+
+    program                        shift and go to state 1
+    statement                      shift and go to state 2
+    function_call                  shift and go to state 3
+    compound_statement             shift and go to state 4
+    function_declaration           shift and go to state 5
+    assign_statement               shift and go to state 6
+    if_statement                   shift and go to state 7
+    cycle_statement                shift and go to state 8
+    empty                          shift and go to state 9
+    var_declaration                shift and go to state 13
+    var_assign                     shift and go to state 14
+    type                           shift and go to state 16
+
+state 1
+
+    (0) S' -> program .
+
+
+
+state 2
+
+    (1) program -> statement .
+
+    $end            reduce using rule 1 (program -> statement .)
+
+
+state 3
+
+    (2) statement -> function_call .
+
+    $end            reduce using rule 2 (statement -> function_call .)
+    RPAREN          reduce using rule 2 (statement -> function_call .)
+    LPAREN          reduce using rule 2 (statement -> function_call .)
+    DEF             reduce using rule 2 (statement -> function_call .)
+    FOR             reduce using rule 2 (statement -> function_call .)
+    ID              reduce using rule 2 (statement -> function_call .)
+    INT             reduce using rule 2 (statement -> function_call .)
+    FLOAT           reduce using rule 2 (statement -> function_call .)
+    BOOL            reduce using rule 2 (statement -> function_call .)
+    STRING          reduce using rule 2 (statement -> function_call .)
+
+
+state 4
+
+    (3) statement -> compound_statement .
+
+    $end            reduce using rule 3 (statement -> compound_statement .)
+    RPAREN          reduce using rule 3 (statement -> compound_statement .)
+    LPAREN          reduce using rule 3 (statement -> compound_statement .)
+    DEF             reduce using rule 3 (statement -> compound_statement .)
+    FOR             reduce using rule 3 (statement -> compound_statement .)
+    ID              reduce using rule 3 (statement -> compound_statement .)
+    INT             reduce using rule 3 (statement -> compound_statement .)
+    FLOAT           reduce using rule 3 (statement -> compound_statement .)
+    BOOL            reduce using rule 3 (statement -> compound_statement .)
+    STRING          reduce using rule 3 (statement -> compound_statement .)
+
+
+state 5
+
+    (4) statement -> function_declaration .
+
+    $end            reduce using rule 4 (statement -> function_declaration .)
+    RPAREN          reduce using rule 4 (statement -> function_declaration .)
+    LPAREN          reduce using rule 4 (statement -> function_declaration .)
+    DEF             reduce using rule 4 (statement -> function_declaration .)
+    FOR             reduce using rule 4 (statement -> function_declaration .)
+    ID              reduce using rule 4 (statement -> function_declaration .)
+    INT             reduce using rule 4 (statement -> function_declaration .)
+    FLOAT           reduce using rule 4 (statement -> function_declaration .)
+    BOOL            reduce using rule 4 (statement -> function_declaration .)
+    STRING          reduce using rule 4 (statement -> function_declaration .)
+
+
+state 6
+
+    (5) statement -> assign_statement .
+
+    $end            reduce using rule 5 (statement -> assign_statement .)
+    RPAREN          reduce using rule 5 (statement -> assign_statement .)
+    LPAREN          reduce using rule 5 (statement -> assign_statement .)
+    DEF             reduce using rule 5 (statement -> assign_statement .)
+    FOR             reduce using rule 5 (statement -> assign_statement .)
+    ID              reduce using rule 5 (statement -> assign_statement .)
+    INT             reduce using rule 5 (statement -> assign_statement .)
+    FLOAT           reduce using rule 5 (statement -> assign_statement .)
+    BOOL            reduce using rule 5 (statement -> assign_statement .)
+    STRING          reduce using rule 5 (statement -> assign_statement .)
+
+
+state 7
+
+    (6) statement -> if_statement .
+
+    $end            reduce using rule 6 (statement -> if_statement .)
+    RPAREN          reduce using rule 6 (statement -> if_statement .)
+    LPAREN          reduce using rule 6 (statement -> if_statement .)
+    DEF             reduce using rule 6 (statement -> if_statement .)
+    FOR             reduce using rule 6 (statement -> if_statement .)
+    ID              reduce using rule 6 (statement -> if_statement .)
+    INT             reduce using rule 6 (statement -> if_statement .)
+    FLOAT           reduce using rule 6 (statement -> if_statement .)
+    BOOL            reduce using rule 6 (statement -> if_statement .)
+    STRING          reduce using rule 6 (statement -> if_statement .)
+
+
+state 8
+
+    (7) statement -> cycle_statement .
+
+    $end            reduce using rule 7 (statement -> cycle_statement .)
+    RPAREN          reduce using rule 7 (statement -> cycle_statement .)
+    LPAREN          reduce using rule 7 (statement -> cycle_statement .)
+    DEF             reduce using rule 7 (statement -> cycle_statement .)
+    FOR             reduce using rule 7 (statement -> cycle_statement .)
+    ID              reduce using rule 7 (statement -> cycle_statement .)
+    INT             reduce using rule 7 (statement -> cycle_statement .)
+    FLOAT           reduce using rule 7 (statement -> cycle_statement .)
+    BOOL            reduce using rule 7 (statement -> cycle_statement .)
+    STRING          reduce using rule 7 (statement -> cycle_statement .)
+
+
+state 9
+
+    (18) function_call -> empty .
+    (20) if_statement -> empty .
+
+  ! reduce/reduce conflict for $end resolved using rule 18 (function_call -> empty .)
+  ! reduce/reduce conflict for RPAREN resolved using rule 18 (function_call -> empty .)
+  ! reduce/reduce conflict for LPAREN resolved using rule 18 (function_call -> empty .)
+  ! reduce/reduce conflict for DEF resolved using rule 18 (function_call -> empty .)
+  ! reduce/reduce conflict for FOR resolved using rule 18 (function_call -> empty .)
+  ! reduce/reduce conflict for ID resolved using rule 18 (function_call -> empty .)
+  ! reduce/reduce conflict for INT resolved using rule 18 (function_call -> empty .)
+  ! reduce/reduce conflict for FLOAT resolved using rule 18 (function_call -> empty .)
+  ! reduce/reduce conflict for BOOL resolved using rule 18 (function_call -> empty .)
+  ! reduce/reduce conflict for STRING resolved using rule 18 (function_call -> empty .)
+    $end            reduce using rule 18 (function_call -> empty .)
+    RPAREN          reduce using rule 18 (function_call -> empty .)
+    LPAREN          reduce using rule 18 (function_call -> empty .)
+    DEF             reduce using rule 18 (function_call -> empty .)
+    FOR             reduce using rule 18 (function_call -> empty .)
+    ID              reduce using rule 18 (function_call -> empty .)
+    INT             reduce using rule 18 (function_call -> empty .)
+    FLOAT           reduce using rule 18 (function_call -> empty .)
+    BOOL            reduce using rule 18 (function_call -> empty .)
+    STRING          reduce using rule 18 (function_call -> empty .)
+
+  ! $end            [ reduce using rule 20 (if_statement -> empty .) ]
+  ! RPAREN          [ reduce using rule 20 (if_statement -> empty .) ]
+  ! LPAREN          [ reduce using rule 20 (if_statement -> empty .) ]
+  ! DEF             [ reduce using rule 20 (if_statement -> empty .) ]
+  ! FOR             [ reduce using rule 20 (if_statement -> empty .) ]
+  ! ID              [ reduce using rule 20 (if_statement -> empty .) ]
+  ! INT             [ reduce using rule 20 (if_statement -> empty .) ]
+  ! FLOAT           [ reduce using rule 20 (if_statement -> empty .) ]
+  ! BOOL            [ reduce using rule 20 (if_statement -> empty .) ]
+  ! STRING          [ reduce using rule 20 (if_statement -> empty .) ]
+
+
+state 10
+
+    (10) compound_statement -> LPAREN . RPAREN
+    (11) compound_statement -> LPAREN . statement_list RPAREN
+    (8) statement_list -> . statement
+    (9) statement_list -> . statement_list statement
+    (2) statement -> . function_call
+    (3) statement -> . compound_statement
+    (4) statement -> . function_declaration
+    (5) statement -> . assign_statement
+    (6) statement -> . if_statement
+    (7) statement -> . cycle_statement
+    (18) function_call -> . empty
+    (10) compound_statement -> . LPAREN RPAREN
+    (11) compound_statement -> . LPAREN statement_list RPAREN
+    (19) function_declaration -> . DEF ID LPAREN parameters RPAREN compound_statement
+    (12) assign_statement -> . var_declaration
+    (13) assign_statement -> . var_assign
+    (20) if_statement -> . empty
+    (17) cycle_statement -> . FOR LPAREN NUMERO RPAREN
+    (40) empty -> .
+    (21) var_declaration -> . type ID
+    (22) var_assign -> . ID ASSIGN exp
+    (23) type -> . INT
+    (24) type -> . FLOAT
+    (25) type -> . BOOL
+    (26) type -> . STRING
+
+  ! shift/reduce conflict for RPAREN resolved as shift
+  ! shift/reduce conflict for LPAREN resolved as shift
+  ! shift/reduce conflict for DEF resolved as shift
+  ! shift/reduce conflict for FOR resolved as shift
+  ! shift/reduce conflict for ID resolved as shift
+  ! shift/reduce conflict for INT resolved as shift
+  ! shift/reduce conflict for FLOAT resolved as shift
+  ! shift/reduce conflict for BOOL resolved as shift
+  ! shift/reduce conflict for STRING resolved as shift
+    RPAREN          shift and go to state 21
+    LPAREN          shift and go to state 10
+    DEF             shift and go to state 11
+    FOR             shift and go to state 15
+    ID              shift and go to state 12
+    INT             shift and go to state 17
+    FLOAT           shift and go to state 18
+    BOOL            shift and go to state 19
+    STRING          shift and go to state 20
+
+  ! RPAREN          [ reduce using rule 40 (empty -> .) ]
+  ! LPAREN          [ reduce using rule 40 (empty -> .) ]
+  ! DEF             [ reduce using rule 40 (empty -> .) ]
+  ! FOR             [ reduce using rule 40 (empty -> .) ]
+  ! ID              [ reduce using rule 40 (empty -> .) ]
+  ! INT             [ reduce using rule 40 (empty -> .) ]
+  ! FLOAT           [ reduce using rule 40 (empty -> .) ]
+  ! BOOL            [ reduce using rule 40 (empty -> .) ]
+  ! STRING          [ reduce using rule 40 (empty -> .) ]
+
+    statement_list                 shift and go to state 22
+    statement                      shift and go to state 23
+    function_call                  shift and go to state 3
+    compound_statement             shift and go to state 4
+    function_declaration           shift and go to state 5
+    assign_statement               shift and go to state 6
+    if_statement                   shift and go to state 7
+    cycle_statement                shift and go to state 8
+    empty                          shift and go to state 9
+    var_declaration                shift and go to state 13
+    var_assign                     shift and go to state 14
+    type                           shift and go to state 16
+
+state 11
+
+    (19) function_declaration -> DEF . ID LPAREN parameters RPAREN compound_statement
+
+    ID              shift and go to state 24
+
+
+state 12
+
+    (22) var_assign -> ID . ASSIGN exp
+
+    ASSIGN          shift and go to state 25
+
+
+state 13
+
+    (12) assign_statement -> var_declaration .
+
+    $end            reduce using rule 12 (assign_statement -> var_declaration .)
+    RPAREN          reduce using rule 12 (assign_statement -> var_declaration .)
+    LPAREN          reduce using rule 12 (assign_statement -> var_declaration .)
+    DEF             reduce using rule 12 (assign_statement -> var_declaration .)
+    FOR             reduce using rule 12 (assign_statement -> var_declaration .)
+    ID              reduce using rule 12 (assign_statement -> var_declaration .)
+    INT             reduce using rule 12 (assign_statement -> var_declaration .)
+    FLOAT           reduce using rule 12 (assign_statement -> var_declaration .)
+    BOOL            reduce using rule 12 (assign_statement -> var_declaration .)
+    STRING          reduce using rule 12 (assign_statement -> var_declaration .)
+
+
+state 14
+
+    (13) assign_statement -> var_assign .
+
+    $end            reduce using rule 13 (assign_statement -> var_assign .)
+    RPAREN          reduce using rule 13 (assign_statement -> var_assign .)
+    LPAREN          reduce using rule 13 (assign_statement -> var_assign .)
+    DEF             reduce using rule 13 (assign_statement -> var_assign .)
+    FOR             reduce using rule 13 (assign_statement -> var_assign .)
+    ID              reduce using rule 13 (assign_statement -> var_assign .)
+    INT             reduce using rule 13 (assign_statement -> var_assign .)
+    FLOAT           reduce using rule 13 (assign_statement -> var_assign .)
+    BOOL            reduce using rule 13 (assign_statement -> var_assign .)
+    STRING          reduce using rule 13 (assign_statement -> var_assign .)
+
+
+state 15
+
+    (17) cycle_statement -> FOR . LPAREN NUMERO RPAREN
+
+    LPAREN          shift and go to state 26
+
+
+state 16
+
+    (21) var_declaration -> type . ID
+
+    ID              shift and go to state 27
+
+
+state 17
+
+    (23) type -> INT .
+
+    ID              reduce using rule 23 (type -> INT .)
+
+
+state 18
+
+    (24) type -> FLOAT .
+
+    ID              reduce using rule 24 (type -> FLOAT .)
+
+
+state 19
+
+    (25) type -> BOOL .
+
+    ID              reduce using rule 25 (type -> BOOL .)
+
+
+state 20
+
+    (26) type -> STRING .
+
+    ID              reduce using rule 26 (type -> STRING .)
+
+
+state 21
+
+    (10) compound_statement -> LPAREN RPAREN .
+
+    $end            reduce using rule 10 (compound_statement -> LPAREN RPAREN .)
+    RPAREN          reduce using rule 10 (compound_statement -> LPAREN RPAREN .)
+    LPAREN          reduce using rule 10 (compound_statement -> LPAREN RPAREN .)
+    DEF             reduce using rule 10 (compound_statement -> LPAREN RPAREN .)
+    FOR             reduce using rule 10 (compound_statement -> LPAREN RPAREN .)
+    ID              reduce using rule 10 (compound_statement -> LPAREN RPAREN .)
+    INT             reduce using rule 10 (compound_statement -> LPAREN RPAREN .)
+    FLOAT           reduce using rule 10 (compound_statement -> LPAREN RPAREN .)
+    BOOL            reduce using rule 10 (compound_statement -> LPAREN RPAREN .)
+    STRING          reduce using rule 10 (compound_statement -> LPAREN RPAREN .)
+
+
+state 22
+
+    (11) compound_statement -> LPAREN statement_list . RPAREN
+    (9) statement_list -> statement_list . statement
+    (2) statement -> . function_call
+    (3) statement -> . compound_statement
+    (4) statement -> . function_declaration
+    (5) statement -> . assign_statement
+    (6) statement -> . if_statement
+    (7) statement -> . cycle_statement
+    (18) function_call -> . empty
+    (10) compound_statement -> . LPAREN RPAREN
+    (11) compound_statement -> . LPAREN statement_list RPAREN
+    (19) function_declaration -> . DEF ID LPAREN parameters RPAREN compound_statement
+    (12) assign_statement -> . var_declaration
+    (13) assign_statement -> . var_assign
+    (20) if_statement -> . empty
+    (17) cycle_statement -> . FOR LPAREN NUMERO RPAREN
+    (40) empty -> .
+    (21) var_declaration -> . type ID
+    (22) var_assign -> . ID ASSIGN exp
+    (23) type -> . INT
+    (24) type -> . FLOAT
+    (25) type -> . BOOL
+    (26) type -> . STRING
+
+  ! shift/reduce conflict for RPAREN resolved as shift
+  ! shift/reduce conflict for LPAREN resolved as shift
+  ! shift/reduce conflict for DEF resolved as shift
+  ! shift/reduce conflict for FOR resolved as shift
+  ! shift/reduce conflict for ID resolved as shift
+  ! shift/reduce conflict for INT resolved as shift
+  ! shift/reduce conflict for FLOAT resolved as shift
+  ! shift/reduce conflict for BOOL resolved as shift
+  ! shift/reduce conflict for STRING resolved as shift
+    RPAREN          shift and go to state 28
+    LPAREN          shift and go to state 10
+    DEF             shift and go to state 11
+    FOR             shift and go to state 15
+    ID              shift and go to state 12
+    INT             shift and go to state 17
+    FLOAT           shift and go to state 18
+    BOOL            shift and go to state 19
+    STRING          shift and go to state 20
+
+  ! RPAREN          [ reduce using rule 40 (empty -> .) ]
+  ! LPAREN          [ reduce using rule 40 (empty -> .) ]
+  ! DEF             [ reduce using rule 40 (empty -> .) ]
+  ! FOR             [ reduce using rule 40 (empty -> .) ]
+  ! ID              [ reduce using rule 40 (empty -> .) ]
+  ! INT             [ reduce using rule 40 (empty -> .) ]
+  ! FLOAT           [ reduce using rule 40 (empty -> .) ]
+  ! BOOL            [ reduce using rule 40 (empty -> .) ]
+  ! STRING          [ reduce using rule 40 (empty -> .) ]
+
+    statement                      shift and go to state 29
+    function_call                  shift and go to state 3
+    compound_statement             shift and go to state 4
+    function_declaration           shift and go to state 5
+    assign_statement               shift and go to state 6
+    if_statement                   shift and go to state 7
+    cycle_statement                shift and go to state 8
+    empty                          shift and go to state 9
+    var_declaration                shift and go to state 13
+    var_assign                     shift and go to state 14
+    type                           shift and go to state 16
+
+state 23
+
+    (8) statement_list -> statement .
+
+    RPAREN          reduce using rule 8 (statement_list -> statement .)
+    LPAREN          reduce using rule 8 (statement_list -> statement .)
+    DEF             reduce using rule 8 (statement_list -> statement .)
+    FOR             reduce using rule 8 (statement_list -> statement .)
+    ID              reduce using rule 8 (statement_list -> statement .)
+    INT             reduce using rule 8 (statement_list -> statement .)
+    FLOAT           reduce using rule 8 (statement_list -> statement .)
+    BOOL            reduce using rule 8 (statement_list -> statement .)
+    STRING          reduce using rule 8 (statement_list -> statement .)
+
+
+state 24
+
+    (19) function_declaration -> DEF ID . LPAREN parameters RPAREN compound_statement
+
+    LPAREN          shift and go to state 30
+
+
+state 25
+
+    (22) var_assign -> ID ASSIGN . exp
+    (38) exp -> . INT
+    (39) exp -> . FLOAT
+
+    INT             shift and go to state 32
+    FLOAT           shift and go to state 33
+
+    exp                            shift and go to state 31
+
+state 26
+
+    (17) cycle_statement -> FOR LPAREN . NUMERO RPAREN
+
+    NUMERO          shift and go to state 34
+
+
+state 27
+
+    (21) var_declaration -> type ID .
+
+    $end            reduce using rule 21 (var_declaration -> type ID .)
+    RPAREN          reduce using rule 21 (var_declaration -> type ID .)
+    LPAREN          reduce using rule 21 (var_declaration -> type ID .)
+    DEF             reduce using rule 21 (var_declaration -> type ID .)
+    FOR             reduce using rule 21 (var_declaration -> type ID .)
+    ID              reduce using rule 21 (var_declaration -> type ID .)
+    INT             reduce using rule 21 (var_declaration -> type ID .)
+    FLOAT           reduce using rule 21 (var_declaration -> type ID .)
+    BOOL            reduce using rule 21 (var_declaration -> type ID .)
+    STRING          reduce using rule 21 (var_declaration -> type ID .)
+    COMA            reduce using rule 21 (var_declaration -> type ID .)
+
+
+state 28
+
+    (11) compound_statement -> LPAREN statement_list RPAREN .
+
+    $end            reduce using rule 11 (compound_statement -> LPAREN statement_list RPAREN .)
+    RPAREN          reduce using rule 11 (compound_statement -> LPAREN statement_list RPAREN .)
+    LPAREN          reduce using rule 11 (compound_statement -> LPAREN statement_list RPAREN .)
+    DEF             reduce using rule 11 (compound_statement -> LPAREN statement_list RPAREN .)
+    FOR             reduce using rule 11 (compound_statement -> LPAREN statement_list RPAREN .)
+    ID              reduce using rule 11 (compound_statement -> LPAREN statement_list RPAREN .)
+    INT             reduce using rule 11 (compound_statement -> LPAREN statement_list RPAREN .)
+    FLOAT           reduce using rule 11 (compound_statement -> LPAREN statement_list RPAREN .)
+    BOOL            reduce using rule 11 (compound_statement -> LPAREN statement_list RPAREN .)
+    STRING          reduce using rule 11 (compound_statement -> LPAREN statement_list RPAREN .)
+
+
+state 29
+
+    (9) statement_list -> statement_list statement .
+
+    RPAREN          reduce using rule 9 (statement_list -> statement_list statement .)
+    LPAREN          reduce using rule 9 (statement_list -> statement_list statement .)
+    DEF             reduce using rule 9 (statement_list -> statement_list statement .)
+    FOR             reduce using rule 9 (statement_list -> statement_list statement .)
+    ID              reduce using rule 9 (statement_list -> statement_list statement .)
+    INT             reduce using rule 9 (statement_list -> statement_list statement .)
+    FLOAT           reduce using rule 9 (statement_list -> statement_list statement .)
+    BOOL            reduce using rule 9 (statement_list -> statement_list statement .)
+    STRING          reduce using rule 9 (statement_list -> statement_list statement .)
+
+
+state 30
+
+    (19) function_declaration -> DEF ID LPAREN . parameters RPAREN compound_statement
+    (14) parameters -> . empty
+    (15) parameters -> . var_declaration
+    (16) parameters -> . parameters COMA var_declaration
+    (40) empty -> .
+    (21) var_declaration -> . type ID
+    (23) type -> . INT
+    (24) type -> . FLOAT
+    (25) type -> . BOOL
+    (26) type -> . STRING
+
+    RPAREN          reduce using rule 40 (empty -> .)
+    COMA            reduce using rule 40 (empty -> .)
+    INT             shift and go to state 17
+    FLOAT           shift and go to state 18
+    BOOL            shift and go to state 19
+    STRING          shift and go to state 20
+
+    parameters                     shift and go to state 35
+    empty                          shift and go to state 36
+    var_declaration                shift and go to state 37
+    type                           shift and go to state 16
+
+state 31
+
+    (22) var_assign -> ID ASSIGN exp .
+
+    $end            reduce using rule 22 (var_assign -> ID ASSIGN exp .)
+    RPAREN          reduce using rule 22 (var_assign -> ID ASSIGN exp .)
+    LPAREN          reduce using rule 22 (var_assign -> ID ASSIGN exp .)
+    DEF             reduce using rule 22 (var_assign -> ID ASSIGN exp .)
+    FOR             reduce using rule 22 (var_assign -> ID ASSIGN exp .)
+    ID              reduce using rule 22 (var_assign -> ID ASSIGN exp .)
+    INT             reduce using rule 22 (var_assign -> ID ASSIGN exp .)
+    FLOAT           reduce using rule 22 (var_assign -> ID ASSIGN exp .)
+    BOOL            reduce using rule 22 (var_assign -> ID ASSIGN exp .)
+    STRING          reduce using rule 22 (var_assign -> ID ASSIGN exp .)
+
+
+state 32
+
+    (38) exp -> INT .
+
+    $end            reduce using rule 38 (exp -> INT .)
+    RPAREN          reduce using rule 38 (exp -> INT .)
+    LPAREN          reduce using rule 38 (exp -> INT .)
+    DEF             reduce using rule 38 (exp -> INT .)
+    FOR             reduce using rule 38 (exp -> INT .)
+    ID              reduce using rule 38 (exp -> INT .)
+    INT             reduce using rule 38 (exp -> INT .)
+    FLOAT           reduce using rule 38 (exp -> INT .)
+    BOOL            reduce using rule 38 (exp -> INT .)
+    STRING          reduce using rule 38 (exp -> INT .)
+
+
+state 33
+
+    (39) exp -> FLOAT .
+
+    $end            reduce using rule 39 (exp -> FLOAT .)
+    RPAREN          reduce using rule 39 (exp -> FLOAT .)
+    LPAREN          reduce using rule 39 (exp -> FLOAT .)
+    DEF             reduce using rule 39 (exp -> FLOAT .)
+    FOR             reduce using rule 39 (exp -> FLOAT .)
+    ID              reduce using rule 39 (exp -> FLOAT .)
+    INT             reduce using rule 39 (exp -> FLOAT .)
+    FLOAT           reduce using rule 39 (exp -> FLOAT .)
+    BOOL            reduce using rule 39 (exp -> FLOAT .)
+    STRING          reduce using rule 39 (exp -> FLOAT .)
+
+
+state 34
+
+    (17) cycle_statement -> FOR LPAREN NUMERO . RPAREN
+
+    RPAREN          shift and go to state 38
+
+
+state 35
+
+    (19) function_declaration -> DEF ID LPAREN parameters . RPAREN compound_statement
+    (16) parameters -> parameters . COMA var_declaration
+
+    RPAREN          shift and go to state 39
+    COMA            shift and go to state 40
+
+
+state 36
+
+    (14) parameters -> empty .
+
+    RPAREN          reduce using rule 14 (parameters -> empty .)
+    COMA            reduce using rule 14 (parameters -> empty .)
+
+
+state 37
+
+    (15) parameters -> var_declaration .
+
+    RPAREN          reduce using rule 15 (parameters -> var_declaration .)
+    COMA            reduce using rule 15 (parameters -> var_declaration .)
+
+
+state 38
+
+    (17) cycle_statement -> FOR LPAREN NUMERO RPAREN .
+
+    $end            reduce using rule 17 (cycle_statement -> FOR LPAREN NUMERO RPAREN .)
+    RPAREN          reduce using rule 17 (cycle_statement -> FOR LPAREN NUMERO RPAREN .)
+    LPAREN          reduce using rule 17 (cycle_statement -> FOR LPAREN NUMERO RPAREN .)
+    DEF             reduce using rule 17 (cycle_statement -> FOR LPAREN NUMERO RPAREN .)
+    FOR             reduce using rule 17 (cycle_statement -> FOR LPAREN NUMERO RPAREN .)
+    ID              reduce using rule 17 (cycle_statement -> FOR LPAREN NUMERO RPAREN .)
+    INT             reduce using rule 17 (cycle_statement -> FOR LPAREN NUMERO RPAREN .)
+    FLOAT           reduce using rule 17 (cycle_statement -> FOR LPAREN NUMERO RPAREN .)
+    BOOL            reduce using rule 17 (cycle_statement -> FOR LPAREN NUMERO RPAREN .)
+    STRING          reduce using rule 17 (cycle_statement -> FOR LPAREN NUMERO RPAREN .)
+
+
+state 39
+
+    (19) function_declaration -> DEF ID LPAREN parameters RPAREN . compound_statement
+    (10) compound_statement -> . LPAREN RPAREN
+    (11) compound_statement -> . LPAREN statement_list RPAREN
+
+    LPAREN          shift and go to state 10
+
+    compound_statement             shift and go to state 41
+
+state 40
+
+    (16) parameters -> parameters COMA . var_declaration
+    (21) var_declaration -> . type ID
+    (23) type -> . INT
+    (24) type -> . FLOAT
+    (25) type -> . BOOL
+    (26) type -> . STRING
+
+    INT             shift and go to state 17
+    FLOAT           shift and go to state 18
+    BOOL            shift and go to state 19
+    STRING          shift and go to state 20
+
+    var_declaration                shift and go to state 42
+    type                           shift and go to state 16
+
+state 41
+
+    (19) function_declaration -> DEF ID LPAREN parameters RPAREN compound_statement .
+
+    $end            reduce using rule 19 (function_declaration -> DEF ID LPAREN parameters RPAREN compound_statement .)
+    RPAREN          reduce using rule 19 (function_declaration -> DEF ID LPAREN parameters RPAREN compound_statement .)
+    LPAREN          reduce using rule 19 (function_declaration -> DEF ID LPAREN parameters RPAREN compound_statement .)
+    DEF             reduce using rule 19 (function_declaration -> DEF ID LPAREN parameters RPAREN compound_statement .)
+    FOR             reduce using rule 19 (function_declaration -> DEF ID LPAREN parameters RPAREN compound_statement .)
+    ID              reduce using rule 19 (function_declaration -> DEF ID LPAREN parameters RPAREN compound_statement .)
+    INT             reduce using rule 19 (function_declaration -> DEF ID LPAREN parameters RPAREN compound_statement .)
+    FLOAT           reduce using rule 19 (function_declaration -> DEF ID LPAREN parameters RPAREN compound_statement .)
+    BOOL            reduce using rule 19 (function_declaration -> DEF ID LPAREN parameters RPAREN compound_statement .)
+    STRING          reduce using rule 19 (function_declaration -> DEF ID LPAREN parameters RPAREN compound_statement .)
+
+
+state 42
+
+    (16) parameters -> parameters COMA var_declaration .
+
+    RPAREN          reduce using rule 16 (parameters -> parameters COMA var_declaration .)
+    COMA            reduce using rule 16 (parameters -> parameters COMA var_declaration .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for RPAREN in state 10 resolved as shift
+WARNING: shift/reduce conflict for LPAREN in state 10 resolved as shift
+WARNING: shift/reduce conflict for DEF in state 10 resolved as shift
+WARNING: shift/reduce conflict for FOR in state 10 resolved as shift
+WARNING: shift/reduce conflict for ID in state 10 resolved as shift
+WARNING: shift/reduce conflict for INT in state 10 resolved as shift
+WARNING: shift/reduce conflict for FLOAT in state 10 resolved as shift
+WARNING: shift/reduce conflict for BOOL in state 10 resolved as shift
+WARNING: shift/reduce conflict for STRING in state 10 resolved as shift
+WARNING: shift/reduce conflict for RPAREN in state 22 resolved as shift
+WARNING: shift/reduce conflict for LPAREN in state 22 resolved as shift
+WARNING: shift/reduce conflict for DEF in state 22 resolved as shift
+WARNING: shift/reduce conflict for FOR in state 22 resolved as shift
+WARNING: shift/reduce conflict for ID in state 22 resolved as shift
+WARNING: shift/reduce conflict for INT in state 22 resolved as shift
+WARNING: shift/reduce conflict for FLOAT in state 22 resolved as shift
+WARNING: shift/reduce conflict for BOOL in state 22 resolved as shift
+WARNING: shift/reduce conflict for STRING in state 22 resolved as shift
+WARNING: reduce/reduce conflict in state 9 resolved using rule (function_call -> empty)
+WARNING: rejected rule (if_statement -> empty) in state 9
+WARNING: Rule (if_statement -> empty) is never reduced
