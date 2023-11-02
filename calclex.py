@@ -154,21 +154,28 @@ def p_bloque_compuesto(p):
         p[0] = {'name': p_bloque_compuesto, p_declaracion_variable: p[1]}
 
 def p_declaracion_funcion(p):
-    '''declaracion_funcion : TEXT parametros LBRACKET bloque_compuesto retorno RBRACKET'''
-    '''declaration : ID EQUALS ID SEMICOLON'''
-    print(f"Variable declarada: {p[1]} = {p[3]}")
+    '''declaracion_funcion : TEXT LPAREN parametros RPAREN LBRACKET bloque_compuesto retorno RBRACKET
+                            | TEXT LPAREN parametros RPAREN LBRACKET bloque_compuesto RBRACKET '''
 
 def p_parametros(p):
-    '''declaracion_funcion : LPAREN INT TEXT COMA INT TEXT RPAREN 
-                           | LPAREN STRING TEXT COMA STRING TEXT RPAREN'''
+    '''parametros :  list_parametros'''
+
+def p_list_parametros(p):
+    '''list_parametros : type TEXT COMA list_parametros
+                        | empty'''
 
 
 def p_retorno(p):
-    '''retorno : RETURN INT
-                | RETURN STRING
-                | RETURN BOOL
-                | RETURN FLOAT '''
+    '''retorno : RETURN TEXT '''
 #return 0
+
+def p_type(p):
+    ''' type : INT 
+            | FLOAT
+            | BOOL
+            | STRING'''
+    p[0] = p[1]
+
 
 def p_llamada_funcion(p):
     'llamada_funcion : TEXT'
