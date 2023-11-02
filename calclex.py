@@ -12,6 +12,7 @@ import ply.yacc as yacc
 #for symbol_table
 symbol_table = {}
 reserved = 0
+
 # List of token names.   This is always required
 tokens = (
     #Control - Frases 
@@ -30,8 +31,6 @@ tokens = (
     'STRING', #'CIRIATO',
     'ID', #'VARIABLE_ID',
 
-    
-   
     #IDs
     'TEXT',
     'NUMERO', 
