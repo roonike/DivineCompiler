@@ -9,7 +9,9 @@ import sys
 import ply.lex as lex
 import ply.yacc as yacc
 
-
+#for symbol_table
+symbol_table = {}
+reserved = 0
 
 # List of token names.   This is always required
 tokens = (
@@ -28,8 +30,6 @@ tokens = (
     'STRING', #'CIRIATO',
     'ID', #'VARIABLE_ID',
 
-    
-   
     #IDs
     'TEXT',
     'NUMERO', 
@@ -52,7 +52,7 @@ tokens = (
     'RBRACKET',#
     'LBRACKET',#
     'SINGLEQUOTES',
-    'DOUBLEQUOTES' ,
+    'DOUBLEQUOTES',
     'TRUE', #'DANTE',
     'FALSE', #'VERGIL',
     'RETURN', # 'COSA FATTA,CAPPO HA' 
@@ -244,6 +244,88 @@ while True:
     if not tok: break      # No more input
     print(tok)
 
+#Symbol table
+def create_variable(name, data_type):
+    global reserved
+    if name in symbol_table:
+        return False, 0
+    else:
+        address = reserved
+        symbol_table[name] = (name, data_type, address)
+        reserve_space(data_type)
+        return True, reserved - address
+    
+#Symbol table
+def reserve_space(data_type):
+    global reserved
+    if data_type == "char":
+        reserved += 1
+    elif data_type == "int":
+        reserved += 4
+    elif data_type == "float":
+        reserved += 4
+    elif data_type == "string":
+        reserved += 8
+    elif data_type == "bool":
+        reserved += 1
+
 parser = yacc.yacc()
 parser.parse(data)
 # ----------------------------------------------------
+'''
+EJEMPLOS
+1)
+italia = 0
+for 5
+	italia = italia + 1
+return italia
+
+--------------------------------------------------------------
+italia beatricce 0
+lasciate ogne i speranza voi chintrate 5 
+	italia = italia alichino 1
+cosa fatta cappo ha italia
+
+2)
+roma = 476
+constantinopla = 1453
+constantino = 0
+
+if constantinopla > italia
+	constantino = constantinopla - roma
+return constantino
+
+---------------------------------------------------------------
+roma beatricce 476
+constantinopla beatricce 1453
+constantino beatricce 0
+
+inferno constantinopla > italia
+	constantino beatricce constantinopla barbariccia roma
+cosa fatta cappo ha constantino
+
+3)
+
+def ciao mondo()
+viaggiatore = true
+ciao mondo = ""
+if viaggiatore = true
+	ciao mondo = "ciao mondo"
+if viaggiatore = false
+	ciao mondo = "arrivederci"
+return ciao mondo
+
+----------------------------------------------------------------
+def ciao mondo cagnazzo calcabrina
+viggiatore beatricce dante
+ciao mondo beatricce cherubinos cherubinos
+inferno viaggiatore beatricce dante
+	ciao mondo beatricce cherubinos ciao mondo cherubinos
+inferno viaggiatore beatricce vergil
+	ciao mondo beatricce cherubinos arriverci cherubinos
+cosa fatta cappo ha ciao mondo
+
+
+
+
+'''
