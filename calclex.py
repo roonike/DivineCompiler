@@ -149,7 +149,7 @@ def p_statement_list(p):
                         
 def p_compound_statement(p):
     '''compound_statement : LPAREN RPAREN
-                            | LPAREN statement_list RPAREN'''
+                            | statement_list'''
 
 def p_assign_statement(p):
     ''' assign_statement : var_declaration 
@@ -184,7 +184,8 @@ def p_var_declaration(p):
 
 #assignacion
 def p_var_assign(p):
-    '''var_assign : ID ASSIGN exp'''
+    '''var_assign : ID ASSIGN exp
+        | ID ASSIGN operador_binario'''
 
 def p_type(p):
     ''' type : INT 
@@ -210,8 +211,9 @@ def p_operador_binario(p):
            | exp OR exp'''
 
 def p_exp(p):
-    '''exp : INT 
-            | FLOAT'''
+    '''exp : NUMERO 
+            | REAL
+            | ID'''
 
 
 def p_empty(p):
@@ -230,9 +232,7 @@ def p_error(p):
 lexer = lex.lex()
 
 # Test it out
-data = '''italia BEATTRICE 0 LASCIATE_OGNE_I_SPERANZA_VOI_CHINTRATE CAGNAZZO 5 CALCABRINA
-            italia BEATTRICE ALICHINO 1
-            COSA_FATTA_CAPPO_HA italia'''
+data = '''italia BEATTRICE 0 LASCIATE_OGNE_I_SPERANZA_VOI_CHINTRATE CALCABRINA 5 CAGNAZZO italiados BEATTRICE italiatres ALICHINO 1'''
             
 
 # Give the lexer some input

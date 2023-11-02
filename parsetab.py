@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'AND ASSIGN BOOL COMA DEF DIVIDE DOUBLEQUOTES ELSE FALSE FLOAT FOR ID IF IGUALIGUAL INT LBRACKET LPAREN MAYORQUE MENORQUE MINUS NUMERO OR PLUS RBRACKET REAL RETURN RPAREN SINGLEQUOTES STRING TEXT TIMES TRUE WHILEprogram : statementstatement : function_call\n                    | compound_statement\n                    | function_declaration\n                    | assign_statement\n                    | if_statement\n                    | cycle_statementstatement_list : statement\n                        | statement_list statementcompound_statement : LPAREN RPAREN\n                            | LPAREN statement_list RPAREN assign_statement : var_declaration \n                        | var_assignparameters : empty\n                    | var_declaration\n                    | parameters COMA var_declarationcycle_statement : FOR LPAREN NUMERO RPARENfunction_call : emptyfunction_declaration : DEF ID LPAREN parameters RPAREN compound_statementif_statement : emptyvar_declaration : type ID var_assign : ID ASSIGN exp type : INT \n            | FLOAT\n            | BOOL\n            | STRINGretorno : RETURN ID llamada_funcion : TEXToperador_binario : exp TIMES exp\n           | exp PLUS exp\n           | exp DIVIDE exp\n           | exp MINUS exp\n           | exp IGUALIGUAL exp\n           | exp MENORQUE exp\n           | exp MAYORQUE exp\n           | exp AND exp\n           | exp OR expexp : INT \n            | FLOATempty :'
+_lr_signature = 'AND ASSIGN BOOL COMA DEF DIVIDE DOUBLEQUOTES ELSE FALSE FLOAT FOR ID IF IGUALIGUAL INT LBRACKET LPAREN MAYORQUE MENORQUE MINUS NUMERO OR PLUS RBRACKET REAL RETURN RPAREN SINGLEQUOTES STRING TEXT TIMES TRUE WHILEprogram : statementstatement : function_call\n                    | compound_statement\n                    | function_declaration\n                    | assign_statement\n                    | if_statement\n                    | cycle_statementstatement_list : statement\n                        | statement_list statementcompound_statement : LPAREN RPAREN\n                            | statement_list assign_statement : var_declaration \n                        | var_assignparameters : empty\n                    | var_declaration\n                    | parameters COMA var_declarationcycle_statement : FOR LPAREN NUMERO RPARENfunction_call : emptyfunction_declaration : DEF ID LPAREN parameters RPAREN compound_statementif_statement : emptyvar_declaration : type ID var_assign : ID ASSIGN exp\n        | ID ASSIGN operador_binario type : INT \n            | FLOAT\n            | BOOL\n            | STRINGretorno : RETURN ID operador_binario : exp TIMES exp\n           | exp PLUS exp\n           | exp DIVIDE exp\n           | exp MINUS exp\n           | exp IGUALIGUAL exp\n           | exp MENORQUE exp\n           | exp MAYORQUE exp\n           | exp AND exp\n           | exp OR expexp : NUMERO \n            | REAL\n            | IDempty :'
     
-_lr_action_items = {'LPAREN':([0,3,4,5,6,7,8,9,10,13,14,15,21,22,23,24,27,28,29,31,32,33,38,39,41,],[10,-2,-3,-4,-5,-6,-7,-18,10,-12,-13,26,-10,10,-8,30,-21,-11,-9,-22,-38,-39,-17,10,-19,]),'DEF':([0,3,4,5,6,7,8,9,10,13,14,21,22,23,27,28,29,31,32,33,38,41,],[11,-2,-3,-4,-5,-6,-7,-18,11,-12,-13,-10,11,-8,-21,-11,-9,-22,-38,-39,-17,-19,]),'FOR':([0,3,4,5,6,7,8,9,10,13,14,21,22,23,27,28,29,31,32,33,38,41,],[15,-2,-3,-4,-5,-6,-7,-18,15,-12,-13,-10,15,-8,-21,-11,-9,-22,-38,-39,-17,-19,]),'$end':([0,1,2,3,4,5,6,7,8,9,13,14,21,27,28,31,32,33,38,41,],[-40,0,-1,-2,-3,-4,-5,-6,-7,-18,-12,-13,-10,-21,-11,-22,-38,-39,-17,-19,]),'ID':([0,3,4,5,6,7,8,9,10,11,13,14,16,17,18,19,20,21,22,23,27,28,29,31,32,33,38,41,],[12,-2,-3,-4,-5,-6,-7,-18,12,24,-12,-13,27,-23,-24,-25,-26,-10,12,-8,-21,-11,-9,-22,-38,-39,-17,-19,]),'INT':([0,3,4,5,6,7,8,9,10,13,14,21,22,23,25,27,28,29,30,31,32,33,38,40,41,],[17,-2,-3,-4,-5,-6,-7,-18,17,-12,-13,-10,17,-8,32,-21,-11,-9,17,-22,-38,-39,-17,17,-19,]),'FLOAT':([0,3,4,5,6,7,8,9,10,13,14,21,22,23,25,27,28,29,30,31,32,33,38,40,41,],[18,-2,-3,-4,-5,-6,-7,-18,18,-12,-13,-10,18,-8,33,-21,-11,-9,18,-22,-38,-39,-17,18,-19,]),'BOOL':([0,3,4,5,6,7,8,9,10,13,14,21,22,23,27,28,29,30,31,32,33,38,40,41,],[19,-2,-3,-4,-5,-6,-7,-18,19,-12,-13,-10,19,-8,-21,-11,-9,19,-22,-38,-39,-17,19,-19,]),'STRING':([0,3,4,5,6,7,8,9,10,13,14,21,22,23,27,28,29,30,31,32,33,38,40,41,],[20,-2,-3,-4,-5,-6,-7,-18,20,-12,-13,-10,20,-8,-21,-11,-9,20,-22,-38,-39,-17,20,-19,]),'RPAREN':([3,4,5,6,7,8,9,10,13,14,21,22,23,27,28,29,30,31,32,33,34,35,36,37,38,41,42,],[-2,-3,-4,-5,-6,-7,-18,21,-12,-13,-10,28,-8,-21,-11,-9,-40,-22,-38,-39,38,39,-14,-15,-17,-19,-16,]),'ASSIGN':([12,],[25,]),'NUMERO':([26,],[34,]),'COMA':([27,30,35,36,37,42,],[-21,-40,40,-14,-15,-16,]),}
+_lr_action_items = {'LPAREN':([0,2,3,4,5,6,7,8,9,11,14,15,16,22,23,24,27,29,30,31,32,33,47,48,50,51,52,53,54,55,56,57,58,59,60,],[10,-8,-2,-3,-4,-5,-6,-7,-18,10,-12,-13,26,-10,-8,28,-21,-40,-22,-23,-38,-39,-17,10,-29,-30,-31,-32,-33,-34,-35,-36,-37,-3,-8,]),'DEF':([0,2,3,4,5,6,7,8,9,11,14,15,22,23,27,29,30,31,32,33,47,48,50,51,52,53,54,55,56,57,58,59,60,],[12,-8,-2,-3,-4,-5,-6,-7,-18,12,-12,-13,-10,-8,-21,-40,-22,-23,-38,-39,-17,12,-29,-30,-31,-32,-33,-34,-35,-36,-37,-3,-8,]),'FOR':([0,2,3,4,5,6,7,8,9,11,14,15,22,23,27,29,30,31,32,33,47,48,50,51,52,53,54,55,56,57,58,59,60,],[16,-8,-2,-3,-4,-5,-6,-7,-18,16,-12,-13,-10,-8,-21,-40,-22,-23,-38,-39,-17,16,-29,-30,-31,-32,-33,-34,-35,-36,-37,-3,-8,]),'$end':([0,1,2,3,4,5,6,7,8,9,11,14,15,22,23,27,29,30,31,32,33,47,48,50,51,52,53,54,55,56,57,58,59,60,],[-41,0,-1,-2,-3,-4,-5,-6,-7,-18,-11,-12,-13,-10,-8,-21,-40,-22,-23,-38,-39,-17,-41,-29,-30,-31,-32,-33,-34,-35,-36,-37,-3,-8,]),'ID':([0,2,3,4,5,6,7,8,9,11,12,14,15,17,18,19,20,21,22,23,25,27,29,30,31,32,33,38,39,40,41,42,43,44,45,46,47,48,50,51,52,53,54,55,56,57,58,59,60,],[13,-8,-2,-3,-4,-5,-6,-7,-18,13,24,-12,-13,27,-24,-25,-26,-27,-10,-8,29,-21,-40,-22,-23,-38,-39,29,29,29,29,29,29,29,29,29,-17,13,-29,-30,-31,-32,-33,-34,-35,-36,-37,-3,-8,]),'INT':([0,2,3,4,5,6,7,8,9,11,14,15,22,23,27,28,29,30,31,32,33,47,48,49,50,51,52,53,54,55,56,57,58,59,60,],[18,-8,-2,-3,-4,-5,-6,-7,-18,18,-12,-13,-10,-8,-21,18,-40,-22,-23,-38,-39,-17,18,18,-29,-30,-31,-32,-33,-34,-35,-36,-37,-3,-8,]),'FLOAT':([0,2,3,4,5,6,7,8,9,11,14,15,22,23,27,28,29,30,31,32,33,47,48,49,50,51,52,53,54,55,56,57,58,59,60,],[19,-8,-2,-3,-4,-5,-6,-7,-18,19,-12,-13,-10,-8,-21,19,-40,-22,-23,-38,-39,-17,19,19,-29,-30,-31,-32,-33,-34,-35,-36,-37,-3,-8,]),'BOOL':([0,2,3,4,5,6,7,8,9,11,14,15,22,23,27,28,29,30,31,32,33,47,48,49,50,51,52,53,54,55,56,57,58,59,60,],[20,-8,-2,-3,-4,-5,-6,-7,-18,20,-12,-13,-10,-8,-21,20,-40,-22,-23,-38,-39,-17,20,20,-29,-30,-31,-32,-33,-34,-35,-36,-37,-3,-8,]),'STRING':([0,2,3,4,5,6,7,8,9,11,14,15,22,23,27,28,29,30,31,32,33,47,48,49,50,51,52,53,54,55,56,57,58,59,60,],[21,-8,-2,-3,-4,-5,-6,-7,-18,21,-12,-13,-10,-8,-21,21,-40,-22,-23,-38,-39,-17,21,21,-29,-30,-31,-32,-33,-34,-35,-36,-37,-3,-8,]),'RPAREN':([10,27,28,34,35,36,37,61,],[22,-21,-41,47,48,-14,-15,-16,]),'ASSIGN':([13,],[25,]),'NUMERO':([25,26,38,39,40,41,42,43,44,45,46,],[32,34,32,32,32,32,32,32,32,32,32,]),'REAL':([25,38,39,40,41,42,43,44,45,46,],[33,33,33,33,33,33,33,33,33,33,]),'COMA':([27,28,35,36,37,61,],[-21,-41,49,-14,-15,-16,]),'TIMES':([29,30,32,33,],[-40,38,-38,-39,]),'PLUS':([29,30,32,33,],[-40,39,-38,-39,]),'DIVIDE':([29,30,32,33,],[-40,40,-38,-39,]),'MINUS':([29,30,32,33,],[-40,41,-38,-39,]),'IGUALIGUAL':([29,30,32,33,],[-40,42,-38,-39,]),'MENORQUE':([29,30,32,33,],[-40,43,-38,-39,]),'MAYORQUE':([29,30,32,33,],[-40,44,-38,-39,]),'AND':([29,30,32,33,],[-40,45,-38,-39,]),'OR':([29,30,32,33,],[-40,46,-38,-39,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,],[1,]),'statement':([0,10,22,],[2,23,29,]),'function_call':([0,10,22,],[3,3,3,]),'compound_statement':([0,10,22,39,],[4,4,4,41,]),'function_declaration':([0,10,22,],[5,5,5,]),'assign_statement':([0,10,22,],[6,6,6,]),'if_statement':([0,10,22,],[7,7,7,]),'cycle_statement':([0,10,22,],[8,8,8,]),'empty':([0,10,22,30,],[9,9,9,36,]),'var_declaration':([0,10,22,30,40,],[13,13,13,37,42,]),'var_assign':([0,10,22,],[14,14,14,]),'type':([0,10,22,30,40,],[16,16,16,16,16,]),'statement_list':([10,],[22,]),'exp':([25,],[31,]),'parameters':([30,],[35,]),}
+_lr_goto_items = {'program':([0,],[1,]),'statement':([0,11,48,],[2,23,60,]),'function_call':([0,11,48,],[3,3,3,]),'compound_statement':([0,11,48,],[4,4,59,]),'function_declaration':([0,11,48,],[5,5,5,]),'assign_statement':([0,11,48,],[6,6,6,]),'if_statement':([0,11,48,],[7,7,7,]),'cycle_statement':([0,11,48,],[8,8,8,]),'empty':([0,11,28,48,],[9,9,36,9,]),'statement_list':([0,11,48,],[11,11,11,]),'var_declaration':([0,11,28,48,49,],[14,14,37,14,61,]),'var_assign':([0,11,48,],[15,15,15,]),'type':([0,11,28,48,49,],[17,17,17,17,17,]),'exp':([25,38,39,40,41,42,43,44,45,46,],[30,50,51,52,53,54,55,56,57,58,]),'operador_binario':([25,],[31,]),'parameters':([28,],[35,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -37,7 +37,7 @@ _lr_productions = [
   ('statement_list -> statement','statement_list',1,'p_statement_list','calclex.py',147),
   ('statement_list -> statement_list statement','statement_list',2,'p_statement_list','calclex.py',148),
   ('compound_statement -> LPAREN RPAREN','compound_statement',2,'p_compound_statement','calclex.py',151),
-  ('compound_statement -> LPAREN statement_list RPAREN','compound_statement',3,'p_compound_statement','calclex.py',152),
+  ('compound_statement -> statement_list','compound_statement',1,'p_compound_statement','calclex.py',152),
   ('assign_statement -> var_declaration','assign_statement',1,'p_assign_statement','calclex.py',155),
   ('assign_statement -> var_assign','assign_statement',1,'p_assign_statement','calclex.py',156),
   ('parameters -> empty','parameters',1,'p_parameters','calclex.py',159),
@@ -49,22 +49,23 @@ _lr_productions = [
   ('if_statement -> empty','if_statement',1,'p_if_statement','calclex.py',178),
   ('var_declaration -> type ID','var_declaration',2,'p_var_declaration','calclex.py',183),
   ('var_assign -> ID ASSIGN exp','var_assign',3,'p_var_assign','calclex.py',187),
-  ('type -> INT','type',1,'p_type','calclex.py',190),
-  ('type -> FLOAT','type',1,'p_type','calclex.py',191),
-  ('type -> BOOL','type',1,'p_type','calclex.py',192),
-  ('type -> STRING','type',1,'p_type','calclex.py',193),
-  ('retorno -> RETURN ID','retorno',2,'p_retorno','calclex.py',199),
-  ('llamada_funcion -> TEXT','llamada_funcion',1,'p_llamada_funcion','calclex.py',202),
-  ('operador_binario -> exp TIMES exp','operador_binario',3,'p_operador_binario','calclex.py',207),
-  ('operador_binario -> exp PLUS exp','operador_binario',3,'p_operador_binario','calclex.py',208),
-  ('operador_binario -> exp DIVIDE exp','operador_binario',3,'p_operador_binario','calclex.py',209),
-  ('operador_binario -> exp MINUS exp','operador_binario',3,'p_operador_binario','calclex.py',210),
-  ('operador_binario -> exp IGUALIGUAL exp','operador_binario',3,'p_operador_binario','calclex.py',211),
-  ('operador_binario -> exp MENORQUE exp','operador_binario',3,'p_operador_binario','calclex.py',212),
-  ('operador_binario -> exp MAYORQUE exp','operador_binario',3,'p_operador_binario','calclex.py',213),
-  ('operador_binario -> exp AND exp','operador_binario',3,'p_operador_binario','calclex.py',214),
-  ('operador_binario -> exp OR exp','operador_binario',3,'p_operador_binario','calclex.py',215),
-  ('exp -> INT','exp',1,'p_exp','calclex.py',218),
-  ('exp -> FLOAT','exp',1,'p_exp','calclex.py',219),
-  ('empty -> <empty>','empty',0,'p_empty','calclex.py',223),
+  ('var_assign -> ID ASSIGN operador_binario','var_assign',3,'p_var_assign','calclex.py',188),
+  ('type -> INT','type',1,'p_type','calclex.py',191),
+  ('type -> FLOAT','type',1,'p_type','calclex.py',192),
+  ('type -> BOOL','type',1,'p_type','calclex.py',193),
+  ('type -> STRING','type',1,'p_type','calclex.py',194),
+  ('retorno -> RETURN ID','retorno',2,'p_retorno','calclex.py',200),
+  ('operador_binario -> exp TIMES exp','operador_binario',3,'p_operador_binario','calclex.py',203),
+  ('operador_binario -> exp PLUS exp','operador_binario',3,'p_operador_binario','calclex.py',204),
+  ('operador_binario -> exp DIVIDE exp','operador_binario',3,'p_operador_binario','calclex.py',205),
+  ('operador_binario -> exp MINUS exp','operador_binario',3,'p_operador_binario','calclex.py',206),
+  ('operador_binario -> exp IGUALIGUAL exp','operador_binario',3,'p_operador_binario','calclex.py',207),
+  ('operador_binario -> exp MENORQUE exp','operador_binario',3,'p_operador_binario','calclex.py',208),
+  ('operador_binario -> exp MAYORQUE exp','operador_binario',3,'p_operador_binario','calclex.py',209),
+  ('operador_binario -> exp AND exp','operador_binario',3,'p_operador_binario','calclex.py',210),
+  ('operador_binario -> exp OR exp','operador_binario',3,'p_operador_binario','calclex.py',211),
+  ('exp -> NUMERO','exp',1,'p_exp','calclex.py',214),
+  ('exp -> REAL','exp',1,'p_exp','calclex.py',215),
+  ('exp -> ID','exp',1,'p_exp','calclex.py',216),
+  ('empty -> <empty>','empty',0,'p_empty','calclex.py',220),
 ]
