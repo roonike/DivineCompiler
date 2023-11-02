@@ -79,7 +79,6 @@ t_INT = r'DRAGHINAZZO'
 t_FLOAT = r'FARFARELLO'
 t_BOOL = r'GRAFFICANE'
 t_STRING = r'CIRIATO'
-##t_ID = r'VARIABLE_ID'
 
 t_PLUS    = r'ALICHINO'
 t_MINUS   = r'BARBARICCIA'
@@ -102,14 +101,13 @@ t_OR = r'O'
 t_SINGLEQUOTES = r'CHERUBINO'
 t_DOUBLEQUOTES = r'CHERUBINOS'
 t_PUNTOCOMA = r'GUARDA_E_PASSA'
-t_DOSPUNTOS = r'DOSPUNTOS'
+t_DOSPUNTOS = r'DUE_PUNTI'
 t_TRUE = r'DANTE'
 t_FALSE = r'VERGIL'
 
 
 def t_RETURN(t):
     r'COSA_FATTA_CAPPO_HA'
-    t.value = str(t.value)
     return t
 
 def t_NUMERO(t):
@@ -127,11 +125,11 @@ def t_ID(t):
     return t
 
 def t_TEXT(t):
-    r'("[A-Za-z0-9 ,\.]")'
+    r'(\"[A-Za-z0-9 ,\.]+\")'
     t.value = str(t.value)
     return t
  #A string containing ignored characters (spaces and tabs)
-t_ignore  = ' t\n'
+t_ignore  = ' \t\n'
 
 # Error handling rule
 def t_error(t):
@@ -173,11 +171,6 @@ def p_declarator(t):
     declarator : ID DOSPUNTOS type_specifier
         | NUMERO ID DOSPUNTOS type_specifier
     '''
-    correcto, address = (crea_variable(t[2], t[4]) )
-    if not correcto:
-        print(f"Error: variable {t[2]} redefinida en la linea {t.lexer.lineno}")
-    else:
-        define(f"{t[2]}: RESB {address}")
     pass
 
 
@@ -192,11 +185,14 @@ def p_type_specifier(t):
     '''
     t[0] = t[1]
     pass
+
 def p_literal(t):
     '''
     literal : NUMERO
         | REAL
-        | STRING
+        | TEXT
+        | TRUE
+        | FALSE
     '''
     t[0] = t[1]
     pass  
@@ -215,25 +211,18 @@ def p_additive_expression(t):
         | additive_expression PLUS primary_expression
         | additive_expression MINUS primary_expression
     '''
-    op = ""
-    if len(t) > 2:
-        t[0] = (False, "R1")
-    else:
-        t[0] = t[1]
+    t[0] = t[1]
     pass
+
 def p_multiplicative_expression(t):
     '''
     multiplicative_expression : additive_expression
         | multiplicative_expression TIMES additive_expression
         | multiplicative_expression DIVIDE additive_expression
     '''
-    op = ""
-    #Cuidado con los () que aun no tienen soporte
-    if len(t) > 2 and t[1] != "(":
-        t[0] = (False, "R1")
-    else:
-        t[0] = t[1]
+    t[0] = t[1]
     pass
+
 def p_relational_expression(t):
     '''
     relational_expression : multiplicative_expression
@@ -242,38 +231,29 @@ def p_relational_expression(t):
         | relational_expression MENORIGUAL multiplicative_expression
         | relational_expression MAYORIGUAL multiplicative_expression
     '''
-    #Suponga que el CMP puede retornar el resultado a un registro
-    #Para no hacer toda la implementacion por ahora
-    if len(t) > 3:
-        t[0] = "R1"
     t[0] = t[1]
+    
 def p_equality_expression(t):
     '''
     equality_expression : relational_expression
         | equality_expression IGUALIGUAL relational_expression
         | equality_expression NOIGUAL relational_expression
     '''
-    if len(t) > 3:
-        t[0] = "R1"
     t[0] = t[1]
+    
 def p_and_expression(t):
     '''
     and_expression : equality_expression
         | and_expression AND equality_expression
     '''
-    op = ""
-    if len(t) > 3:
-        t[0] = "R1"
     t[0] = t[1]
 def p_or_expression(t):
     '''
     or_expression : and_expression
         | or_expression OR and_expression
     '''
-    op = ""
-    if len(t) > 3:
-        t[0] = "R1"
     t[0] = t[1]
+    
 def p_assignment_expression(t):
     '''
     assignment_expression : or_expression
@@ -281,6 +261,7 @@ def p_assignment_expression(t):
     '''
     t[0] = t[1]
     pass  
+
 # Sentencia
 def p_statement(t):
     '''
@@ -293,22 +274,26 @@ def p_statement(t):
         | iteration_statement
     '''
     pass
+
 def p_statement_list(t):
     '''
     statement_list : statement
         | statement_list statement
     '''
+    
 def p_compound_statement(t):
     '''
     compound_statement : LPAREN RPAREN
         | LPAREN statement_list RPAREN
     '''
+    
 def p_assignment_statement(t):
     '''
     assignment_statement : assignment_expression PUNTOCOMA
         | primary_expression ASSIGN function_call
     '''
     pass
+
 def p_ID_list(t):
     '''
     ID_list : empty 
@@ -342,7 +327,7 @@ def p_selection_statement(t):
 # Definicion de los loops
 def p_iteration_statement(t):
     '''
-    iteration_statement : FOR LPAREN NUMERO RPAREN
+    iteration_statement : FOR LPAREN NUMERO RPAREN DOSPUNTOS
     '''
 
 
@@ -369,8 +354,45 @@ lexer = lex.lex()
 
 # Test it out
 #data = '''italia BEATTRICE 0 LASCIATE_OGNE_I_SPERANZA_VOI_CHINTRATE CALCABRINA 5 CAGNAZZO italiados BEATTRICE italiatres ALICHINO 1'''
-data = '''2 ALICHINO 1 GUARDA_E_PASSA'''
+
+'''Caso Uno'''
+#data = '''2 ALICHINO 1 GUARDA_E_PASSA'''
+
+'''Caso Dos'''
+#data = '''italia BEATTRICE 0 GUARDA_E_PASSA'''
+
+'''Caso Tres'''
+# italia : INT ;
+# italia = 0 ;
+# FOR ( 5 ) :
+#   italia = italia + 1 ;
+#data = ''' italia DUE_PUNTI DRAGHINAZZO GUARDA_E_PASSA 
+#            italia BEATTRICE 0 GUARDA_E_PASSA 
+#            LASCIATE_OGNE_I_SPERANZA_VOI_CHINTRATE CALCABRINA 5 CAGNAZZO DUE_PUNTI
+#            italia BEATTRICE italia ALICHINO 1 GUARDA_E_PASSA'''
             
+            
+'''caso Cuatro'''
+# DEF ciaomondo()(
+#   viggiatore :  BOOL ;
+#   viggiatore = TRUE ;
+#   ciao : STRING;
+#   ciao = " " ;
+#   if viggiatore = TRUE (
+#       ciao = "ciaomondo"    
+#   )
+#   if viggiatore = false (
+#       ciao = "arriverc" 
+#   )      
+#)
+data = ''' MALACODA ciaomondo CALCABRINA CAGNAZZO CALCABRINA 
+            viggiatore DUE_PUNTI GRAFFICANE GUARDA_E_PASSA 
+            viggiatore BEATTRICE DANTE GUARDA_E_PASSA 
+            ciao DUE_PUNTI CIRIATO GUARDA_E_PASSA
+            ciao BEATTRICE " " GUARDA_E_PASSA
+            INFERNO viaggiatore BEATTRICE DANTE CALCABRINA ciao BEATTRICE " ciaomondo " GUARDA_E_PASSA CAGNAZZO
+            INFERNO viaggiatore BEATTRICE VERGIL CALCABRINA ciao BEATTRICE " arriverci " GUARDA_E_PASSA CAGNAZZO CAGNAZZO'''
+            #COSA_FATTA_CAPPO_HA ciao CAGNAZZO GUARDA_E_PASSA
 
 # Give the lexer some input
 lexer.input(data)
@@ -390,7 +412,6 @@ EJEMPLOS
 italia = 0
 for 5
 	italia = italia + 1
-return italia
 
 --------------------------------------------------------------
 italia beatricce 0
