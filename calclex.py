@@ -58,12 +58,12 @@ tokens = (
 # ----------------- LEXIC ANALYSYS -----------------
 
 # Regular expression rules for simple tokens
-t_FOR = r'LASCIATE OGNE I SPERANZA VOI CHINTRATE'
+t_FOR = r'LASCIATE_OGNE_I_SPERANZA_VOI_CHINTRATE'
 t_IF = r'INFERNO'
 t_WHILE = r'PURGATORIO'
 t_ELSE = r'PARADISO'
 t_DEF = r'MALACODA'
-t_SWITCH = r'GUARDA E PASSA'
+t_SWITCH = r'GUARDA_E_PASSA'
 
 t_INT = r'DRAGHINAZZO'
 t_FLOAT = r'FARFARELLO'
@@ -78,16 +78,20 @@ t_DIVIDE  = r'BRUTUS'
 t_ASSIGN = r'BEATTRICE'
 t_LPAREN  = r'CALCABRINA'
 t_RPAREN  = r'CAGNAZZO'
-t_LBRACKET = r'IL SUPPORTO'
-t_RBRACKET = r'LA PARENTESI'
-t_COMA = r','
+t_LBRACKET = r'IL_SUPPORTO'
+t_RBRACKET = r'LA_PARENTESI'
 t_TRUE = r'DANTE'
 t_FALSE = r'VERGIL'
 t_CASE = r'SCARMIGLIONE'
-t_BREAK = r'NON MI TANGE'
+t_BREAK = r'NON_MI_TANGE'
 
 
+def t_RETURN(t):
+    r'COSA_FATTA_CAPPO_HA'
+    t.value = str(t.value)
+    return t
 
+t_COMA = r','
 def t_NUMERO(t):
     r'\d+' #numero
     t.value = int(t.value)    
@@ -99,19 +103,15 @@ def t_REAL(t):
     return t
 
 def t_ID(t):
-    r'([a-z])'    
+    r'[a-z]+'    
     return t
 
 def t_TEXT(t):
     r'("[A-Za-z0-9 ,\.]")'
     t.value = str(t.value)
     return t
-def t_RETURN(t):
-    r'COSA FATTA,CAPPO HA'
-    t.value = str(t.value)
-    return t
  #A string containing ignored characters (spaces and tabs)
-t_ignore  = ' t'
+t_ignore  = ' t\n'
 
 # Error handling rule
 def t_error(t):
@@ -129,11 +129,11 @@ def p_program(p):
 
 def p_statement(p):
     '''statement : function_call
-                    |compound_statement
-                    |function_declaration
-                    |assign_statement
-                    |if_statement
-                    |cycle_statement'''
+                    | compound_statement
+                    | function_declaration
+                    | assign_statement
+                    | if_statement
+                    | cycle_statement'''
 
 def p_statement_list(p):
     '''statement_list : statement
@@ -153,23 +153,26 @@ def p_parameters(p):
                     | parametros COMA var_declaration'''
 
 def p_cycle_statement(p):
-    '''ciclo : FOR LPAREN exp RPAREN LBRACK'''
+    '''cycle_statement : FOR LPAREN lit RPAREN LBRACK'''
                 
 
 # Funciones
 
+def p_function_call(p):
+    '''function_call : empty'''
+
 def p_function_declaration(p):
     '''function_declaration : empty'''
     
-#se puede declarar una variable nuevo o asignar una variable 
-def p_declaracion(p):
-    ''' declaracion : var_declaration
-                    | var_assignment'''
+# IF ELSE
+
+def p_if_statement(p):
+    '''if_statement : empty'''
+    
                         
 #declarasion y declaracion con asignacion
 def p_var_declaration(p): 
-    '''var_declaration : type ID 
-                        | type var_assign'''
+    '''var_declaration : type ID '''
 
 #assignacion
 def p_var_assign(p):
@@ -209,10 +212,9 @@ def p_error(p):
 lexer = lex.lex()
 
 # Test it out
-data = '''italia BEATRICCE 0
-            LASCIATE OGNE I SPERANZA VOI CHINTRATE CAGNAZZO 5 CALCABRINA
-            italia BEATRICCE ALICHINO 1
-            COSA FATTA,CAPPO HA italia'''
+data = '''italia BEATTRICE 0 LASCIATE_OGNE_I_SPERANZA_VOI_CHINTRATE CAGNAZZO 5 CALCABRINA
+            italia BEATTRICE ALICHINO 1
+            COSA_FATTA_CAPPO_HA italia'''
             
 
 # Give the lexer some input
