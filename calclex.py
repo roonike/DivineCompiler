@@ -21,7 +21,6 @@ tokens = (
     'WHILE',#'PURGATORIO', 
     'ELSE',#'PARADISO', 
     'DEF', #'MALACODA', 
-    'SWITCH', #
     
     
     #Variable
@@ -52,25 +51,22 @@ tokens = (
     'LPAREN', #'CALCABRINA'
     'RBRACKET',#
     'LBRACKET',#
-    'SINGLEQUOTES'
-    'DOUBLEQUOTES' 
+    'SINGLEQUOTES',
+    'DOUBLEQUOTES',
     'TRUE', #'DANTE',
     'FALSE', #'VERGIL',
-    'RETURN', # 'COSA FATTA,CAPPO HA' # RETUR N
-    'CASE',#'SCARMIGLIONE' 
-    'BREAK',#
+    'RETURN', # 'COSA FATTA,CAPPO HA' 
 )
 
 
 # ----------------- LEXIC ANALYSYS -----------------
 
 # Regular expression rules for simple tokens
-t_FOR = r'LASCIATE OGNE I SPERANZA VOI CHINTRATE'
+t_FOR = r'LASCIATE_OGNE_I_SPERANZA_VOI_CHINTRATE'
 t_IF = r'INFERNO'
 t_WHILE = r'PURGATORIO'
 t_ELSE = r'PARADISO'
 t_DEF = r'MALACODA'
-t_SWITCH = r'GUARDA E PASSA'
 
 t_INT = r'DRAGHINAZZO'
 t_FLOAT = r'FARFARELLO'
@@ -85,22 +81,24 @@ t_DIVIDE  = r'BRUTUS'
 t_ASSIGN = r'BEATTRICE'
 t_LPAREN  = r'CALCABRINA'
 t_RPAREN  = r'CAGNAZZO'
-t_LBRACKET = r'IL SUPPORTO'
-t_RBRACKET = r'LA PARENTESI'
+t_LBRACKET = r'IL_SUPPORTO'
+t_RBRACKET = r'LA_PARENTESI'
 t_COMA = r','
 t_IGUALIGUAL = r'=='
 t_MAYORQUE = r'<'
 t_MENORQUE = r'>'
 t_AND = r'E'
 t_OR = r'O'
-t_SINGLEQUOTEs = r'cherubino'
-t_DOUBLEQOTES = r'cherubinos'
+t_SINGLEQUOTES = r'cherubino'
+t_DOUBLEQUOTES = r'cherubinos'
 t_TRUE = r'DANTE'
 t_FALSE = r'VERGIL'
-t_CASE = r'SCARMIGLIONE'
-t_BREAK = r'NON MI TANGE'
 
 
+def t_RETURN(t):
+    r'COSA_FATTA_CAPPO_HA'
+    t.value = str(t.value)
+    return t
 
 def t_NUMERO(t):
     r'\d+' #numero
@@ -113,19 +111,15 @@ def t_REAL(t):
     return t
 
 def t_ID(t):
-    r'([a-z])'    
+    r'[a-z]+'    
     return t
 
 def t_TEXT(t):
     r'("[A-Za-z0-9 ,\.]")'
     t.value = str(t.value)
     return t
-def t_RETURN(t):
-    r'COSA FATTA,CAPPO HA'
-    t.value = str(t.value)
-    return t
  #A string containing ignored characters (spaces and tabs)
-t_ignore  = ' t'
+t_ignore  = ' t\n'
 
 # Error handling rule
 def t_error(t):
@@ -143,11 +137,11 @@ def p_program(p):
 
 def p_statement(p):
     '''statement : function_call
-                    |compound_statement
-                    |function_declaration
-                    |assign_statement
-                    |if_statement
-                    |cycle_statement'''
+                    | compound_statement
+                    | function_declaration
+                    | assign_statement
+                    | if_statement
+                    | cycle_statement'''
 
 def p_statement_list(p):
     '''statement_list : statement
@@ -155,39 +149,43 @@ def p_statement_list(p):
                         
 def p_compound_statement(p):
     '''compound_statement : LPAREN RPAREN
-                            | LPAREN statement_list RPAREN'''
+                            | statement_list'''
 
 def p_assign_statement(p):
     ''' assign_statement : var_declaration 
                         | var_assign'''
 
 def p_parameters(p):
-    '''parametros : empty
+    '''parameters : empty
                     | var_declaration
-                    | parametros COMA var_declaration'''
+                    | parameters COMA var_declaration'''
 
 def p_cycle_statement(p):
-    '''ciclo : FOR LPAREN exp RPAREN LBRACK'''
+    '''cycle_statement : FOR LPAREN NUMERO RPAREN'''
                 
 
 # Funciones
 
+def p_function_call(p):
+    '''function_call : empty'''
+
 def p_function_declaration(p):
-    '''function_declaration : empty'''
+    '''function_declaration : DEF ID LPAREN parameters RPAREN compound_statement'''
     
-#se puede declarar una variable nuevo o asignar una variable 
-def p_declaracion(p):
-    ''' declaracion : var_declaration
-                    | var_assignment'''
+# IF ELSE
+
+def p_if_statement(p):
+    '''if_statement : empty'''
+    
                         
 #declarasion y declaracion con asignacion
 def p_var_declaration(p): 
-    '''var_declaration : type ID 
-                        | type var_assign'''
+    '''var_declaration : type ID '''
 
 #assignacion
 def p_var_assign(p):
-    '''var_assign : ID ASSIGN exp'''
+    '''var_assign : ID ASSIGN exp
+        | ID ASSIGN operador_binario'''
 
 def p_type(p):
     ''' type : INT 
@@ -201,17 +199,11 @@ def p_type(p):
 def p_retorno(p):
     '''retorno : RETURN ID '''
 
-def p_llamada_funcion(p):
-    'llamada_funcion : TEXT'
-    '''llamada_funcion : ID LPAREN arg_list RPAREN'''
-    print(f"Llamada a función: {p[1]}({p[3]})")
-
 def p_operador_binario(p):
   '''operador_binario : exp TIMES exp
            | exp PLUS exp
            | exp DIVIDE exp
            | exp MINUS exp
-           | var ASSIGN exp
            | exp IGUALIGUAL exp
            | exp MENORQUE exp
            | exp MAYORQUE exp
@@ -219,8 +211,9 @@ def p_operador_binario(p):
            | exp OR exp'''
 
 def p_exp(p):
-    '''exp : INT 
-            | FLOAT'''
+    '''exp : NUMERO 
+            | REAL
+            | ID'''
 
 
 def p_empty(p):
@@ -239,10 +232,7 @@ def p_error(p):
 lexer = lex.lex()
 
 # Test it out
-data = '''italia BEATRICCE 0
-            LASCIATE OGNE I SPERANZA VOI CHINTRATE CAGNAZZO 5 CALCABRINA
-            italia BEATRICCE ALICHINO 1
-            COSA FATTA,CAPPO HA italia'''
+data = '''italia BEATTRICE 0 LASCIATE_OGNE_I_SPERANZA_VOI_CHINTRATE CALCABRINA 5 CAGNAZZO italiados BEATTRICE italiatres ALICHINO 1'''
             
 
 # Give the lexer some input
@@ -282,3 +272,60 @@ def reserve_space(data_type):
 parser = yacc.yacc()
 parser.parse(data)
 # ----------------------------------------------------
+'''
+EJEMPLOS
+1)
+italia = 0
+for 5
+	italia = italia + 1
+return italia
+
+--------------------------------------------------------------
+italia beatricce 0
+lasciate ogne i speranza voi chintrate 5 
+	italia = italia alichino 1
+cosa fatta cappo ha italia
+
+2)
+roma = 476
+constantinopla = 1453
+constantino = 0
+
+if constantinopla > italia
+	constantino = constantinopla - roma
+return constantino
+
+---------------------------------------------------------------
+roma beatricce 476
+constantinopla beatricce 1453
+constantino beatricce 0
+
+inferno constantinopla > italia
+	constantino beatricce constantinopla barbariccia roma
+cosa fatta cappo ha constantino
+
+3)
+
+def ciao mondo()
+viaggiatore = true
+ciao mondo = ""
+if viaggiatore = true
+	ciao mondo = "ciao mondo"
+if viaggiatore = false
+	ciao mondo = "arrivederci"
+return ciao mondo
+
+----------------------------------------------------------------
+def ciao mondo cagnazzo calcabrina
+viggiatore beatricce dante
+ciao mondo beatricce cherubinos cherubinos
+inferno viaggiatore beatricce dante
+	ciao mondo beatricce cherubinos ciao mondo cherubinos
+inferno viaggiatore beatricce vergil
+	ciao mondo beatricce cherubinos arriverci cherubinos
+cosa fatta cappo ha ciao mondo
+
+
+
+
+'''
