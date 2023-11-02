@@ -43,6 +43,11 @@ tokens = (
     'DIVIDE', # BRUTUS
     'ASSIGN', # BEATRICCE 
     'COMA', # ,
+    'IGUALIGUAL',
+    'MAYORQUE',
+    'MENORQUE',
+    'AND',
+    'OR',
     'RPAREN', #'CAGNAZZO'
     'LPAREN', #'CALCABRINA'
     'RBRACKET',#
@@ -81,6 +86,11 @@ t_RPAREN  = r'CAGNAZZO'
 t_LBRACKET = r'IL SUPPORTO'
 t_RBRACKET = r'LA PARENTESI'
 t_COMA = r','
+t_IGUALIGUAL = r'=='
+t_MAYORQUE = r'<'
+t_MENORQUE = r'>'
+t_AND = r'E'
+t_OR = r'O'
 t_TRUE = r'DANTE'
 t_FALSE = r'VERGIL'
 t_CASE = r'SCARMIGLIONE'
@@ -197,41 +207,28 @@ def p_declaracion_variable(p):
     'declaracion_variable : TEXT'
 #int sumando
 
-def p_expresion(p):
-    'expresion : TEXT'  
-    #expression PLUS expression
-    #LPAREN expression RPAREN'''
-    # 5 * 5 + 9(5-2)
-    # '''expression : NUMBER
-    #               | expression PLUS expression
-    #               | expression MINUS expression
-    #               | expression TIMES expression
-    #               | expression DIVIDE expression
-    #               | LPAREN expression RPAREN'''
-    # if len(t) == 2:
-    #     t[0] = t[1]
-    # elif t[2] == '+':
-    #     t[0] = t[1] + t[3]
-    # elif t[2] == '-':
-    #     t[0] = t[1] - t[3]
-    # elif t[2] == '*':
-    #     t[0] = t[1] * t[3]
-    # elif t[2] == '/':
-    #     t[0] = t[1] / t[3]
-    if len(p) == 2:
-        p[0] = p[1]
-    elif p[2] == '+':
-        p[0] = p[1] + p[3]
+def p_operador_binario(p):
+  '''operador_binario : exp TIMES exp
+           | exp PLUS exp
+           | exp DIVIDE exp
+           | exp MINUS exp
+           | var ASSIGN exp
+           | exp IGUALIGUAL exp
+           | exp MENORQUE exp
+           | exp MAYORQUE exp
+           | exp AND exp
+           | exp OR exp'''
+
+def p_exp(p):
+    '''exp : INT 
+            | FLOAT'''
 
 # Función para analizar expresiones
 def parse_expression(expression):
     return parser.parse(expression)
 
 def p_asignacion_variable(p):
-    '''asignacion_variable : TEXT ASSIGN TEXT SEMICOLON'''
-    variable_name = p[1]
-    variable_value = p[3]
-    print(f"Asignación de variable: {variable_name} = {variable_value}") 
+    '''asignacion_variable : TEXT ASSIGN TEXT'''
    
 # Función para analizar asignaciones de variables
 def parse_assignment(assignment):
@@ -247,7 +244,7 @@ def p_condition(p):
 
 # Regla de lista de sentencias
 def p_statements(p):
-    '''statements : statements statement
+    '''statements : statement statement
                  | statement'''
     if len(p) == 2:
         p[0] = [p[1]]
@@ -256,7 +253,7 @@ def p_statements(p):
 
 # Regla de sentencia
 def p_statement(p):
-    '''statement : TEXT SEMICOLON'''
+    '''statement : TEXT'''
     p[0] = p[1]
 
 def p_empty(p):
