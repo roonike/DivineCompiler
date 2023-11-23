@@ -93,7 +93,7 @@ class SimpleLoop:
         self.mi_modulo = ir.Module()
 
         # Crear una función llamada "bucle_simple"
-        self.bucle_simple_func = ir.Function(self.mi_modulo, ir.FunctionType(ir.VoidType(), []), name="bucle_simple")
+        self.bucle_simple_func = ir.Function(self.mi_modulo, ir.FunctionType(ir.IntType(32), []), name="bucle_simple")
 
         # Crear bloques básicos
         self.entry_block = self.bucle_simple_func.append_basic_block(name="entry")
@@ -151,7 +151,7 @@ class SimpleLoop:
         builder.position_at_end(salida_bloque)
 
         # Retornar desde la función
-        builder.ret_void()
+        builder.ret(valor_contador)
 
         # Imprimir el código IR generado de manera legible
         print(self.mi_modulo)
