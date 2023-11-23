@@ -1,7 +1,7 @@
 from llvmlite import ir
 from llvmlite import binding as llvm
-
-
+from llvmlite import ir, binding
+import ctypes
 
 BSS = []
 
@@ -42,9 +42,9 @@ def log_error(message):
     return None
 
 #  Ejemplo de uso:
-named_values = {"x": 33, "y": 10}
-result = variable_expr_ast("x", named_values)
-print(result)  # Esto imprimirá 33 si "x" está en named_values
+# named_values = {"x": 33, "y": 10}
+# result = variable_expr_ast("x", named_values)
+# print(result)  # Esto imprimirá 33 si "x" está en named_values
 
 # Ejemplo de función para representar llamadas a funciones
 def call_expr(callee, args):
@@ -67,8 +67,8 @@ functions = {
 }
 
 # # Ejemplo de uso
-result = call_expr("add", ["2", "3"])
-print(result)
+# result = call_expr("add", ["2", "3"])
+# print(result)
 
 
 # Ejemplo de función para representar restas
@@ -77,8 +77,8 @@ def resta(operaciones):
         print("Esto es una resta de", izquierda, "-", derecha)
 
 # Ejemplo de uso
-operaciones_resta = [(1, 2), (1, 3), (5, 2)]
-resta(operaciones_resta)
+# operaciones_resta = [(1, 2), (1, 3), (5, 2)]
+# resta(operaciones_resta)
 
 
 # metodo para For
@@ -153,6 +153,72 @@ class SimpleLoop:
         # Imprimir el código IR generado de manera legible
         print(self.mi_modulo)
 # # Ejemplo de uso
-simple_loop = SimpleLoop()
-simple_loop.for_code_ir()
-print(simple_loop.mi_modulo)
+# simple_loop = SimpleLoop()
+# simple_loop.for_code_ir()
+# print(simple_loop.mi_modulo)
+
+def create_equality_function(module):
+    # Crear una función llamada "equality_function"
+    equality_func_type = ir.FunctionType(ir.IntType(1), [ir.IntType(32), ir.IntType(32)])
+    equality_func = ir.Function(module, equality_func_type, name="equality_function")
+
+    # Crear un constructor de IR para la función
+    builder = ir.IRBuilder(ir.Block(equality_func, name="entry"))
+
+    # Obtener los argumentos de la función
+    arg1, arg2 = equality_func.args
+
+    # Realizar la operación de igualdad (arg1 == arg2)
+    result = builder.icmp_signed("==", arg1, arg2, name="result")
+
+    # Retornar el resultado
+    builder.ret(result)
+
+    return equality_func
+
+
+# Inicializar el motor de ejecución para la funcion de igualdad
+binding.initialize()
+binding.initialize_native_target()
+binding.initialize_native_asmprinter()
+
+# Crear un módulo LLVM para la funcion de igualdad
+llvm_module = ir.Module()
+
+# Declarar la función de igualdad
+equality_func_ty = ir.FunctionType(ir.IntType(1), [ir.IntType(32), ir.IntType(32)])
+equality_func = ir.Function(llvm_module, equality_func_ty, name="equality_function")
+
+# Crear el cuerpo de la función de igualdad
+entry_block = equality_func.append_basic_block(name="entry")
+builder = ir.IRBuilder(entry_block)
+
+# Comparar los dos valores de entrada
+param1, param2 = equality_func.args
+result = builder.icmp_signed("==", param1, param2, name="result")
+
+# Retornar el resultado
+builder.ret(result)
+
+# Imprimir el código IR generado
+print("Código IR generado:")
+print(str(llvm_module))
+
+# Configurar el motor de ejecución MCJIT
+target = binding.Target.from_default_triple()
+target_machine = target.create_target_machine()
+backing_mod = binding.parse_assembly(str(llvm_module))
+engine = binding.create_mcjit_compiler(backing_mod, target_machine)
+
+# Obtener el puntero a la función de igualdad generada
+equality_func_ptr = engine.get_function_address("equality_function")
+
+# Definir el tipo de la función ctypes correctamente
+equality_function_type = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int, ctypes.c_int)
+
+# Convertir el puntero a la función LLVM a una función ctypes
+equality_function = equality_function_type(equality_func_ptr)
+
+# Llamar a la función de igualdad
+result = equality_function(10, 10)
+print("Resultado de la igualdad:", result)
