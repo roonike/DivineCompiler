@@ -3,89 +3,86 @@ from llvmlite import binding as llvm
 
 
 
-# BSS = []
+BSS = []
 
-# TEXT = []
+TEXT = []
 
-# def define(var):
-#     global BSS
-#     BSS.append(var)
+def define(var):
+    global BSS
+    BSS.append(var)
 
-# def code(instruction):
-#     global TEXT
-#     TEXT.append(instruction)
+def code(instruction):
+    global TEXT
+    TEXT.append(instruction)
 
-# def generar_codigo():
-#     global BSS, TEXT
-#     codigo = "SECTION .bss\n"
-#     for data in BSS:
-#         codigo += f"\t{data}\n"
-#     codigo += "SECTION .text\n"
-#     for data in TEXT:
-#         codigo += f"\t{data}\n"
+def generar_codigo():
+    global BSS, TEXT
+    codigo = "SECTION .bss\n"
+    for data in BSS:
+        codigo += f"\t{data}\n"
+    codigo += "SECTION .text\n"
+    for data in TEXT:
+        codigo += f"\t{data}\n"
 
-#     with open("programa.asm",'w+') as f:
-#         f.write(codigo)
-#         f.close()
+    with open("programa.asm",'w+') as f:
+        f.write(codigo)
+        f.close()
 
 #     #---------------SAM-----metodo para buscar expresion en estructura de datos
-# def variable_expr_ast(name,named_values):
-#      # Intenta obtener el valor asociado con el nombre de la variable
-#     if name in named_values:
-#         return named_values[name]
-#     else:
-#         log_error("Unknown variable name")
+def variable_expr_ast(name,named_values):
+     # Intenta obtener el valor asociado con el nombre de la variable
+    if name in named_values:
+        return named_values[name]
+    else:
+        log_error("Unknown variable name")
 
-# def log_error(message):
-#     # Implementa la lógica para manejar errores (puede imprimir un mensaje, lanzar una excepción, etc.).
-#     print(f"Error: {message}")
-#     return None
+def log_error(message):
+    # Implementa la lógica para manejar errores (puede imprimir un mensaje, lanzar una excepción, etc.).
+    print(f"Error: {message}")
+    return None
 
-# #  Ejemplo de uso:
-# # named_values = {"x": 33, "y": 10}
-# # result = variable_expr_astT("x", named_values)
-# # print(result)  # Esto imprimirá 33 si "x" está en named_values
+#  Ejemplo de uso:
+named_values = {"x": 33, "y": 10}
+result = variable_expr_ast("x", named_values)
+print(result)  # Esto imprimirá 33 si "x" está en named_values
 
-# # Ejemplo de función para representar llamadas a funciones
-# def call_expr(callee, args):
-#     # Busca la función en el diccionario
-#     callee_function = functions.get(callee)
-#     if not callee_function:
-#         return log_error("Unknown function referenced")
+# Ejemplo de función para representar llamadas a funciones
+def call_expr(callee, args):
+    # Busca la función en el diccionario
+    callee_function = functions.get(callee)
+    if not callee_function:
+        return log_error("Unknown function referenced")
 
-#     # Verifica la cantidad correcta de argumentos
-#     if len(callee_function) != len(args):
-#         return log_error("Incorrect # arguments passed")
+    # Verifica la cantidad correcta de argumentos
+    if len(callee_function) != len(args):
+        return log_error("Incorrect # arguments passed")
 
-#     # Simula la creación de la instrucción de llamada a función
-#     return f"Call {callee} with arguments: {args}"
+    # Simula la creación de la instrucción de llamada a función
+    return f"Call {callee} with arguments: {args}"
 
 # # Diccionario para almacenar funciones
-# functions = {
-#     "add": ["a", "b"],
-#     "subtract": ["x", "y"]
-# }
+functions = {
+    "add": ["a", "b"],
+    "subtract": ["x", "y"]
+}
 
 # # Ejemplo de uso
-# #result = call_expr("add", ["2", "3"])
-# #print(result)
+result = call_expr("add", ["2", "3"])
+print(result)
 
 
-# # Ejemplo de función para representar restas
-# def resta(operaciones):
-#     for izquierda, derecha in operaciones:
-#         print("Esto es una resta de", izquierda, "-", derecha)
+# Ejemplo de función para representar restas
+def resta(operaciones):
+    for izquierda, derecha in operaciones:
+        print("Esto es una resta de", izquierda, "-", derecha)
 
 # Ejemplo de uso
-#operaciones_resta = [(1, 2), (1, 3), (5, 2)]
-#resta(operaciones_resta)
+operaciones_resta = [(1, 2), (1, 3), (5, 2)]
+resta(operaciones_resta)
 
 
 # metodo para For
 # Crear un módulo de LLVM
-
-
-
 
 class SimpleLoop:
     def __init__(self):
@@ -155,8 +152,7 @@ class SimpleLoop:
 
         # Imprimir el código IR generado de manera legible
         print(self.mi_modulo)
-# Ejemplo de uso
+# # Ejemplo de uso
 simple_loop = SimpleLoop()
 simple_loop.for_code_ir()
 print(simple_loop.mi_modulo)
-print("SI COMPILAAA")
