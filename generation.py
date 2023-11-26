@@ -1,5 +1,7 @@
 from llvmlite import ir
 from llvmlite import binding as llvm
+from llvmlite import ir, binding
+import ctypes
 
 BSS = []
 
@@ -26,7 +28,7 @@ def generar_codigo():
         f.write(codigo)
         f.close()
 
-    #---------------SAM-----metodo para buscar expresion en estructura de datos
+#     #---------------SAM-----metodo para buscar expresion en estructura de datos
 def variable_expr_ast(name,named_values):
      # Intenta obtener el valor asociado con el nombre de la variable
     if name in named_values:
@@ -41,7 +43,7 @@ def log_error(message):
 
 #  Ejemplo de uso:
 # named_values = {"x": 33, "y": 10}
-# result = variable_expr_astT("x", named_values)
+# result = variable_expr_ast("x", named_values)
 # print(result)  # Esto imprimirá 33 si "x" está en named_values
 
 # Ejemplo de función para representar llamadas a funciones
@@ -58,15 +60,15 @@ def call_expr(callee, args):
     # Simula la creación de la instrucción de llamada a función
     return f"Call {callee} with arguments: {args}"
 
-# Diccionario para almacenar funciones
+# # Diccionario para almacenar funciones
 functions = {
     "add": ["a", "b"],
     "subtract": ["x", "y"]
 }
 
-# Ejemplo de uso
-#result = call_expr("add", ["2", "3"])
-#print(result)
+# # Ejemplo de uso
+# result = call_expr("add", ["2", "3"])
+# print(result)
 
 
 # Ejemplo de función para representar restas
@@ -75,84 +77,148 @@ def resta(operaciones):
         print("Esto es una resta de", izquierda, "-", derecha)
 
 # Ejemplo de uso
-#operaciones_resta = [(1, 2), (1, 3), (5, 2)]
-#resta(operaciones_resta)
+# operaciones_resta = [(1, 2), (1, 3), (5, 2)]
+# resta(operaciones_resta)
 
 
 # metodo para For
 # Crear un módulo de LLVM
-mi_modulo = ir.Module()
 
-# Crear una función llamada "bucle_simple"
-bucle_simple_func = ir.Function(mi_modulo, ir.FunctionType(ir.VoidType(), []), name="bucle_simple")
+class SimpleLoop:
+    def __init__(self):
+        # Crear un módulo de LLVM
+        self.mi_modulo = ir.Module()
 
-# Crear un bloque de entrada para la función
-entrada_bloque = bucle_simple_func.append_basic_block(name="entrada")
-constructor = ir.IRBuilder(entrada_bloque)
+        # Crear una función llamada "bucle_simple"
+        self.bucle_simple_func = ir.Function(self.mi_modulo, ir.FunctionType(ir.IntType(32), []), name="bucle_simple")
 
-# Inicializar el contador a 0
-contador = constructor.alloca(ir.IntType(32), name="contador")
-constructor.store(ir.Constant(ir.IntType(32), 0), contador)
+        # Crear bloques básicos
+        self.entry_block = self.bucle_simple_func.append_basic_block(name="entry")
+        self.after_block = self.bucle_simple_func.append_basic_block(name="after")
 
-# Etiqueta del bucle
-etiqueta_bucle = bucle_simple_func.append_basic_block(name="bucle")
-constructor.branch(etiqueta_bucle)
-constructor.position_at_end(etiqueta_bucle)
+        # Declarar la función puts en el módulo
+        puts_ty = ir.FunctionType(ir.IntType(32), [ir.IntType(8).as_pointer()], False)
+        self.puts_func = ir.Function(self.mi_modulo, puts_ty, name="puts")
 
-# Obtener el valor actual del contador
-valor_contador = constructor.load(contador, name="valor_contador")
+    def for_code_ir(self):
+        # Crear un constructor de IR
+        builder = ir.IRBuilder(self.entry_block)
 
-# Realizar una comparación (por ejemplo, contador < 10)
-condicion = constructor.icmp_signed("<", valor_contador, ir.Constant(ir.IntType(32), 10), name="condicion")
+        # Inicializar el contador a 0
+        contador = builder.alloca(ir.IntType(32), name="contador")
+        builder.store(ir.Constant(ir.IntType(32), 0), contador)
 
-# Crear bloques para el cuerpo del bucle y la salida del bucle
-cuerpo_bloque = bucle_simple_func.append_basic_block(name="cuerpo")
-salida_bloque = bucle_simple_func.append_basic_block(name="salida")
+        # Etiqueta del bucle
+        etiqueta_bucle = self.bucle_simple_func.append_basic_block(name="bucle")
+        builder.branch(etiqueta_bucle)
+        builder.position_at_end(etiqueta_bucle)
 
-# Hacer una rama condicional
-constructor.cbranch(condicion, cuerpo_bloque, salida_bloque)
+        # Obtener el valor actual del contador
+        valor_contador = builder.load(contador, name="valor_contador")
 
-# Posicionarse en el bloque del cuerpo del bucle
-constructor.position_at_end(cuerpo_bloque)
+        # Realizar una comparación (por ejemplo, contador < 10)
+        condicion = builder.icmp_signed("<", valor_contador, ir.Constant(ir.IntType(32), 10), name="condicion")
 
-# Aquí deberías generar el código IR para el cuerpo del bucle
-# En este ejemplo, simplemente imprimimos el valor del contador
-constructor.call(ir.FunctionType(ir.VoidType(), [ir.IntType(32)]).as_pointer(), 
-                  mi_modulo.get_global("printf"),
-                  [ir.Constant(ir.ArrayType(ir.IntType(8), 4), b"%d\n"), valor_contador])
+        # Crear bloques para el cuerpo del bucle y la salida del bucle
+        cuerpo_bloque = self.bucle_simple_func.append_basic_block(name="cuerpo")
+        salida_bloque = self.bucle_simple_func.append_basic_block(name="salida")
 
-# Incrementar el contador
-nuevo_valor_contador = constructor.add(valor_contador, ir.Constant(ir.IntType(32), 1), name="nuevo_valor_contador")
-constructor.store(nuevo_valor_contador, contador)
+        # Hacer una rama condicional
+        builder.cbranch(condicion, cuerpo_bloque, salida_bloque)
 
-# Hacer un salto incondicional al bloque del bucle
-constructor.branch(etiqueta_bucle)
+        # Posicionarse en el bloque del cuerpo del bucle
+        builder.position_at_end(cuerpo_bloque)
 
-# Posicionarse en el bloque de salida del bucle
-constructor.position_at_end(salida_bloque)
+        # Aquí deberías generar el código IR para el cuerpo del bucle
+        # En este ejemplo, simplemente imprimimos el valor del contador usando puts
+        format_str = ir.ArrayType(ir.IntType(8), 4)
+        global_format_str = ir.GlobalVariable(self.mi_modulo, format_str, "format_str")
+        global_format_str.initializer = ir.Constant(format_str, [ir.IntType(8)(char) for char in b"4%d\0"])
+        format_str_ptr = builder.bitcast(global_format_str, ir.IntType(8).as_pointer())
+        builder.call(self.puts_func, [format_str_ptr, valor_contador])
 
-# Retornar desde la función
-constructor.ret_void()
+        # Incrementar el contador
+        nuevo_valor_contador = builder.add(valor_contador, ir.Constant(ir.IntType(32), 1), name="nuevo_valor_contador")
+        builder.store(nuevo_valor_contador, contador)
+
+        # Hacer un salto incondicional al bloque del bucle
+        builder.branch(etiqueta_bucle)
+
+        # Posicionarse en el bloque de salida del bucle
+        builder.position_at_end(salida_bloque)
+
+        # Retornar desde la función
+        builder.ret(valor_contador)
+
+        # Imprimir el código IR generado de manera legible
+        print(self.mi_modulo)
+# # Ejemplo de uso
+# simple_loop = SimpleLoop()
+# simple_loop.for_code_ir()
+# print(simple_loop.mi_modulo)
+
+def create_equality_function(module):
+    # Crear una función llamada "equality_function"
+    equality_func_type = ir.FunctionType(ir.IntType(1), [ir.IntType(32), ir.IntType(32)])
+    equality_func = ir.Function(module, equality_func_type, name="equality_function")
+
+    # Crear un constructor de IR para la función
+    builder = ir.IRBuilder(ir.Block(equality_func, name="entry"))
+
+    # Obtener los argumentos de la función
+    arg1, arg2 = equality_func.args
+
+    # Realizar la operación de igualdad (arg1 == arg2)
+    result = builder.icmp_signed("==", arg1, arg2, name="result")
+
+    # Retornar el resultado
+    builder.ret(result)
+
+    return equality_func
+
+
+# Inicializar el motor de ejecución para la funcion de igualdad
+binding.initialize()
+binding.initialize_native_target()
+binding.initialize_native_asmprinter()
+
+# Crear un módulo LLVM para la funcion de igualdad
+llvm_module = ir.Module()
+
+# Declarar la función de igualdad
+equality_func_ty = ir.FunctionType(ir.IntType(1), [ir.IntType(32), ir.IntType(32)])
+equality_func = ir.Function(llvm_module, equality_func_ty, name="equality_function")
+
+# Crear el cuerpo de la función de igualdad
+entry_block = equality_func.append_basic_block(name="entry")
+builder = ir.IRBuilder(entry_block)
+
+# Comparar los dos valores de entrada
+param1, param2 = equality_func.args
+result = builder.icmp_signed("==", param1, param2, name="result")
+
+# Retornar el resultado
+builder.ret(result)
 
 # Imprimir el código IR generado
-print(mi_modulo)
+print("Código IR generado:")
+print(str(llvm_module))
 
-#EJEMPLO DE USO
-# Configurar el motor de ejecución
-# llvm.initialize()
-# llvm.initialize_native_target()
-# llvm.initialize_native_asmprinter()
+# Configurar el motor de ejecución MCJIT
+target = binding.Target.from_default_triple()
+target_machine = target.create_target_machine()
+backing_mod = binding.parse_assembly(str(llvm_module))
+engine = binding.create_mcjit_compiler(backing_mod, target_machine)
 
-# # Crear un motor de ejecución
-# target = llvm.Target.from_default_triple()
-# target_machine = target.create_target_machine()
-# execution_engine = llvm.create_mcjit_compiler(llvm.parse_assembly(str(mi_modulo)), target_machine)
+# Obtener el puntero a la función de igualdad generada
+equality_func_ptr = engine.get_function_address("equality_function")
 
-# # Obtener una referencia a la función "bucle_simple"
-# bucle_simple_func_ptr = execution_engine.get_function_address("bucle_simple")
+# Definir el tipo de la función ctypes correctamente
+equality_function_type = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int, ctypes.c_int)
 
-# # Llamar a la función desde Python
-# bucle_simple_func_ptr()
+# Convertir el puntero a la función LLVM a una función ctypes
+equality_function = equality_function_type(equality_func_ptr)
 
-# # Limpiar y finalizar
-# llvm.shutdown()
+# Llamar a la función de igualdad
+result = equality_function(10, 10)
+print("Resultado de la igualdad:", result)
