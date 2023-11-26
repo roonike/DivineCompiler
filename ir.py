@@ -235,11 +235,126 @@ def ir_not(val):
     builder.ret(resul)
     imprimir(module,func.name,c_bool)
 
-
+def print_ir():
+    #tipos
+    i32 = ir.IntType(32)
+    voidptr_ty = ir.IntType(8).as_pointer()
+    #construccion basica    
+    module = ir.Module()
+    fnty = ir.FunctionType(ir.VoidType(), [])
+    func = ir.Function(module, fnty, name="printer")
     
-decl()
-asign()
-ir_and(True,False)
-ir_or(False,True)
-ir_not(False)
-array(1,2,3,0)
+    #declarar variable
+    formt = "Hola, %s! %i veces!\n\0"
+    #guardar el strin como constante de IR
+    c_formt = ir.Constant(ir.ArrayType(ir.IntType(8), len(formt)),
+                        bytearray(formt.encode("utf8")))
+    #guardar como variable global de ir
+    global_formt = ir.GlobalVariable(module, c_formt.type, name="fstr")
+    global_formt.linkage = 'internal'
+    global_formt.global_constant = True
+    global_formt.initializer = c_formt
+
+    #argumentos
+    arg = "Mundo\0"
+    
+    #constante con el valor del string
+    c_string_val = ir.Constant(ir.ArrayType(ir.IntType(8), len(arg)),
+                            bytearray(arg.encode("utf8")))
+
+    #declarando una funcion interna printf
+    printf_ty = ir.FunctionType(ir.IntType(32), [voidptr_ty], var_arg=True)
+    printf = ir.Function(module, printf_ty, name="printf")
+
+    #builder
+    builder = ir.IRBuilder(func.append_basic_block('entry'))
+
+    #allocar memoria y asignar la variable
+    c_string = builder.alloca(c_string_val.type)
+    builder.store(c_string_val, c_string)
+
+    # asignamos un valor arbitrario al entero
+    # int_val = i32(int(input("Cuantas veces? :")))
+    int_val = i32(8)
+
+    #le damos forma al argumento para el printf
+    formt_arg = builder.bitcast(global_formt, voidptr_ty)
+    ## llamado a la funcion printf
+    builder.call(printf, [formt_arg, c_string, int_val])
+
+    #la funcion retorna void
+    builder.ret_void()
+
+    #se imprime el modulo
+    print(str(module)) 
+    
+    
+    # este imprimir funciona mejor para este ejemplo
+    llvm_module = llvm.parse_assembly(str(module))
+    tm = llvm.Target.from_default_triple().create_target_machine()
+
+    with llvm.create_mcjit_compiler(llvm_module, tm) as ee:
+        ee.finalize_object()
+        fptr = ee.get_function_address("printer")
+        py_func = CFUNCTYPE(None)(fptr)
+        py_func() 
+
+
+def ir_matrix():
+    # Modulo
+    module = ir.Module()
+
+    # Funcion
+    function_type = ir.FunctionType(ir.VoidType(), [])
+    function = ir.Function(module, function_type, name="main")
+    block = function.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+
+    # Function for printf
+    printf_type = ir.FunctionType(ir.IntType(32), [ir.IntType(8).as_pointer(), ir.DoubleType()], var_arg=True)
+    printf = ir.Function(module, printf_type, name="printf")
+
+    # Format string
+    format_str = ir.GlobalVariable(module, ir.ArrayType(ir.IntType(8), len("%f %f %f\n")), name="format_str")
+    format_str.initializer = ir.Constant(ir.ArrayType(ir.IntType(8), len("%f %f %f\n")), bytearray("%f %f %f\n".encode()))
+    format_str.linkage = 'internal'
+
+    # La matriz se crea como un array de 9x1 en vez de 3x3 porque asi se almacena en memoria
+    matrix_values = [1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9]
+    matrix_type = ir.ArrayType(ir.DoubleType(), 9)
+    matrix_ptr = builder.alloca(matrix_type, name="matrix")
+
+    # Initialize the matrix with values
+    for i, value in enumerate(matrix_values):
+        index = builder.gep(matrix_ptr, [ir.Constant(ir.IntType(32), 0), ir.Constant(ir.IntType(32), i)])
+        builder.store(ir.Constant(ir.DoubleType(), value), index)
+
+    # Print the matrix
+    format_str_ptr = builder.bitcast(format_str, ir.IntType(8).as_pointer())
+    for i in range(3):
+        index = builder.gep(matrix_ptr, [ir.Constant(ir.IntType(32), 0), ir.Constant(ir.IntType(32), i * 3)])
+        value1 = builder.load(index)
+        index = builder.gep(matrix_ptr, [ir.Constant(ir.IntType(32), 0), ir.Constant(ir.IntType(32), i * 3 + 1)])
+        value2 = builder.load(index)
+        index = builder.gep(matrix_ptr, [ir.Constant(ir.IntType(32), 0), ir.Constant(ir.IntType(32), i * 3 + 2)])
+        value3 = builder.load(index)
+        builder.call(printf, [format_str_ptr, value1, value2, value3])
+
+    # Return from the function
+    builder.ret_void()
+
+    # Print the generated LLVM IR
+    print(module)
+    
+    # este imprimir funciona mejor para este ejemplo
+    llvm_module = llvm.parse_assembly(str(module))
+    tm = llvm.Target.from_default_triple().create_target_machine()
+
+    with llvm.create_mcjit_compiler(llvm_module, tm) as ee:
+        ee.finalize_object()
+        fptr = ee.get_function_address("main")
+        py_func = CFUNCTYPE(None)(fptr)
+        py_func() 
+
+
+ir_matrix()
