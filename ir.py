@@ -13,6 +13,42 @@ llvm.initialize_native_asmprinter()
 
 #CONDICIONALES
 
+def ifStmt(ast, builder, symbols):
+    i32 = ir.IntType(32)
+    f32 = ir.FloatType()
+    # define function parameters for function "main"
+    return_type = i32 #return void
+    argument_types = list() #can add ir.IntType(#), ir.FloatType() for arguments
+    func_name = "main"
+
+    # make a module
+    mod = ir.Module()
+
+    i32 = ir.IntType(32)
+    fn = ir.Function(mod, ir.FunctionType(i32, [i32, i32]), 'main')
+
+    builder = ir.IRBuilder(fn.append_basic_block())
+    [x, y] = fn.args
+    x.name = 'x'
+    y.name = 'y'
+
+    x_lt_y = builder.icmp_signed('<', x, y)
+    with builder.if_else(x_lt_y) as (then, orelse):
+        with then:
+            bb_then = builder.basic_block
+            out_then = builder.sub(y, x, name='out_then')
+        with orelse:
+            bb_orelse = builder.basic_block
+            out_orelse = builder.sub(x, y, name='out_orelse')
+
+    out_phi = builder.phi(i32)
+    out_phi.add_incoming(out_then, bb_then)
+    out_phi.add_incoming(out_orelse, bb_orelse)
+
+    builder.ret(out_phi)
+    print('The llvm IR generated is:')
+    print(mod)
+
 def whileStmt(ast, builder, symbols):
     i32 = ir.IntType(32) #integer with 32 bits
 
@@ -89,30 +125,6 @@ def whileStmt(ast, builder, symbols):
 
     builder.ret(x_value)
     print(module)
-
-    
-'''
-def ifStmt(ast, builder, symbols):
-    cond = expression(ast["cond"], symbols, builder)
-    returned = False
-    entry = builder.block
-    if "else_stmt" in ast:
-        with builder.if_else(cond) as (then, otherwise):
-            with then:
-                returned_then = stmt(ast["stmt"], builder, symbols)
-            with otherwise:
-                returned_else = stmt(ast["else_stmt"], builder, symbols)
-        returned = returned_then and returned_else
-
-    else:
-        with builder.if_then(cond):
-            stmt(ast["stmt"], builder, symbols)
-    if returned:
-        endif = builder.block
-        builder.function.blocks.remove(endif)
-    return returned
-    '''
-
 
 
 #DECLARACIONES#
