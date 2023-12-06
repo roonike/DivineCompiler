@@ -229,6 +229,8 @@ def operacionesBinarias():
     div()
     fdiv()
 
+#operacionesBinarias()
+
 #COMPARACIONES
 
 def biggerThan():
@@ -377,13 +379,12 @@ def comparaciones():
     equal()
     different()
 #CONDICIONALES
-
+#comparaciones()
 
 def ifStmt():
     i32 = ir.IntType(32)
     func_name = "ifStmt"
     mod = ir.Module()
-    i32 = ir.IntType(32)
 
     fn = ir.Function(mod, ir.FunctionType(i32, [i32, i32]), func_name)
 
@@ -406,17 +407,16 @@ def ifStmt():
 
     builder.ret(out_phi)
     
-    print(out_orelse)
     print(out_then)
-    #imprimir(mod,func_name, c_void_p)
+    print(out_orelse)
 
 def condicionales():
     ifStmt()
 
+#condicionales()
 #CICLOS
 
 def whileStmt():
-
     i32 = ir.IntType(32) #integer with 32 bits
 
     #make a module
@@ -495,9 +495,6 @@ def whileStmt():
     imprimir(module,func_name, c_int)
 
 def for_code_ir():
-        binding.initialize()
-        binding.initialize_native_target()
-        binding.initialize_native_asmprinter()
 
       #Create an LLVM module
         miModulo = ir.Module()
@@ -535,12 +532,14 @@ def for_code_ir():
         finalResult = builder.load(result)
         builder.ret(finalResult)
 
-        print(str(miModulo))
+        imprimir(miModulo,bucleSimpleFunction.name,c_int)
 
 # Llamar al método for
 def ciclos():
     whileStmt()
     for_code_ir()
+
+#ciclos()
 
 #DECLARACIONES#
 
@@ -600,6 +599,7 @@ def declaraciones():
     string_decl()
     bool_decl()
 
+#declaraciones()
 
 #ASIGNACIONES#
 
@@ -760,6 +760,8 @@ def asignaciones():
     array(23,32,33,1)
     ir_matrix()
 
+#asignaciones()
+
 #OPERADORES LOGICOS
 
 def ir_and(bool1,bool2):
@@ -801,6 +803,9 @@ def operadoresLogicos():
     ir_and(True,True)
     ir_or(False,False)
     ir_not(True)
+
+#operadoresLogicos()
+
 #ENTRADA/SALIDA
 
 def print_ir():
@@ -925,10 +930,30 @@ def entradaSalida():
     print_ir()
     scan_ir()
 
+#entradaSalida()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #operacionesBinarias()
 #comparaciones()
 #condicionales()
-ciclos()
+#ciclos()
 #declaraciones()
 #asignaciones()
 #operadoresLogicos()
