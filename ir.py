@@ -1,4 +1,4 @@
-from llvmlite import ir
+from llvmlite import ir, binding
 import llvmlite
 import llvmlite.binding as llvm
 from ctypes import CFUNCTYPE, c_int, c_float, c_bool, c_void_p, c_char_p, c_uint,cast
@@ -495,6 +495,10 @@ def whileStmt():
     imprimir(module,func_name, c_int)
 
 def for_code_ir():
+        binding.initialize()
+        binding.initialize_native_target()
+        binding.initialize_native_asmprinter()
+
       #Create an LLVM module
         miModulo = ir.Module()
 
@@ -506,32 +510,32 @@ def for_code_ir():
         bodyBlock = bucleSimpleFunction.append_basic_block(name="body")
         afterBlock = bucleSimpleFunction.append_basic_block(name="after")
 
-        # Declare the puts function in the module
-        putsTy = ir.FunctionType(ir.IntType(32), [ir.IntType(8).as_pointer()], False)
-        putsFunc = ir.Function(miModulo, putsTy, name="puts")
-
-        # Start construction of IR
+         # Start construction of IR
         builder = ir.IRBuilder(entryBlock)
 
-        # Insert a conditional jump to the body block
-        conditional = builder.icmp_unsigned('==', ir.Constant(ir.IntType(32), 0), ir.Constant(ir.IntType(32), 0))
-        builder.cbranch(conditional, bodyBlock, afterBlock)
+        # calculate return value
+        result = builder.alloca(ir.IntType(32), name="result")
+        builder.store(ir.Constant(ir.IntType(32), 0), result)
+
+        # Start for
+        builder.branch(bodyBlock)
 
         # Build the loop bodyBuild the loop body
         builder.position_at_end(bodyBlock)
-
-        # Call the puts function within the loop
-        builder.call(putsFunc, [ir.Constant(ir.IntType(8).as_pointer(), "Hola Mundo!\0")])
-
-        # jump to start the loop
-        builder.branch(entryBlock)
+        index = builder.load(result)
+        newValue = builder.add(index, ir.Constant(ir.IntType(32), 1))
+        builder.store(newValue, result)
+        condition = builder.icmp_unsigned('==', newValue, ir.Constant(ir.IntType(32), 10))
+        builder.cbranch(condition, afterBlock, bodyBlock)
 
         # build block after loop
         builder.position_at_end(afterBlock)
-        result = builder.add(ir.Constant(ir.IntType(32), 10), ir.Constant(ir.IntType(32), 32))
-        builder.ret(result)
-        # Print the Intermediate Representation (IR) Code
-        imprimir(miModulo,bucleSimpleFunction.name,c_char_p)
+
+        # Return result
+        finalResult = builder.load(result)
+        builder.ret(finalResult)
+
+        print(str(miModulo))
 
 # Llamar al método for
 def ciclos():
