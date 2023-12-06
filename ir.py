@@ -307,70 +307,73 @@ def asign():
 
 #Igualdad
 
-def create_equality_function(module):
-    # Crear una función llamada "equality_function"
+def createEqualityFunctionIR(module):
+    # Create a function called "equality_function"
     equality_func_type = ir.FunctionType(ir.IntType(1), [ir.IntType(32), ir.IntType(32)])
     equality_func = ir.Function(module, equality_func_type, name="equality_function")
 
-    # Crear un constructor de IR para la función
+    # Create IR constructor function
     builder = ir.IRBuilder(ir.Block(equality_func, name="entry"))
 
-    # Obtener los argumentos de la función
+    # Get function arguments
     arg1, arg2 = equality_func.args
 
-    # Realizar la operación de igualdad (arg1 == arg2)
+    # equality operation (arg1 == arg2)
     result = builder.icmp_signed("==", arg1, arg2, name="result")
 
-    # Retornar el resultado
+    # Return result
     builder.ret(result)
 
     return equality_func
 
 
-# Inicializar el motor de ejecución para la funcion de igualdad
+# Initialize the body for the equality function
 def igualdad():
     llvm.initialize()
     llvm.initialize_native_target()
     llvm.initialize_native_asmprinter()
 
-# Crear un módulo LLVM para la funcion de igualdad
-    llvm_module = ir.Module()
+# Create an LLVM module for the equality function
+    llvmModule = ir.Module()
 
-# Declarar la función de igualdad
+# Call function to create equality function
+    equalityFunction = createEqualityFunctionIR(llvmModule)
+
+# Declare the equality function
     equality_func_ty = ir.FunctionType(ir.IntType(1), [ir.IntType(32), ir.IntType(32)])
-    equality_func = ir.Function(llvm_module, equality_func_ty, name="equality_function")
+   # equality_func = ir.Function(llvm_module, equality_func_ty, name="equality_function")
 
-# Crear el cuerpo de la función de igualdad
-    entry_block = equality_func.append_basic_block(name="entry")
+# Create the body of the equality function
+    entry_block = equalityFunction.append_basic_block(name="entry")
     builder = ir.IRBuilder(entry_block)
 
-# Comparar los dos valores de entrada
-    param1, param2 = equality_func.args
+# Compare the two input values
+    param1, param2 = equalityFunction.args
     result = builder.icmp_signed("==", param1, param2, name="result")
 
-# Retornar el resultado
+# Return the result
     builder.ret(result)
 
-# Imprimir el código IR generado
+# Print the generated IR code
     print("Código IR generado:")
-    print(str(llvm_module))
+    print(str(llvmModule))
 
-# Configurar el motor de ejecución MCJIT
+# Configure the MCJIT motor
     target = llvm.Target.from_default_triple()
     target_machine = target.create_target_machine()
-    backing_mod = llvm.parse_assembly(str(llvm_module))
+    backing_mod = llvm.parse_assembly(str(llvmModule))
     engine = llvm.create_mcjit_compiler(backing_mod, target_machine)
 
-# Obtener el puntero a la función de igualdad generada
+# Get the pointer to the generated equality function
     equality_func_ptr = engine.get_function_address("equality_function")
 
-# Definir el tipo de la función ctypes correctamente
+# Define the type of the ctypes function correctly
     equality_function_type = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int, ctypes.c_int)
 
-# Convertir el puntero a la función LLVM a una función ctypes
+# Convert the pointer to the LLVM function to a ctypes function
     equality_function = equality_function_type(equality_func_ptr)
 
-# Llamar a la función de igualdad
+# Call the equality function
     result = equality_function(10, 10)
     print("Resultado de la igualdad:", result)
 
