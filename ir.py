@@ -503,7 +503,7 @@ def for_code_ir():
         miModulo = ir.Module()
 
         # Create a function  "simple_loop"
-        bucleSimpleFunction = ir.Function(miModulo, ir.FunctionType(ir.IntType(32), []), name="bucleSimple")
+        bucleSimpleFunction = ir.Function(miModulo, ir.FunctionType(ir.IntType(32), []), name="ForCodeIR")
 
         # Create basic blocks
         entryBlock = bucleSimpleFunction.append_basic_block(name="entry")
