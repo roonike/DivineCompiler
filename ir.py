@@ -1,39 +1,382 @@
 from llvmlite import ir
 import llvmlite
 import llvmlite.binding as llvm
-import ctypes
+from ctypes import CFUNCTYPE, c_int, c_float, c_bool, c_void_p, c_char_p, c_uint,cast
+
 
 
 llvm.initialize()
 llvm.initialize_native_target()
 llvm.initialize_native_asmprinter()
 
+def imprimir(module,func_name,r_type = c_void_p):
+    llvm_ir_parsed = llvm.parse_assembly(str(module))
+    llvm_ir_parsed.verify()
+
+    # JIT
+    target_machine = llvm.Target.from_default_triple().create_target_machine()
+    engine = llvm.create_mcjit_compiler(llvm_ir_parsed, target_machine)
+    engine.finalize_object()
+
+    #Run the function with name func_name. This is why it makes sense to have a 'main' function that calls other functions.
+    entry = engine.get_function_address(func_name)
+    cfunc = CFUNCTYPE(r_type)(entry)
+    
+    result = cfunc()
+
+    print('The llvm IR generated is:')
+    print(module)
+    print()
+    if r_type == c_void_p:
+        print('Function does not return a value.')
+    elif r_type == c_char_p:
+        result_str = cast(result, c_char_p).value.decode("utf-8")
+        print(f'It returns "{result_str}"')
+    else:
+        print(f'It returns {result}')
+    print()
+
 #OPERACIONES BINARIAS
 
+def add():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    fnty = ir.FunctionType(integer, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="add")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    #a, b= func.args
+    a = integer(3)
+    b = integer (5)
+    result = builder.add(a, b, name="res")
+    builder.ret(result)
+
+    # Print the module IR
+    imprimir(module, "add", c_int)
+
+def fadd():
+
+    # Create some useful types
+    float = ir.FloatType()
+    fnty = ir.FunctionType(float, (float, float))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    # and declare a function named "fpadd" inside it
+    func = ir.Function(module, fnty, name="fadd")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    #a, b= func.args
+
+    a = float(3.5)
+    b = float (5.3)
+
+    result = builder.fadd(a, b, name="res")
+    builder.ret(result)
+
+    # Print the module IR
+    print(module)
+    imprimir(module, "fadd", c_float)
+
+def sub():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    fnty = ir.FunctionType(integer, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="sub")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(3)
+    b = integer (5)
+    result = builder.sub(a, b, name="res")
+    builder.ret(result)
+
+    # Print the module IR
+    imprimir(module, "sub", c_int)
+
+def fsub():
+
+    # Create some useful types
+    float = ir.FloatType()
+    fnty = ir.FunctionType(float, (float, float))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    # and declare a function named "fpadd" inside it
+    func = ir.Function(module, fnty, name="fsub")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = float(3.5)
+    b = float (5.3)
+    result = builder.fsub(a, b, name="res")
+    builder.ret(result)
+
+    # Print the module IR
+    print(module)
+    imprimir(module, "fsub", c_float)
+
+
+def mul():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    fnty = ir.FunctionType(integer, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="mul")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(3)
+    b = integer (5)
+    result = builder.mul(a, b, name="res")
+    builder.ret(result)
+
+    # Print the module IR
+    imprimir(module, "mul", c_int)
+
+def fmul():
+
+    # Create some useful types
+    float = ir.FloatType()
+    fnty = ir.FunctionType(float, (float, float))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    # and declare a function named "fpadd" inside it
+    func = ir.Function(module, fnty, name="fmul")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = float(3.5)
+    b = float (5.3)
+    result = builder.fmul(a, b, name="res")
+    builder.ret(result)
+
+    # Print the module IR
+    print(module)
+    imprimir(module, "fmul", c_float)
+
+def div():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    fnty = ir.FunctionType(integer, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="div")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(15)
+    b = integer (5)
+    result = builder.sdiv(a, b, name="res")
+    builder.ret(result)
+
+
+    # Print the module IR
+    imprimir(module, "div", c_int)
+
+def fdiv():
+
+    # Create some useful types
+    float = ir.FloatType()
+    fnty = ir.FunctionType(float, (float, float))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    # and declare a function named "fpadd" inside it
+    func = ir.Function(module, fnty, name="fdiv")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = float(3.5)
+    b = float (5.3)
+    result = builder.fdiv(a, b, name="res")
+    builder.ret(result)
+
+    # Print the module IR
+    print(module)
+    imprimir(module, "fdiv", c_float)
+
+
+
+#COMPARACIONES
+
+def biggerThan():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    bool = ir.IntType(1)
+    fnty = ir.FunctionType(bool, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="biggerThan")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(5)
+    b = integer (15)
+    result = builder.icmp_signed('>', a, b)
+    builder.ret(result)
+
+
+    # Print the module IR
+    imprimir(module, func.name, c_bool)
+
+def biggerThanOrEqual():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    bool = ir.IntType(1)
+    fnty = ir.FunctionType(bool, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="biggerThanOrEqual")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(5)
+    b = integer (5)
+    result = builder.icmp_signed('>=', a, b)
+    builder.ret(result)
+
+
+    # Print the module IR
+    imprimir(module, func.name, c_bool)
+
+def lessThan():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    bool = ir.IntType(1)
+    fnty = ir.FunctionType(bool, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="lessThan")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(5)
+    b = integer (15)
+    result = builder.icmp_signed('<', a, b)
+    builder.ret(result)
+
+
+    # Print the module IR
+    imprimir(module, func.name, c_bool)
+
+def lessThanOrEqual():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    bool = ir.IntType(1)
+    fnty = ir.FunctionType(bool, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="lessThanOrEqual")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(5)
+    b = integer (5)
+    result = builder.icmp_signed('<=', a, b)
+    builder.ret(result)
+
+
+    # Print the module IR
+    imprimir(module, func.name, c_bool)
+
+def equal():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    bool = ir.IntType(1)
+    fnty = ir.FunctionType(bool, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="equal")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(5)
+    b = integer (5)
+    result = builder.icmp_signed('==', a, b)
+    builder.ret(result)
+
+
+    # Print the module IR
+    imprimir(module, func.name, c_bool)
+
+def different():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    bool = ir.IntType(1)
+    fnty = ir.FunctionType(bool, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="different")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(5)
+    b = integer (4)
+    result = builder.icmp_signed('!=', a, b)
+    builder.ret(result)
+
+
+    # Print the module IR
+    imprimir(module, func.name, c_bool)
 
 #CONDICIONALES
 
-#IF
 
-def ifStmt(ast, builder, symbols):
+def ifStmt():
     i32 = ir.IntType(32)
-    f32 = ir.FloatType()
-    # define function parameters for function "main"
-    return_type = i32 #return void
-    argument_types = list() #can add ir.IntType(#), ir.FloatType() for arguments
     func_name = "ifStmt"
-
-    # make a module
     mod = ir.Module()
-
     i32 = ir.IntType(32)
-    fn = ir.Function(mod, ir.FunctionType(i32, [i32, i32]), 'ifStmt')
+
+    fn = ir.Function(mod, ir.FunctionType(i32, [i32, i32]), func_name)
 
     builder = ir.IRBuilder(fn.append_basic_block())
     [x, y] = fn.args
     x.name = 'x'
     y.name = 'y'
-
     x_lt_y = builder.icmp_signed('<', x, y)
     with builder.if_else(x_lt_y) as (then, orelse):
         with then:
@@ -48,12 +391,14 @@ def ifStmt(ast, builder, symbols):
     out_phi.add_incoming(out_orelse, bb_orelse)
 
     builder.ret(out_phi)
-    print('The llvm IR generated is:')
-    print(mod)
+    
+    print(out_orelse)
+    print(out_then)
+    #imprimir(mod,func_name, c_void_p)
 
-# WHILE
 
-def whileStmt(ast, builder, symbols):
+def whileStmt():
+
     i32 = ir.IntType(32) #integer with 32 bits
 
     #make a module
@@ -128,7 +473,8 @@ def whileStmt(ast, builder, symbols):
     # we return this value
 
     builder.ret(x_value)
-    print(module)
+    #print(module)
+    imprimir(module,func_name, c_int)
 
 
 #FOR
@@ -305,80 +651,18 @@ def asign():
     bool_asign(True)
 
 
-#Igualdad
 
-def createEqualityFunctionIR(module):
-    # Create a function called "equality_function"
-    equality_func_type = ir.FunctionType(ir.IntType(1), [ir.IntType(32), ir.IntType(32)])
-    equality_func = ir.Function(module, equality_func_type, name="equality_function")
-
-    # Create IR constructor function
-    builder = ir.IRBuilder(ir.Block(equality_func, name="entry"))
-
-    # Get function arguments
-    arg1, arg2 = equality_func.args
-
-    # equality operation (arg1 == arg2)
-    result = builder.icmp_signed("==", arg1, arg2, name="result")
-
-    # Return result
-    builder.ret(result)
-
-    return equality_func
-
-
-# Initialize the body for the equality function
-def igualdad():
-    llvm.initialize()
-    llvm.initialize_native_target()
-    llvm.initialize_native_asmprinter()
-
-# Create an LLVM module for the equality function
-    llvmModule = ir.Module()
-
-# Call function to create equality function
-    equalityFunction = createEqualityFunctionIR(llvmModule)
-
-# Declare the equality function
-    equality_func_ty = ir.FunctionType(ir.IntType(1), [ir.IntType(32), ir.IntType(32)])
-   # equality_func = ir.Function(llvm_module, equality_func_ty, name="equality_function")
-
-# Create the body of the equality function
-    entry_block = equalityFunction.append_basic_block(name="entry")
-    builder = ir.IRBuilder(entry_block)
-
-# Compare the two input values
-    param1, param2 = equalityFunction.args
-    result = builder.icmp_signed("==", param1, param2, name="result")
-
-# Return the result
-    builder.ret(result)
-
-# Print the generated IR code
-    print("Código IR generado:")
-    print(str(llvmModule))
-
-# Configure the MCJIT motor
-    target = llvm.Target.from_default_triple()
-    target_machine = target.create_target_machine()
-    backing_mod = llvm.parse_assembly(str(llvmModule))
-    engine = llvm.create_mcjit_compiler(backing_mod, target_machine)
-
-# Get the pointer to the generated equality function
-    equality_func_ptr = engine.get_function_address("equality_function")
-
-# Define the type of the ctypes function correctly
-    equality_function_type = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int, ctypes.c_int)
-
-# Convert the pointer to the LLVM function to a ctypes function
-    equality_function = equality_function_type(equality_func_ptr)
-
-# Call the equality function
-    result = equality_function(10, 10)
-    print("Resultado de la igualdad:", result)
-
-
-decl()    
-asign()
-igualdad()
-
+#decl()    
+#asign()
+#ifStmt()
+#whileStmt()
+#add()
+#fadd()
+#sub()
+#fsub()
+#mul()
+#fmul()
+#div()
+#fdiv()
+equal()
+different()
