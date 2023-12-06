@@ -13,13 +13,13 @@ llvm.initialize_native_asmprinter()
 
 #CONDICIONALES
 
-def ifStmt(ast, builder, symbols):
+def ifStmt():
     i32 = ir.IntType(32)
-    f32 = ir.FloatType()
+    #f32 = ir.FloatType()
     # define function parameters for function "main"
-    return_type = i32 #return void
-    argument_types = list() #can add ir.IntType(#), ir.FloatType() for arguments
-    func_name = "main"
+    #return_type = i32 #return void
+    #argument_types = list() #can add ir.IntType(#), ir.FloatType() for arguments
+    #func_name = "main"
 
     # make a module
     mod = ir.Module()
@@ -257,8 +257,6 @@ def asign():
     bool_asign(True)
 
 
-
-
-decl()    
-asign()
-
+#decl()    
+#asign()
+ifStmt()
