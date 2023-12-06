@@ -37,7 +37,6 @@ def imprimir(module,func_name,r_type = c_void_p):
     print()
 
 
-
 #DECLARACIONES#
 
 #enteros de 32 bits
@@ -199,7 +198,6 @@ def asign():
     bool_asign(True)
 
 
-
 def ir_and(bool1,bool2):
     bool = ir.IntType(1)
     module = ir.Module(name="AND_example")
@@ -249,6 +247,7 @@ def print_ir():
     #guardar el strin como constante de IR
     c_formt = ir.Constant(ir.ArrayType(ir.IntType(8), len(formt)),
                         bytearray(formt.encode("utf8")))
+    
     #guardar como variable global de ir
     global_formt = ir.GlobalVariable(module, c_formt.type, name="fstr")
     global_formt.linkage = 'internal'
@@ -262,7 +261,7 @@ def print_ir():
     c_string_val = ir.Constant(ir.ArrayType(ir.IntType(8), len(arg)),
                             bytearray(arg.encode("utf8")))
 
-    #declarando una funcion interna printf
+    #declarando funcion interna printf
     printf_ty = ir.FunctionType(ir.IntType(32), [voidptr_ty], var_arg=True)
     printf = ir.Function(module, printf_ty, name="printf")
 
@@ -274,13 +273,13 @@ def print_ir():
     builder.store(c_string_val, c_string)
 
     # asignamos un valor arbitrario al entero
-    # int_val = i32(int(input("Cuantas veces? :")))
     int_val = i32(8)
-
+    
     #le damos forma al argumento para el printf
-    formt_arg = builder.bitcast(global_formt, voidptr_ty)
+    formt_arg_printf = builder.bitcast(global_formt, voidptr_ty)
+    
     ## llamado a la funcion printf
-    builder.call(printf, [formt_arg, c_string, int_val])
+    builder.call(printf, [formt_arg_printf, c_string, int_val])
 
     #la funcion retorna void
     builder.ret_void()
@@ -299,6 +298,58 @@ def print_ir():
         py_func = CFUNCTYPE(None)(fptr)
         py_func() 
 
+def scan_ir():
+    i32 = ir.IntType(32)
+    char = ir.IntType(8)
+    voidptr_ty = ir.IntType(8).as_pointer()
+    module = ir.Module()
+    fnty = ir.FunctionType(ir.VoidType(), [])
+    func = ir.Function(module, fnty, name="scanner")
+    builder = ir.IRBuilder(func.append_basic_block('entry'))
+    
+    #declarando funcion interna printf
+    printf_ty = ir.FunctionType(ir.IntType(32), [voidptr_ty], var_arg=True)
+    printf = ir.Function(module, printf_ty, name="printf")
+    
+    #declarando funcion interna scanf
+    scanf_ty = ir.FunctionType(i32,[voidptr_ty],var_arg=True)
+    scanf = ir.Function(module,scanf_ty,name= "scanf")
+    
+    formt = "%d\0"
+    
+    formt_str = ir.Constant(ir.ArrayType(char, len(formt)),
+                        bytearray(formt.encode("utf8")))
+    
+    #guardar como variable global de ir
+    global_formt = ir.GlobalVariable(module, formt_str.type, name="input_int")
+    global_formt.linkage = 'internal'
+    global_formt.global_constant = True
+    global_formt.initializer = formt_str
+    
+    formt_str_ptr = builder.bitcast(global_formt, voidptr_ty)
+    
+    val = builder.alloca(char,name= 'Valor')
+    
+    builder.call(scanf,[formt_str_ptr,val])
+    
+    loaded_val = builder.load(val, name='Valor')
+    
+    builder.call(printf,[formt_str_ptr,loaded_val])
+    #la funcion retorna void
+    builder.ret_void()
+
+    #se imprime el modulo
+    print(str(module)) 
+    
+    # este imprimir funciona mejor para este ejemplo
+    llvm_module = llvm.parse_assembly(str(module))
+    tm = llvm.Target.from_default_triple().create_target_machine()
+
+    with llvm.create_mcjit_compiler(llvm_module, tm) as ee:
+        ee.finalize_object()
+        fptr = ee.get_function_address("scanner")
+        py_func = CFUNCTYPE(None)(fptr)
+        py_func() 
 
 def ir_matrix():
     # Modulo
@@ -356,5 +407,11 @@ def ir_matrix():
         py_func = CFUNCTYPE(None)(fptr)
         py_func() 
 
+scan_ir()
 
-ir_matrix()
+
+
+
+
+
+
