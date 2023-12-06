@@ -4,6 +4,7 @@ import llvmlite.binding as llvm
 from ctypes import CFUNCTYPE, c_int, c_float, c_bool, c_void_p, c_char_p, c_uint,cast
 
 
+
 llvm.initialize()
 llvm.initialize_native_target()
 llvm.initialize_native_asmprinter()
@@ -363,12 +364,15 @@ def different():
 
 #CONDICIONALES
 
+
 def ifStmt():
     i32 = ir.IntType(32)
     func_name = "ifStmt"
     mod = ir.Module()
     i32 = ir.IntType(32)
+
     fn = ir.Function(mod, ir.FunctionType(i32, [i32, i32]), func_name)
+
     builder = ir.IRBuilder(fn.append_basic_block())
     [x, y] = fn.args
     x.name = 'x'
@@ -392,7 +396,9 @@ def ifStmt():
     print(out_then)
     #imprimir(mod,func_name, c_void_p)
 
+
 def whileStmt():
+
     i32 = ir.IntType(32) #integer with 32 bits
 
     #make a module
@@ -401,15 +407,15 @@ def whileStmt():
     # define function parameters for function "main"
     return_type = i32 #return int
     argument_types = list() #can add ir.IntType(#), ir.FloatType() for arguments
-    func_name = "main"
+    func_name = "whileStmt"
 
     #make a function
     fnty = ir.FunctionType(return_type, argument_types)
-    main_func = ir.Function(module, fnty, name=func_name)
+    while_func = ir.Function(module, fnty, name=func_name)
 
     # append basic block named 'entry', and make builder
     # blocks generally have 1 entry and exit point, with no branches within the block
-    block = main_func.append_basic_block('entry')
+    block = while_func.append_basic_block('entry')
     builder = ir.IRBuilder(block)
 
 
@@ -470,6 +476,50 @@ def whileStmt():
     #print(module)
     imprimir(module,func_name, c_int)
 
+
+#FOR
+
+def for_code_ir():
+      #Create an LLVM module
+        miModulo = ir.Module()
+
+        # Create a function  "simple_loop"
+        bucleSimpleFunction = ir.Function(miModulo, ir.FunctionType(ir.IntType(32), []), name="bucleSimple")
+
+        # Create basic blocks
+        entryBlock = bucleSimpleFunction.append_basic_block(name="entry")
+        bodyBlock = bucleSimpleFunction.append_basic_block(name="body")
+        afterBlock = bucleSimpleFunction.append_basic_block(name="after")
+
+        # Declare the puts function in the module
+        putsTy = ir.FunctionType(ir.IntType(32), [ir.IntType(8).as_pointer()], False)
+        putsFunc = ir.Function(miModulo, putsTy, name="puts")
+
+        # Start construction of IR
+        builder = ir.IRBuilder(entryBlock)
+
+        # Insert a conditional jump to the body block
+        conditional = builder.icmp_unsigned('==', ir.Constant(ir.IntType(32), 0), ir.Constant(ir.IntType(32), 0))
+        builder.cbranch(conditional, bodyBlock, afterBlock)
+
+        # Build the loop bodyBuild the loop body
+        builder.position_at_end(bodyBlock)
+
+        # Call the puts function within the loop
+        #builder.call(putsFunc, [ir.Constant(ir.IntType(8).as_pointer(), "Hola Mundo!\0")])
+
+        # jump to start the loop
+        builder.branch(entryBlock)
+
+        # build block after loop
+        builder.position_at_end(afterBlock)
+        result = builder.add(ir.Constant(ir.IntType(32), 10), ir.Constant(ir.IntType(32), 32))
+        builder.ret(result)
+        # Print the Intermediate Representation (IR) Code
+        print(str(miModulo))
+
+# Llamar al método for
+for_code_ir()
 
 #DECLARACIONES#
 
@@ -599,6 +649,7 @@ def asign():
     float_asign(42.1337)
     string_asign("Hola Mundo")
     bool_asign(True)
+
 
 
 #decl()    
