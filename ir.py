@@ -1,7 +1,7 @@
 from llvmlite import ir
 import llvmlite
 import llvmlite.binding as llvm
-from ctypes import CFUNCTYPE, c_int, c_float, c_bool, c_void_p, c_char_p,cast
+from ctypes import CFUNCTYPE, c_int, c_float, c_bool, c_void_p, c_char_p, c_uint,cast
 
 
 llvm.initialize()
@@ -50,7 +50,9 @@ def add():
     # Now implement the function
     block = func.append_basic_block(name="entry")
     builder = ir.IRBuilder(block)
-    a, b= func.args
+    #a, b= func.args
+    a = integer(3)
+    b = integer (5)
     result = builder.add(a, b, name="res")
     builder.ret(result)
 
@@ -60,8 +62,8 @@ def add():
 def fadd():
 
     # Create some useful types
-    double = ir.DoubleType()
-    fnty = ir.FunctionType(double, (double, double))
+    float = ir.FloatType()
+    fnty = ir.FunctionType(float, (float, float))
 
     # Create an empty module...
     module = ir.Module(name="module")
@@ -71,7 +73,11 @@ def fadd():
     # Now implement the function
     block = func.append_basic_block(name="entry")
     builder = ir.IRBuilder(block)
-    a, b= func.args
+    #a, b= func.args
+
+    a = float(3.5)
+    b = float (5.3)
+
     result = builder.fadd(a, b, name="res")
     builder.ret(result)
 
@@ -92,7 +98,8 @@ def sub():
     # Now implement the function
     block = func.append_basic_block(name="entry")
     builder = ir.IRBuilder(block)
-    a, b= func.args
+    a = integer(3)
+    b = integer (5)
     result = builder.sub(a, b, name="res")
     builder.ret(result)
 
@@ -102,8 +109,8 @@ def sub():
 def fsub():
 
     # Create some useful types
-    double = ir.DoubleType()
-    fnty = ir.FunctionType(double, (double, double))
+    float = ir.FloatType()
+    fnty = ir.FunctionType(float, (float, float))
 
     # Create an empty module...
     module = ir.Module(name="module")
@@ -113,15 +120,129 @@ def fsub():
     # Now implement the function
     block = func.append_basic_block(name="entry")
     builder = ir.IRBuilder(block)
-    a, b= func.args
-    result = builder.fadd(a, b, name="res")
+    a = float(3.5)
+    b = float (5.3)
+    result = builder.fsub(a, b, name="res")
     builder.ret(result)
 
     # Print the module IR
     print(module)
     imprimir(module, "fsub", c_float)
 
-    
+
+def mul():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    fnty = ir.FunctionType(integer, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="mul")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(3)
+    b = integer (5)
+    result = builder.mul(a, b, name="res")
+    builder.ret(result)
+
+    # Print the module IR
+    imprimir(module, "mul", c_int)
+
+def fmul():
+
+    # Create some useful types
+    float = ir.FloatType()
+    fnty = ir.FunctionType(float, (float, float))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    # and declare a function named "fpadd" inside it
+    func = ir.Function(module, fnty, name="fmul")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = float(3.5)
+    b = float (5.3)
+    result = builder.fmul(a, b, name="res")
+    builder.ret(result)
+
+    # Print the module IR
+    print(module)
+    imprimir(module, "fmul", c_float)
+
+def div():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    fnty = ir.FunctionType(integer, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="div")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(15)
+    b = integer (5)
+    result = builder.sdiv(a, b, name="res")
+    builder.ret(result)
+
+
+    # Print the module IR
+    imprimir(module, "div", c_int)
+
+def fdiv():
+
+    # Create some useful types
+    float = ir.FloatType()
+    fnty = ir.FunctionType(float, (float, float))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    # and declare a function named "fpadd" inside it
+    func = ir.Function(module, fnty, name="fdiv")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = float(3.5)
+    b = float (5.3)
+    result = builder.fdiv(a, b, name="res")
+    builder.ret(result)
+
+    # Print the module IR
+    print(module)
+    imprimir(module, "fdiv", c_float)
+
+def div():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    fnty = ir.FunctionType(integer, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="div")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(15)
+    b = integer (5)
+    result = builder.sdiv(a, b, name="res")
+    builder.ret(result)
+
+
+    # Print the module IR
+    imprimir(module, "div", c_int)
+
+#COMPARACIONES
+
 #CONDICIONALES
 
 def ifStmt():
@@ -370,3 +491,7 @@ add()
 fadd()
 sub()
 fsub()
+mul()
+fmul()
+div()
+fdiv()
