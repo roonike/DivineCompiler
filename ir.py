@@ -1,7 +1,7 @@
 from llvmlite import ir
 import llvmlite
 import llvmlite.binding as llvm
-from ctypes import CFUNCTYPE, c_int, c_float
+import ctypes
 
 
 llvm.initialize()
@@ -13,19 +13,21 @@ llvm.initialize_native_asmprinter()
 
 #CONDICIONALES
 
+#IF
+
 def ifStmt(ast, builder, symbols):
     i32 = ir.IntType(32)
     f32 = ir.FloatType()
     # define function parameters for function "main"
     return_type = i32 #return void
     argument_types = list() #can add ir.IntType(#), ir.FloatType() for arguments
-    func_name = "main"
+    func_name = "ifStmt"
 
     # make a module
     mod = ir.Module()
 
     i32 = ir.IntType(32)
-    fn = ir.Function(mod, ir.FunctionType(i32, [i32, i32]), 'main')
+    fn = ir.Function(mod, ir.FunctionType(i32, [i32, i32]), 'ifStmt')
 
     builder = ir.IRBuilder(fn.append_basic_block())
     [x, y] = fn.args
@@ -49,6 +51,8 @@ def ifStmt(ast, builder, symbols):
     print('The llvm IR generated is:')
     print(mod)
 
+# WHILE
+
 def whileStmt(ast, builder, symbols):
     i32 = ir.IntType(32) #integer with 32 bits
 
@@ -58,15 +62,15 @@ def whileStmt(ast, builder, symbols):
     # define function parameters for function "main"
     return_type = i32 #return int
     argument_types = list() #can add ir.IntType(#), ir.FloatType() for arguments
-    func_name = "main"
+    func_name = "whileStmt"
 
     #make a function
     fnty = ir.FunctionType(return_type, argument_types)
-    main_func = ir.Function(module, fnty, name=func_name)
+    while_func = ir.Function(module, fnty, name=func_name)
 
     # append basic block named 'entry', and make builder
     # blocks generally have 1 entry and exit point, with no branches within the block
-    block = main_func.append_basic_block('entry')
+    block = while_func.append_basic_block('entry')
     builder = ir.IRBuilder(block)
 
 
@@ -126,6 +130,50 @@ def whileStmt(ast, builder, symbols):
     builder.ret(x_value)
     print(module)
 
+
+#FOR
+
+def for_code_ir():
+      #Create an LLVM module
+        miModulo = ir.Module()
+
+        # Create a function  "simple_loop"
+        bucleSimpleFunction = ir.Function(miModulo, ir.FunctionType(ir.IntType(32), []), name="bucleSimple")
+
+        # Create basic blocks
+        entryBlock = bucleSimpleFunction.append_basic_block(name="entry")
+        bodyBlock = bucleSimpleFunction.append_basic_block(name="body")
+        afterBlock = bucleSimpleFunction.append_basic_block(name="after")
+
+        # Declare the puts function in the module
+        putsTy = ir.FunctionType(ir.IntType(32), [ir.IntType(8).as_pointer()], False)
+        putsFunc = ir.Function(miModulo, putsTy, name="puts")
+
+        # Start construction of IR
+        builder = ir.IRBuilder(entryBlock)
+
+        # Insert a conditional jump to the body block
+        conditional = builder.icmp_unsigned('==', ir.Constant(ir.IntType(32), 0), ir.Constant(ir.IntType(32), 0))
+        builder.cbranch(conditional, bodyBlock, afterBlock)
+
+        # Build the loop bodyBuild the loop body
+        builder.position_at_end(bodyBlock)
+
+        # Call the puts function within the loop
+        #builder.call(putsFunc, [ir.Constant(ir.IntType(8).as_pointer(), "Hola Mundo!\0")])
+
+        # jump to start the loop
+        builder.branch(entryBlock)
+
+        # build block after loop
+        builder.position_at_end(afterBlock)
+        result = builder.add(ir.Constant(ir.IntType(32), 10), ir.Constant(ir.IntType(32), 32))
+        builder.ret(result)
+        # Print the Intermediate Representation (IR) Code
+        print(str(miModulo))
+
+# Llamar al método for
+for_code_ir()
 
 #DECLARACIONES#
 
@@ -257,8 +305,80 @@ def asign():
     bool_asign(True)
 
 
+#Igualdad
+
+def createEqualityFunctionIR(module):
+    # Create a function called "equality_function"
+    equality_func_type = ir.FunctionType(ir.IntType(1), [ir.IntType(32), ir.IntType(32)])
+    equality_func = ir.Function(module, equality_func_type, name="equality_function")
+
+    # Create IR constructor function
+    builder = ir.IRBuilder(ir.Block(equality_func, name="entry"))
+
+    # Get function arguments
+    arg1, arg2 = equality_func.args
+
+    # equality operation (arg1 == arg2)
+    result = builder.icmp_signed("==", arg1, arg2, name="result")
+
+    # Return result
+    builder.ret(result)
+
+    return equality_func
+
+
+# Initialize the body for the equality function
+def igualdad():
+    llvm.initialize()
+    llvm.initialize_native_target()
+    llvm.initialize_native_asmprinter()
+
+# Create an LLVM module for the equality function
+    llvmModule = ir.Module()
+
+# Call function to create equality function
+    equalityFunction = createEqualityFunctionIR(llvmModule)
+
+# Declare the equality function
+    equality_func_ty = ir.FunctionType(ir.IntType(1), [ir.IntType(32), ir.IntType(32)])
+   # equality_func = ir.Function(llvm_module, equality_func_ty, name="equality_function")
+
+# Create the body of the equality function
+    entry_block = equalityFunction.append_basic_block(name="entry")
+    builder = ir.IRBuilder(entry_block)
+
+# Compare the two input values
+    param1, param2 = equalityFunction.args
+    result = builder.icmp_signed("==", param1, param2, name="result")
+
+# Return the result
+    builder.ret(result)
+
+# Print the generated IR code
+    print("Código IR generado:")
+    print(str(llvmModule))
+
+# Configure the MCJIT motor
+    target = llvm.Target.from_default_triple()
+    target_machine = target.create_target_machine()
+    backing_mod = llvm.parse_assembly(str(llvmModule))
+    engine = llvm.create_mcjit_compiler(backing_mod, target_machine)
+
+# Get the pointer to the generated equality function
+    equality_func_ptr = engine.get_function_address("equality_function")
+
+# Define the type of the ctypes function correctly
+    equality_function_type = ctypes.CFUNCTYPE(ctypes.c_int, ctypes.c_int, ctypes.c_int)
+
+# Convert the pointer to the LLVM function to a ctypes function
+    equality_function = equality_function_type(equality_func_ptr)
+
+# Call the equality function
+    result = equality_function(10, 10)
+    print("Resultado de la igualdad:", result)
 
 
 decl()    
 asign()
+igualdad()
 
