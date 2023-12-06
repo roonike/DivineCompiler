@@ -37,17 +37,96 @@ def imprimir(module,func_name,r_type = c_void_p):
 
 #OPERACIONES BINARIAS
 
+def add():
 
+    # Create some useful types
+    integer = ir.IntType(32)
+    fnty = ir.FunctionType(integer, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="add")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a, b= func.args
+    result = builder.add(a, b, name="res")
+    builder.ret(result)
+
+    # Print the module IR
+    imprimir(module, "add", c_int)
+
+def fadd():
+
+    # Create some useful types
+    double = ir.DoubleType()
+    fnty = ir.FunctionType(double, (double, double))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    # and declare a function named "fpadd" inside it
+    func = ir.Function(module, fnty, name="fadd")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a, b= func.args
+    result = builder.fadd(a, b, name="res")
+    builder.ret(result)
+
+    # Print the module IR
+    print(module)
+    imprimir(module, "fadd", c_float)
+
+def sub():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    fnty = ir.FunctionType(integer, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="sub")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a, b= func.args
+    result = builder.sub(a, b, name="res")
+    builder.ret(result)
+
+    # Print the module IR
+    imprimir(module, "sub", c_int)
+
+def fsub():
+
+    # Create some useful types
+    double = ir.DoubleType()
+    fnty = ir.FunctionType(double, (double, double))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    # and declare a function named "fpadd" inside it
+    func = ir.Function(module, fnty, name="fsub")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a, b= func.args
+    result = builder.fadd(a, b, name="res")
+    builder.ret(result)
+
+    # Print the module IR
+    print(module)
+    imprimir(module, "fsub", c_float)
+
+    
 #CONDICIONALES
 
 def ifStmt():
-    #f32 = ir.FloatType()
-    # define function parameters for function "main"
-    #return_type = i32 #return void
-    #argument_types = list() #can add ir.IntType(#), ir.FloatType() for arguments
     i32 = ir.IntType(32)
     func_name = "ifStmt"
-    # make a module
     mod = ir.Module()
     i32 = ir.IntType(32)
     fn = ir.Function(mod, ir.FunctionType(i32, [i32, i32]), func_name)
@@ -287,3 +366,7 @@ def asign():
 #asign()
 ifStmt()
 whileStmt()
+add()
+fadd()
+sub()
+fsub()
