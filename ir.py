@@ -130,7 +130,6 @@ def fsub():
     print(module)
     imprimir(module, "fsub", c_float)
 
-
 def mul():
 
     # Create some useful types
@@ -522,7 +521,7 @@ def for_code_ir():
         builder.position_at_end(bodyBlock)
 
         # Call the puts function within the loop
-        #builder.call(putsFunc, [ir.Constant(ir.IntType(8).as_pointer(), "Hola Mundo!\0")])
+        builder.call(putsFunc, [ir.Constant(ir.IntType(8).as_pointer(), "Hola Mundo!\0")])
 
         # jump to start the loop
         builder.branch(entryBlock)
@@ -532,7 +531,7 @@ def for_code_ir():
         result = builder.add(ir.Constant(ir.IntType(32), 10), ir.Constant(ir.IntType(32), 32))
         builder.ret(result)
         # Print the Intermediate Representation (IR) Code
-        print(str(miModulo))
+        imprimir(miModulo,bucleSimpleFunction.name,c_char_p)
 
 # Llamar al método for
 def ciclos():
@@ -611,7 +610,8 @@ def int_asign(val):
     int_var = builder.alloca(var_type, name="intVar")
     int_val = i32(val)
     builder.store(int_val,int_var)
-    print(module)
+    builder.ret(int_val)
+    imprimir(module,func.name,c_int)
 
 def float_asign(val):
     f32 = ir.FloatType()
@@ -624,7 +624,8 @@ def float_asign(val):
     float_var = builder.alloca(var_type, name="floatVar")
     float_val = f32(val)
     builder.store(float_val,float_var)
-    print(module)    
+    builder.ret(float_val)
+    imprimir(module,func.name,c_float)
 
 def string_asign(val):
     char = ir.IntType(8)
@@ -641,23 +642,22 @@ def string_asign(val):
     string_var = builder.alloca(var_type, name="stringVar")
     string_val = string(string_arg)
     builder.store(string_val,string_var)
+    builder.ret(string_val)
     print(module)
 
 def bool_asign(val):
     bool = ir.IntType(1)
     module = ir.Module(name="module")
     fnty = ir.FunctionType(bool,[])
-    func = ir.Function(module,fnty,name= "int_asign")
+    func = ir.Function(module,fnty,name= "bool_asign")
     block = func.append_basic_block(name="entry")
     builder = ir.IRBuilder(block)
     var_type = bool
     bool_var = builder.alloca(var_type, name="boolVa-r")
-    if(val == True):
-        bool_val = bool(1) #True = 1
-    elif(val == False):
-        bool_val = bool(0) #False = 0
+    bool_val = bool(val)
     builder.store(bool_val,bool_var)
-    print(module)
+    builder.ret(bool_val)
+    imprimir(module,func.name,c_bool)
 
 #Arreglo de 3x1
 def array(val1,val2,val3,retval):
@@ -671,15 +671,15 @@ def array(val1,val2,val3,retval):
     builder = ir.IRBuilder(block)
     array_type = ir.ArrayType(i32,3)
     array_pointer = builder.alloca(array_type)
-    
+
     i32_0 = ir.Constant(i32, 0)
     i32_1 = ir.Constant(i32, 1)
     i32_2 = ir.Constant(i32, 2)
-    
+
     pointer_to_index_0 = builder.gep(array_pointer, [i32_0, i32_0]) #gets address of array[0]
     pointer_to_index_1 = builder.gep(array_pointer, [i32_0, i32_1]) #gets address of array[1]
     pointer_to_index_2 = builder.gep(array_pointer, [i32_0, i32_2]) #gets address of array[2]
-    
+
     builder.store(i32(val1), pointer_to_index_0) # posicion 0 = val1
     builder.store(i32(val2), pointer_to_index_1) # posicion 1 = val2
     builder.store(i32(val3), pointer_to_index_2) #posicion 2 = val3
@@ -753,6 +753,8 @@ def asignaciones():
     float_asign(42.1337)
     string_asign("Hola Mundo")
     bool_asign(True)
+    array(23,32,33,1)
+    ir_matrix()
 
 #OPERADORES LOGICOS
 
@@ -879,7 +881,7 @@ def scan_ir():
     scanf_ty = ir.FunctionType(i32,[voidptr_ty],var_arg=True)
     scanf = ir.Function(module,scanf_ty,name= "scanf")
     
-    formt = "%d\0"
+    formt = "Value is: %d\0"
     
     formt_str = ir.Constant(ir.ArrayType(char, len(formt)),
                         bytearray(formt.encode("utf8")))
@@ -919,11 +921,11 @@ def entradaSalida():
     print_ir()
     scan_ir()
 
-operacionesBinarias()
-comparaciones()
-condicionales()
+#operacionesBinarias()
+#comparaciones()
+#condicionales()
 ciclos()
-declaraciones()
-asignaciones()
-operadoresLogicos()
-entradaSalida()
+#declaraciones()
+#asignaciones()
+#operadoresLogicos()
+#entradaSalida()
