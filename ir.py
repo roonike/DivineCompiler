@@ -9,7 +9,14 @@ llvm.initialize_native_target()
 llvm.initialize_native_asmprinter()
 
 #OPERACIONES BINARIAS
+# function to represent subtractions
+def resta(operations):
+    for left, right in operations:
+        print("Esto es una resta de", left, "-", right)
 
+# Ejemplo de uso
+# operaciones_resta = [(1, 2), (1, 3), (5, 2)]
+# resta(operaciones_resta)
 
 #CONDICIONALES
 
