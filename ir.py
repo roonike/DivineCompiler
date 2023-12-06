@@ -219,29 +219,147 @@ def fdiv():
     print(module)
     imprimir(module, "fdiv", c_float)
 
-def div():
+
+
+#COMPARACIONES
+
+def biggerThan():
 
     # Create some useful types
     integer = ir.IntType(32)
-    fnty = ir.FunctionType(integer, (integer, integer))
+    bool = ir.IntType(1)
+    fnty = ir.FunctionType(bool, (integer, integer))
 
     # Create an empty module...
     module = ir.Module(name="module")
-    func = ir.Function(module, fnty, name="div")
+    func = ir.Function(module, fnty, name="biggerThan")
 
     # Now implement the function
     block = func.append_basic_block(name="entry")
     builder = ir.IRBuilder(block)
-    a = integer(15)
-    b = integer (5)
-    result = builder.sdiv(a, b, name="res")
+    a = integer(5)
+    b = integer (15)
+    result = builder.icmp_signed('>', a, b)
     builder.ret(result)
 
 
     # Print the module IR
-    imprimir(module, "div", c_int)
+    imprimir(module, func.name, c_bool)
 
-#COMPARACIONES
+def biggerThanOrEqual():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    bool = ir.IntType(1)
+    fnty = ir.FunctionType(bool, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="biggerThanOrEqual")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(5)
+    b = integer (5)
+    result = builder.icmp_signed('>=', a, b)
+    builder.ret(result)
+
+
+    # Print the module IR
+    imprimir(module, func.name, c_bool)
+
+def lessThan():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    bool = ir.IntType(1)
+    fnty = ir.FunctionType(bool, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="lessThan")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(5)
+    b = integer (15)
+    result = builder.icmp_signed('<', a, b)
+    builder.ret(result)
+
+
+    # Print the module IR
+    imprimir(module, func.name, c_bool)
+
+def lessThanOrEqual():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    bool = ir.IntType(1)
+    fnty = ir.FunctionType(bool, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="lessThanOrEqual")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(5)
+    b = integer (5)
+    result = builder.icmp_signed('<=', a, b)
+    builder.ret(result)
+
+
+    # Print the module IR
+    imprimir(module, func.name, c_bool)
+
+def equal():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    bool = ir.IntType(1)
+    fnty = ir.FunctionType(bool, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="equal")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(5)
+    b = integer (5)
+    result = builder.icmp_signed('==', a, b)
+    builder.ret(result)
+
+
+    # Print the module IR
+    imprimir(module, func.name, c_bool)
+
+def different():
+
+    # Create some useful types
+    integer = ir.IntType(32)
+    bool = ir.IntType(1)
+    fnty = ir.FunctionType(bool, (integer, integer))
+
+    # Create an empty module...
+    module = ir.Module(name="module")
+    func = ir.Function(module, fnty, name="different")
+
+    # Now implement the function
+    block = func.append_basic_block(name="entry")
+    builder = ir.IRBuilder(block)
+    a = integer(5)
+    b = integer (4)
+    result = builder.icmp_signed('!=', a, b)
+    builder.ret(result)
+
+
+    # Print the module IR
+    imprimir(module, func.name, c_bool)
 
 #CONDICIONALES
 
@@ -485,13 +603,15 @@ def asign():
 
 #decl()    
 #asign()
-ifStmt()
-whileStmt()
-add()
-fadd()
-sub()
-fsub()
-mul()
-fmul()
-div()
-fdiv()
+#ifStmt()
+#whileStmt()
+#add()
+#fadd()
+#sub()
+#fsub()
+#mul()
+#fmul()
+#div()
+#fdiv()
+equal()
+different()
