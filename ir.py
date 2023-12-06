@@ -1,12 +1,39 @@
 from llvmlite import ir
 import llvmlite
 import llvmlite.binding as llvm
-from ctypes import CFUNCTYPE, c_int, c_float
+from ctypes import CFUNCTYPE, c_int, c_float, c_bool, c_void_p, c_char_p,cast
 
 
 llvm.initialize()
 llvm.initialize_native_target()
 llvm.initialize_native_asmprinter()
+
+def imprimir(module,func_name,r_type = c_void_p):
+    llvm_ir_parsed = llvm.parse_assembly(str(module))
+    llvm_ir_parsed.verify()
+
+    # JIT
+    target_machine = llvm.Target.from_default_triple().create_target_machine()
+    engine = llvm.create_mcjit_compiler(llvm_ir_parsed, target_machine)
+    engine.finalize_object()
+
+    #Run the function with name func_name. This is why it makes sense to have a 'main' function that calls other functions.
+    entry = engine.get_function_address(func_name)
+    cfunc = CFUNCTYPE(r_type)(entry)
+    
+    result = cfunc()
+
+    print('The llvm IR generated is:')
+    print(module)
+    print()
+    if r_type == c_void_p:
+        print('Function does not return a value.')
+    elif r_type == c_char_p:
+        result_str = cast(result, c_char_p).value.decode("utf-8")
+        print(f'It returns "{result_str}"')
+    else:
+        print(f'It returns {result}')
+    print()
 
 #OPERACIONES BINARIAS
 
@@ -14,24 +41,20 @@ llvm.initialize_native_asmprinter()
 #CONDICIONALES
 
 def ifStmt():
-    i32 = ir.IntType(32)
     #f32 = ir.FloatType()
     # define function parameters for function "main"
     #return_type = i32 #return void
     #argument_types = list() #can add ir.IntType(#), ir.FloatType() for arguments
-    #func_name = "main"
-
+    i32 = ir.IntType(32)
+    func_name = "ifStmt"
     # make a module
     mod = ir.Module()
-
     i32 = ir.IntType(32)
-    fn = ir.Function(mod, ir.FunctionType(i32, [i32, i32]), 'main')
-
+    fn = ir.Function(mod, ir.FunctionType(i32, [i32, i32]), func_name)
     builder = ir.IRBuilder(fn.append_basic_block())
     [x, y] = fn.args
     x.name = 'x'
     y.name = 'y'
-
     x_lt_y = builder.icmp_signed('<', x, y)
     with builder.if_else(x_lt_y) as (then, orelse):
         with then:
@@ -46,10 +69,12 @@ def ifStmt():
     out_phi.add_incoming(out_orelse, bb_orelse)
 
     builder.ret(out_phi)
-    print('The llvm IR generated is:')
-    print(mod)
+    
+    print(out_orelse)
+    print(out_then)
+    #imprimir(mod,func_name, c_void_p)
 
-def whileStmt(ast, builder, symbols):
+def whileStmt():
     i32 = ir.IntType(32) #integer with 32 bits
 
     #make a module
@@ -124,7 +149,8 @@ def whileStmt(ast, builder, symbols):
     # we return this value
 
     builder.ret(x_value)
-    print(module)
+    #print(module)
+    imprimir(module,func_name, c_int)
 
 
 #DECLARACIONES#
@@ -260,3 +286,4 @@ def asign():
 #decl()    
 #asign()
 ifStmt()
+whileStmt()
