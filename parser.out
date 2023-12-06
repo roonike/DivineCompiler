@@ -2,86 +2,2943 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    ASSIGN
-    BREAK
-    CASE
-    DEF
-    DIVIDE
-    ELSE
-    FALSE
-    FOR
-    IF
-    MINUS
-    NUMERO
-    PLUS
-    REAL
-    SWITCH
-    TIMES
-    TRUE
+    DOUBLEQUOTES
+    LBRACKET
+    RBRACKET
+    RETURN
+    SINGLEQUOTES
     WHILE
 
 Grammar
 
 Rule 0     S' -> program
-Rule 1     program -> bloque_compuesto
-Rule 2     bloque_compuesto -> declaracion_variable bloque_compuesto
-Rule 3     bloque_compuesto -> declaracion_funcion bloque_compuesto
-Rule 4     bloque_compuesto -> asignacion_variable bloque_compuesto
-Rule 5     bloque_compuesto -> llamada_funcion bloque_compuesto
-Rule 6     bloque_compuesto -> empty
-Rule 7     declaracion_funcion -> TEXT parametros LBRACKET bloque_compuesto retorno RBRACKET
-Rule 8     declaracion_funcion -> LPAREN INT TEXT COMA INT TEXT RPAREN
-Rule 9     declaracion_funcion -> LPAREN STRING TEXT COMA STRING TEXT RPAREN
-Rule 10    retorno -> RETURN INT
-Rule 11    retorno -> RETURN STRING
-Rule 12    retorno -> RETURN BOOL
-Rule 13    retorno -> RETURN FLOAT
-Rule 14    llamada_funcion -> TEXT
-Rule 15    declaracion_variable -> TEXT
-Rule 16    asignacion_variable -> TEXT
-Rule 17    empty -> <empty>
+Rule 1     program -> statement
+Rule 2     program -> program statement
+Rule 3     declaration -> init_declarator PUNTOCOMA
+Rule 4     declaration -> declarator ASSIGN function_call
+Rule 5     init_declarator -> declarator
+Rule 6     init_declarator -> declarator ASSIGN assignment_expression
+Rule 7     declarator -> ID DOSPUNTOS type_specifier
+Rule 8     declarator -> NUMERO ID DOSPUNTOS type_specifier
+Rule 9     type_specifier -> INT
+Rule 10    type_specifier -> FLOAT
+Rule 11    type_specifier -> STRING
+Rule 12    type_specifier -> BOOL
+Rule 13    literal -> NUMERO
+Rule 14    literal -> REAL
+Rule 15    literal -> TEXT
+Rule 16    literal -> TRUE
+Rule 17    literal -> FALSE
+Rule 18    primary_expression -> ID
+Rule 19    primary_expression -> literal
+Rule 20    primary_expression -> LPAREN assignment_expression RPAREN
+Rule 21    additive_expression -> primary_expression
+Rule 22    additive_expression -> additive_expression PLUS primary_expression
+Rule 23    additive_expression -> additive_expression MINUS primary_expression
+Rule 24    multiplicative_expression -> additive_expression
+Rule 25    multiplicative_expression -> multiplicative_expression TIMES additive_expression
+Rule 26    multiplicative_expression -> multiplicative_expression DIVIDE additive_expression
+Rule 27    relational_expression -> multiplicative_expression
+Rule 28    relational_expression -> relational_expression MENORQUE multiplicative_expression
+Rule 29    relational_expression -> relational_expression MAYORQUE multiplicative_expression
+Rule 30    relational_expression -> relational_expression MENORIGUAL multiplicative_expression
+Rule 31    relational_expression -> relational_expression MAYORIGUAL multiplicative_expression
+Rule 32    equality_expression -> relational_expression
+Rule 33    equality_expression -> equality_expression IGUALIGUAL relational_expression
+Rule 34    equality_expression -> equality_expression NOIGUAL relational_expression
+Rule 35    and_expression -> equality_expression
+Rule 36    and_expression -> and_expression AND equality_expression
+Rule 37    or_expression -> and_expression
+Rule 38    or_expression -> or_expression OR and_expression
+Rule 39    assignment_expression -> or_expression
+Rule 40    assignment_expression -> primary_expression ASSIGN multiplicative_expression
+Rule 41    statement -> function_call
+Rule 42    statement -> compound_statement
+Rule 43    statement -> assignment_statement
+Rule 44    statement -> function_definition
+Rule 45    statement -> declaration
+Rule 46    statement -> selection_statement
+Rule 47    statement -> iteration_statement
+Rule 48    statement_list -> statement
+Rule 49    statement_list -> statement_list statement
+Rule 50    compound_statement -> LPAREN RPAREN
+Rule 51    compound_statement -> LPAREN statement_list RPAREN
+Rule 52    assignment_statement -> assignment_expression PUNTOCOMA
+Rule 53    assignment_statement -> primary_expression ASSIGN function_call
+Rule 54    ID_list -> empty
+Rule 55    ID_list -> ID DOSPUNTOS type_specifier
+Rule 56    ID_list -> ID_list COMA ID DOSPUNTOS type_specifier
+Rule 57    parameter_list -> empty
+Rule 58    parameter_list -> assignment_expression
+Rule 59    parameter_list -> parameter_list COMA assignment_expression
+Rule 60    function_definition -> DEF ID LPAREN ID_list RPAREN compound_statement
+Rule 61    function_call -> ID LPAREN parameter_list RPAREN PUNTOCOMA
+Rule 62    selection_statement -> IF assignment_expression compound_statement
+Rule 63    selection_statement -> IF assignment_expression compound_statement ELSE compound_statement
+Rule 64    iteration_statement -> FOR LPAREN NUMERO RPAREN DOSPUNTOS
+Rule 65    empty -> <empty>
 
 Terminals, with rules where they appear
 
-ASSIGN               : 
+AND                  : 36
+ASSIGN               : 4 6 40 53
 BOOL                 : 12
-BREAK                : 
-CASE                 : 
-COMA                 : 8 9
-DEF                  : 
-DIVIDE               : 
-ELSE                 : 
-FALSE                : 
-FLOAT                : 13
-FOR                  : 
-IF                   : 
-INT                  : 8 8 10
-LBRACKET             : 7
-LPAREN               : 8 9
-MINUS                : 
-NUMERO               : 
-PLUS                 : 
-RBRACKET             : 7
-REAL                 : 
-RETURN               : 10 11 12 13
-RPAREN               : 8 9
-STRING               : 9 9 11
-SWITCH               : 
-TEXT                 : 7 8 8 9 9 14 15 16
-TIMES                : 
-TRUE                 : 
+COMA                 : 56 59
+DEF                  : 60
+DIVIDE               : 26
+DOSPUNTOS            : 7 8 55 56 64
+DOUBLEQUOTES         : 
+ELSE                 : 63
+FALSE                : 17
+FLOAT                : 10
+FOR                  : 64
+ID                   : 7 8 18 55 56 60 61
+IF                   : 62 63
+IGUALIGUAL           : 33
+INT                  : 9
+LBRACKET             : 
+LPAREN               : 20 50 51 60 61 64
+MAYORIGUAL           : 31
+MAYORQUE             : 29
+MENORIGUAL           : 30
+MENORQUE             : 28
+MINUS                : 23
+NOIGUAL              : 34
+NUMERO               : 8 13 64
+OR                   : 38
+PLUS                 : 22
+PUNTOCOMA            : 3 52 61
+RBRACKET             : 
+REAL                 : 14
+RETURN               : 
+RPAREN               : 20 50 51 60 61 64
+SINGLEQUOTES         : 
+STRING               : 11
+TEXT                 : 15
+TIMES                : 25
+TRUE                 : 16
 WHILE                : 
 error                : 
 
 Nonterminals, with rules where they appear
 
-asignacion_variable  : 4
-bloque_compuesto     : 1 2 3 4 5 7
-declaracion_funcion  : 3
-declaracion_variable : 2
-empty                : 6
-llamada_funcion      : 5
-parametros           : 7
-program              : 0
-retorno              : 7
+ID_list              : 56 60
+additive_expression  : 22 23 24 25 26
+and_expression       : 36 37 38
+assignment_expression : 6 20 52 58 59 62 63
+assignment_statement : 43
+compound_statement   : 42 60 62 63 63
+declaration          : 45
+declarator           : 4 5 6
+empty                : 54 57
+equality_expression  : 33 34 35 36
+function_call        : 4 41 53
+function_definition  : 44
+init_declarator      : 3
+iteration_statement  : 47
+literal              : 19
+multiplicative_expression : 25 26 27 28 29 30 31 40
+or_expression        : 38 39
+parameter_list       : 59 61
+primary_expression   : 21 22 23 40 53
+program              : 2 0
+relational_expression : 28 29 30 31 32 33 34
+selection_statement  : 46
+statement            : 1 2 48 49
+statement_list       : 49 51
+type_specifier       : 7 8 55 56
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . statement
+    (2) program -> . program statement
+    (41) statement -> . function_call
+    (42) statement -> . compound_statement
+    (43) statement -> . assignment_statement
+    (44) statement -> . function_definition
+    (45) statement -> . declaration
+    (46) statement -> . selection_statement
+    (47) statement -> . iteration_statement
+    (61) function_call -> . ID LPAREN parameter_list RPAREN PUNTOCOMA
+    (50) compound_statement -> . LPAREN RPAREN
+    (51) compound_statement -> . LPAREN statement_list RPAREN
+    (52) assignment_statement -> . assignment_expression PUNTOCOMA
+    (53) assignment_statement -> . primary_expression ASSIGN function_call
+    (60) function_definition -> . DEF ID LPAREN ID_list RPAREN compound_statement
+    (3) declaration -> . init_declarator PUNTOCOMA
+    (4) declaration -> . declarator ASSIGN function_call
+    (62) selection_statement -> . IF assignment_expression compound_statement
+    (63) selection_statement -> . IF assignment_expression compound_statement ELSE compound_statement
+    (64) iteration_statement -> . FOR LPAREN NUMERO RPAREN DOSPUNTOS
+    (39) assignment_expression -> . or_expression
+    (40) assignment_expression -> . primary_expression ASSIGN multiplicative_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (5) init_declarator -> . declarator
+    (6) init_declarator -> . declarator ASSIGN assignment_expression
+    (7) declarator -> . ID DOSPUNTOS type_specifier
+    (8) declarator -> . NUMERO ID DOSPUNTOS type_specifier
+    (37) or_expression -> . and_expression
+    (38) or_expression -> . or_expression OR and_expression
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+    (35) and_expression -> . equality_expression
+    (36) and_expression -> . and_expression AND equality_expression
+    (32) equality_expression -> . relational_expression
+    (33) equality_expression -> . equality_expression IGUALIGUAL relational_expression
+    (34) equality_expression -> . equality_expression NOIGUAL relational_expression
+    (27) relational_expression -> . multiplicative_expression
+    (28) relational_expression -> . relational_expression MENORQUE multiplicative_expression
+    (29) relational_expression -> . relational_expression MAYORQUE multiplicative_expression
+    (30) relational_expression -> . relational_expression MENORIGUAL multiplicative_expression
+    (31) relational_expression -> . relational_expression MAYORIGUAL multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+
+    ID              shift and go to state 10
+    LPAREN          shift and go to state 11
+    DEF             shift and go to state 14
+    IF              shift and go to state 17
+    FOR             shift and go to state 18
+    NUMERO          shift and go to state 19
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    program                        shift and go to state 1
+    statement                      shift and go to state 2
+    function_call                  shift and go to state 3
+    compound_statement             shift and go to state 4
+    assignment_statement           shift and go to state 5
+    function_definition            shift and go to state 6
+    declaration                    shift and go to state 7
+    selection_statement            shift and go to state 8
+    iteration_statement            shift and go to state 9
+    assignment_expression          shift and go to state 12
+    primary_expression             shift and go to state 13
+    init_declarator                shift and go to state 15
+    declarator                     shift and go to state 16
+    or_expression                  shift and go to state 20
+    multiplicative_expression      shift and go to state 21
+    literal                        shift and go to state 22
+    and_expression                 shift and go to state 23
+    equality_expression            shift and go to state 28
+    relational_expression          shift and go to state 29
+    additive_expression            shift and go to state 30
+
+state 1
+
+    (0) S' -> program .
+    (2) program -> program . statement
+    (41) statement -> . function_call
+    (42) statement -> . compound_statement
+    (43) statement -> . assignment_statement
+    (44) statement -> . function_definition
+    (45) statement -> . declaration
+    (46) statement -> . selection_statement
+    (47) statement -> . iteration_statement
+    (61) function_call -> . ID LPAREN parameter_list RPAREN PUNTOCOMA
+    (50) compound_statement -> . LPAREN RPAREN
+    (51) compound_statement -> . LPAREN statement_list RPAREN
+    (52) assignment_statement -> . assignment_expression PUNTOCOMA
+    (53) assignment_statement -> . primary_expression ASSIGN function_call
+    (60) function_definition -> . DEF ID LPAREN ID_list RPAREN compound_statement
+    (3) declaration -> . init_declarator PUNTOCOMA
+    (4) declaration -> . declarator ASSIGN function_call
+    (62) selection_statement -> . IF assignment_expression compound_statement
+    (63) selection_statement -> . IF assignment_expression compound_statement ELSE compound_statement
+    (64) iteration_statement -> . FOR LPAREN NUMERO RPAREN DOSPUNTOS
+    (39) assignment_expression -> . or_expression
+    (40) assignment_expression -> . primary_expression ASSIGN multiplicative_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (5) init_declarator -> . declarator
+    (6) init_declarator -> . declarator ASSIGN assignment_expression
+    (7) declarator -> . ID DOSPUNTOS type_specifier
+    (8) declarator -> . NUMERO ID DOSPUNTOS type_specifier
+    (37) or_expression -> . and_expression
+    (38) or_expression -> . or_expression OR and_expression
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+    (35) and_expression -> . equality_expression
+    (36) and_expression -> . and_expression AND equality_expression
+    (32) equality_expression -> . relational_expression
+    (33) equality_expression -> . equality_expression IGUALIGUAL relational_expression
+    (34) equality_expression -> . equality_expression NOIGUAL relational_expression
+    (27) relational_expression -> . multiplicative_expression
+    (28) relational_expression -> . relational_expression MENORQUE multiplicative_expression
+    (29) relational_expression -> . relational_expression MAYORQUE multiplicative_expression
+    (30) relational_expression -> . relational_expression MENORIGUAL multiplicative_expression
+    (31) relational_expression -> . relational_expression MAYORIGUAL multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+
+    ID              shift and go to state 10
+    LPAREN          shift and go to state 11
+    DEF             shift and go to state 14
+    IF              shift and go to state 17
+    FOR             shift and go to state 18
+    NUMERO          shift and go to state 19
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    statement                      shift and go to state 31
+    function_call                  shift and go to state 3
+    compound_statement             shift and go to state 4
+    assignment_statement           shift and go to state 5
+    function_definition            shift and go to state 6
+    declaration                    shift and go to state 7
+    selection_statement            shift and go to state 8
+    iteration_statement            shift and go to state 9
+    assignment_expression          shift and go to state 12
+    primary_expression             shift and go to state 13
+    init_declarator                shift and go to state 15
+    declarator                     shift and go to state 16
+    or_expression                  shift and go to state 20
+    multiplicative_expression      shift and go to state 21
+    literal                        shift and go to state 22
+    and_expression                 shift and go to state 23
+    equality_expression            shift and go to state 28
+    relational_expression          shift and go to state 29
+    additive_expression            shift and go to state 30
+
+state 2
+
+    (1) program -> statement .
+
+    ID              reduce using rule 1 (program -> statement .)
+    LPAREN          reduce using rule 1 (program -> statement .)
+    DEF             reduce using rule 1 (program -> statement .)
+    IF              reduce using rule 1 (program -> statement .)
+    FOR             reduce using rule 1 (program -> statement .)
+    NUMERO          reduce using rule 1 (program -> statement .)
+    REAL            reduce using rule 1 (program -> statement .)
+    TEXT            reduce using rule 1 (program -> statement .)
+    TRUE            reduce using rule 1 (program -> statement .)
+    FALSE           reduce using rule 1 (program -> statement .)
+    $end            reduce using rule 1 (program -> statement .)
+
+
+state 3
+
+    (41) statement -> function_call .
+
+    ID              reduce using rule 41 (statement -> function_call .)
+    LPAREN          reduce using rule 41 (statement -> function_call .)
+    DEF             reduce using rule 41 (statement -> function_call .)
+    IF              reduce using rule 41 (statement -> function_call .)
+    FOR             reduce using rule 41 (statement -> function_call .)
+    NUMERO          reduce using rule 41 (statement -> function_call .)
+    REAL            reduce using rule 41 (statement -> function_call .)
+    TEXT            reduce using rule 41 (statement -> function_call .)
+    TRUE            reduce using rule 41 (statement -> function_call .)
+    FALSE           reduce using rule 41 (statement -> function_call .)
+    $end            reduce using rule 41 (statement -> function_call .)
+    RPAREN          reduce using rule 41 (statement -> function_call .)
+
+
+state 4
+
+    (42) statement -> compound_statement .
+
+    ID              reduce using rule 42 (statement -> compound_statement .)
+    LPAREN          reduce using rule 42 (statement -> compound_statement .)
+    DEF             reduce using rule 42 (statement -> compound_statement .)
+    IF              reduce using rule 42 (statement -> compound_statement .)
+    FOR             reduce using rule 42 (statement -> compound_statement .)
+    NUMERO          reduce using rule 42 (statement -> compound_statement .)
+    REAL            reduce using rule 42 (statement -> compound_statement .)
+    TEXT            reduce using rule 42 (statement -> compound_statement .)
+    TRUE            reduce using rule 42 (statement -> compound_statement .)
+    FALSE           reduce using rule 42 (statement -> compound_statement .)
+    $end            reduce using rule 42 (statement -> compound_statement .)
+    RPAREN          reduce using rule 42 (statement -> compound_statement .)
+
+
+state 5
+
+    (43) statement -> assignment_statement .
+
+    ID              reduce using rule 43 (statement -> assignment_statement .)
+    LPAREN          reduce using rule 43 (statement -> assignment_statement .)
+    DEF             reduce using rule 43 (statement -> assignment_statement .)
+    IF              reduce using rule 43 (statement -> assignment_statement .)
+    FOR             reduce using rule 43 (statement -> assignment_statement .)
+    NUMERO          reduce using rule 43 (statement -> assignment_statement .)
+    REAL            reduce using rule 43 (statement -> assignment_statement .)
+    TEXT            reduce using rule 43 (statement -> assignment_statement .)
+    TRUE            reduce using rule 43 (statement -> assignment_statement .)
+    FALSE           reduce using rule 43 (statement -> assignment_statement .)
+    $end            reduce using rule 43 (statement -> assignment_statement .)
+    RPAREN          reduce using rule 43 (statement -> assignment_statement .)
+
+
+state 6
+
+    (44) statement -> function_definition .
+
+    ID              reduce using rule 44 (statement -> function_definition .)
+    LPAREN          reduce using rule 44 (statement -> function_definition .)
+    DEF             reduce using rule 44 (statement -> function_definition .)
+    IF              reduce using rule 44 (statement -> function_definition .)
+    FOR             reduce using rule 44 (statement -> function_definition .)
+    NUMERO          reduce using rule 44 (statement -> function_definition .)
+    REAL            reduce using rule 44 (statement -> function_definition .)
+    TEXT            reduce using rule 44 (statement -> function_definition .)
+    TRUE            reduce using rule 44 (statement -> function_definition .)
+    FALSE           reduce using rule 44 (statement -> function_definition .)
+    $end            reduce using rule 44 (statement -> function_definition .)
+    RPAREN          reduce using rule 44 (statement -> function_definition .)
+
+
+state 7
+
+    (45) statement -> declaration .
+
+    ID              reduce using rule 45 (statement -> declaration .)
+    LPAREN          reduce using rule 45 (statement -> declaration .)
+    DEF             reduce using rule 45 (statement -> declaration .)
+    IF              reduce using rule 45 (statement -> declaration .)
+    FOR             reduce using rule 45 (statement -> declaration .)
+    NUMERO          reduce using rule 45 (statement -> declaration .)
+    REAL            reduce using rule 45 (statement -> declaration .)
+    TEXT            reduce using rule 45 (statement -> declaration .)
+    TRUE            reduce using rule 45 (statement -> declaration .)
+    FALSE           reduce using rule 45 (statement -> declaration .)
+    $end            reduce using rule 45 (statement -> declaration .)
+    RPAREN          reduce using rule 45 (statement -> declaration .)
+
+
+state 8
+
+    (46) statement -> selection_statement .
+
+    ID              reduce using rule 46 (statement -> selection_statement .)
+    LPAREN          reduce using rule 46 (statement -> selection_statement .)
+    DEF             reduce using rule 46 (statement -> selection_statement .)
+    IF              reduce using rule 46 (statement -> selection_statement .)
+    FOR             reduce using rule 46 (statement -> selection_statement .)
+    NUMERO          reduce using rule 46 (statement -> selection_statement .)
+    REAL            reduce using rule 46 (statement -> selection_statement .)
+    TEXT            reduce using rule 46 (statement -> selection_statement .)
+    TRUE            reduce using rule 46 (statement -> selection_statement .)
+    FALSE           reduce using rule 46 (statement -> selection_statement .)
+    $end            reduce using rule 46 (statement -> selection_statement .)
+    RPAREN          reduce using rule 46 (statement -> selection_statement .)
+
+
+state 9
+
+    (47) statement -> iteration_statement .
+
+    ID              reduce using rule 47 (statement -> iteration_statement .)
+    LPAREN          reduce using rule 47 (statement -> iteration_statement .)
+    DEF             reduce using rule 47 (statement -> iteration_statement .)
+    IF              reduce using rule 47 (statement -> iteration_statement .)
+    FOR             reduce using rule 47 (statement -> iteration_statement .)
+    NUMERO          reduce using rule 47 (statement -> iteration_statement .)
+    REAL            reduce using rule 47 (statement -> iteration_statement .)
+    TEXT            reduce using rule 47 (statement -> iteration_statement .)
+    TRUE            reduce using rule 47 (statement -> iteration_statement .)
+    FALSE           reduce using rule 47 (statement -> iteration_statement .)
+    $end            reduce using rule 47 (statement -> iteration_statement .)
+    RPAREN          reduce using rule 47 (statement -> iteration_statement .)
+
+
+state 10
+
+    (61) function_call -> ID . LPAREN parameter_list RPAREN PUNTOCOMA
+    (18) primary_expression -> ID .
+    (7) declarator -> ID . DOSPUNTOS type_specifier
+
+    LPAREN          shift and go to state 32
+    ASSIGN          reduce using rule 18 (primary_expression -> ID .)
+    PLUS            reduce using rule 18 (primary_expression -> ID .)
+    MINUS           reduce using rule 18 (primary_expression -> ID .)
+    TIMES           reduce using rule 18 (primary_expression -> ID .)
+    DIVIDE          reduce using rule 18 (primary_expression -> ID .)
+    MENORQUE        reduce using rule 18 (primary_expression -> ID .)
+    MAYORQUE        reduce using rule 18 (primary_expression -> ID .)
+    MENORIGUAL      reduce using rule 18 (primary_expression -> ID .)
+    MAYORIGUAL      reduce using rule 18 (primary_expression -> ID .)
+    IGUALIGUAL      reduce using rule 18 (primary_expression -> ID .)
+    NOIGUAL         reduce using rule 18 (primary_expression -> ID .)
+    AND             reduce using rule 18 (primary_expression -> ID .)
+    OR              reduce using rule 18 (primary_expression -> ID .)
+    PUNTOCOMA       reduce using rule 18 (primary_expression -> ID .)
+    DOSPUNTOS       shift and go to state 33
+
+
+state 11
+
+    (50) compound_statement -> LPAREN . RPAREN
+    (51) compound_statement -> LPAREN . statement_list RPAREN
+    (20) primary_expression -> LPAREN . assignment_expression RPAREN
+    (48) statement_list -> . statement
+    (49) statement_list -> . statement_list statement
+    (39) assignment_expression -> . or_expression
+    (40) assignment_expression -> . primary_expression ASSIGN multiplicative_expression
+    (41) statement -> . function_call
+    (42) statement -> . compound_statement
+    (43) statement -> . assignment_statement
+    (44) statement -> . function_definition
+    (45) statement -> . declaration
+    (46) statement -> . selection_statement
+    (47) statement -> . iteration_statement
+    (37) or_expression -> . and_expression
+    (38) or_expression -> . or_expression OR and_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (61) function_call -> . ID LPAREN parameter_list RPAREN PUNTOCOMA
+    (50) compound_statement -> . LPAREN RPAREN
+    (51) compound_statement -> . LPAREN statement_list RPAREN
+    (52) assignment_statement -> . assignment_expression PUNTOCOMA
+    (53) assignment_statement -> . primary_expression ASSIGN function_call
+    (60) function_definition -> . DEF ID LPAREN ID_list RPAREN compound_statement
+    (3) declaration -> . init_declarator PUNTOCOMA
+    (4) declaration -> . declarator ASSIGN function_call
+    (62) selection_statement -> . IF assignment_expression compound_statement
+    (63) selection_statement -> . IF assignment_expression compound_statement ELSE compound_statement
+    (64) iteration_statement -> . FOR LPAREN NUMERO RPAREN DOSPUNTOS
+    (35) and_expression -> . equality_expression
+    (36) and_expression -> . and_expression AND equality_expression
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+    (5) init_declarator -> . declarator
+    (6) init_declarator -> . declarator ASSIGN assignment_expression
+    (7) declarator -> . ID DOSPUNTOS type_specifier
+    (8) declarator -> . NUMERO ID DOSPUNTOS type_specifier
+    (32) equality_expression -> . relational_expression
+    (33) equality_expression -> . equality_expression IGUALIGUAL relational_expression
+    (34) equality_expression -> . equality_expression NOIGUAL relational_expression
+    (27) relational_expression -> . multiplicative_expression
+    (28) relational_expression -> . relational_expression MENORQUE multiplicative_expression
+    (29) relational_expression -> . relational_expression MAYORQUE multiplicative_expression
+    (30) relational_expression -> . relational_expression MENORIGUAL multiplicative_expression
+    (31) relational_expression -> . relational_expression MAYORIGUAL multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+
+    RPAREN          shift and go to state 35
+    ID              shift and go to state 40
+    LPAREN          shift and go to state 34
+    DEF             shift and go to state 14
+    IF              shift and go to state 17
+    FOR             shift and go to state 18
+    NUMERO          shift and go to state 41
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    statement_list                 shift and go to state 36
+    assignment_expression          shift and go to state 37
+    statement                      shift and go to state 38
+    or_expression                  shift and go to state 20
+    primary_expression             shift and go to state 39
+    multiplicative_expression      shift and go to state 21
+    function_call                  shift and go to state 3
+    compound_statement             shift and go to state 4
+    assignment_statement           shift and go to state 5
+    function_definition            shift and go to state 6
+    declaration                    shift and go to state 7
+    selection_statement            shift and go to state 8
+    iteration_statement            shift and go to state 9
+    and_expression                 shift and go to state 23
+    literal                        shift and go to state 22
+    init_declarator                shift and go to state 15
+    declarator                     shift and go to state 16
+    equality_expression            shift and go to state 28
+    relational_expression          shift and go to state 29
+    additive_expression            shift and go to state 30
+
+state 12
+
+    (52) assignment_statement -> assignment_expression . PUNTOCOMA
+
+    PUNTOCOMA       shift and go to state 42
+
+
+state 13
+
+    (53) assignment_statement -> primary_expression . ASSIGN function_call
+    (40) assignment_expression -> primary_expression . ASSIGN multiplicative_expression
+    (21) additive_expression -> primary_expression .
+
+    ASSIGN          shift and go to state 43
+    PLUS            reduce using rule 21 (additive_expression -> primary_expression .)
+    MINUS           reduce using rule 21 (additive_expression -> primary_expression .)
+    TIMES           reduce using rule 21 (additive_expression -> primary_expression .)
+    DIVIDE          reduce using rule 21 (additive_expression -> primary_expression .)
+    MENORQUE        reduce using rule 21 (additive_expression -> primary_expression .)
+    MAYORQUE        reduce using rule 21 (additive_expression -> primary_expression .)
+    MENORIGUAL      reduce using rule 21 (additive_expression -> primary_expression .)
+    MAYORIGUAL      reduce using rule 21 (additive_expression -> primary_expression .)
+    IGUALIGUAL      reduce using rule 21 (additive_expression -> primary_expression .)
+    NOIGUAL         reduce using rule 21 (additive_expression -> primary_expression .)
+    AND             reduce using rule 21 (additive_expression -> primary_expression .)
+    OR              reduce using rule 21 (additive_expression -> primary_expression .)
+    PUNTOCOMA       reduce using rule 21 (additive_expression -> primary_expression .)
+
+
+state 14
+
+    (60) function_definition -> DEF . ID LPAREN ID_list RPAREN compound_statement
+
+    ID              shift and go to state 44
+
+
+state 15
+
+    (3) declaration -> init_declarator . PUNTOCOMA
+
+    PUNTOCOMA       shift and go to state 45
+
+
+state 16
+
+    (4) declaration -> declarator . ASSIGN function_call
+    (5) init_declarator -> declarator .
+    (6) init_declarator -> declarator . ASSIGN assignment_expression
+
+    ASSIGN          shift and go to state 46
+    PUNTOCOMA       reduce using rule 5 (init_declarator -> declarator .)
+
+
+state 17
+
+    (62) selection_statement -> IF . assignment_expression compound_statement
+    (63) selection_statement -> IF . assignment_expression compound_statement ELSE compound_statement
+    (39) assignment_expression -> . or_expression
+    (40) assignment_expression -> . primary_expression ASSIGN multiplicative_expression
+    (37) or_expression -> . and_expression
+    (38) or_expression -> . or_expression OR and_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (35) and_expression -> . equality_expression
+    (36) and_expression -> . and_expression AND equality_expression
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+    (32) equality_expression -> . relational_expression
+    (33) equality_expression -> . equality_expression IGUALIGUAL relational_expression
+    (34) equality_expression -> . equality_expression NOIGUAL relational_expression
+    (27) relational_expression -> . multiplicative_expression
+    (28) relational_expression -> . relational_expression MENORQUE multiplicative_expression
+    (29) relational_expression -> . relational_expression MAYORQUE multiplicative_expression
+    (30) relational_expression -> . relational_expression MENORIGUAL multiplicative_expression
+    (31) relational_expression -> . relational_expression MAYORIGUAL multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    assignment_expression          shift and go to state 47
+    or_expression                  shift and go to state 20
+    primary_expression             shift and go to state 48
+    multiplicative_expression      shift and go to state 21
+    and_expression                 shift and go to state 23
+    literal                        shift and go to state 22
+    equality_expression            shift and go to state 28
+    relational_expression          shift and go to state 29
+    additive_expression            shift and go to state 30
+
+state 18
+
+    (64) iteration_statement -> FOR . LPAREN NUMERO RPAREN DOSPUNTOS
+
+    LPAREN          shift and go to state 52
+
+
+state 19
+
+    (8) declarator -> NUMERO . ID DOSPUNTOS type_specifier
+    (13) literal -> NUMERO .
+
+    ID              shift and go to state 53
+    ASSIGN          reduce using rule 13 (literal -> NUMERO .)
+    PLUS            reduce using rule 13 (literal -> NUMERO .)
+    MINUS           reduce using rule 13 (literal -> NUMERO .)
+    TIMES           reduce using rule 13 (literal -> NUMERO .)
+    DIVIDE          reduce using rule 13 (literal -> NUMERO .)
+    MENORQUE        reduce using rule 13 (literal -> NUMERO .)
+    MAYORQUE        reduce using rule 13 (literal -> NUMERO .)
+    MENORIGUAL      reduce using rule 13 (literal -> NUMERO .)
+    MAYORIGUAL      reduce using rule 13 (literal -> NUMERO .)
+    IGUALIGUAL      reduce using rule 13 (literal -> NUMERO .)
+    NOIGUAL         reduce using rule 13 (literal -> NUMERO .)
+    AND             reduce using rule 13 (literal -> NUMERO .)
+    OR              reduce using rule 13 (literal -> NUMERO .)
+    PUNTOCOMA       reduce using rule 13 (literal -> NUMERO .)
+
+
+state 20
+
+    (39) assignment_expression -> or_expression .
+    (38) or_expression -> or_expression . OR and_expression
+
+    PUNTOCOMA       reduce using rule 39 (assignment_expression -> or_expression .)
+    RPAREN          reduce using rule 39 (assignment_expression -> or_expression .)
+    LPAREN          reduce using rule 39 (assignment_expression -> or_expression .)
+    COMA            reduce using rule 39 (assignment_expression -> or_expression .)
+    OR              shift and go to state 54
+
+
+state 21
+
+    (27) relational_expression -> multiplicative_expression .
+    (25) multiplicative_expression -> multiplicative_expression . TIMES additive_expression
+    (26) multiplicative_expression -> multiplicative_expression . DIVIDE additive_expression
+
+    MENORQUE        reduce using rule 27 (relational_expression -> multiplicative_expression .)
+    MAYORQUE        reduce using rule 27 (relational_expression -> multiplicative_expression .)
+    MENORIGUAL      reduce using rule 27 (relational_expression -> multiplicative_expression .)
+    MAYORIGUAL      reduce using rule 27 (relational_expression -> multiplicative_expression .)
+    IGUALIGUAL      reduce using rule 27 (relational_expression -> multiplicative_expression .)
+    NOIGUAL         reduce using rule 27 (relational_expression -> multiplicative_expression .)
+    AND             reduce using rule 27 (relational_expression -> multiplicative_expression .)
+    OR              reduce using rule 27 (relational_expression -> multiplicative_expression .)
+    PUNTOCOMA       reduce using rule 27 (relational_expression -> multiplicative_expression .)
+    RPAREN          reduce using rule 27 (relational_expression -> multiplicative_expression .)
+    LPAREN          reduce using rule 27 (relational_expression -> multiplicative_expression .)
+    COMA            reduce using rule 27 (relational_expression -> multiplicative_expression .)
+    TIMES           shift and go to state 55
+    DIVIDE          shift and go to state 56
+
+
+state 22
+
+    (19) primary_expression -> literal .
+
+    ASSIGN          reduce using rule 19 (primary_expression -> literal .)
+    PLUS            reduce using rule 19 (primary_expression -> literal .)
+    MINUS           reduce using rule 19 (primary_expression -> literal .)
+    TIMES           reduce using rule 19 (primary_expression -> literal .)
+    DIVIDE          reduce using rule 19 (primary_expression -> literal .)
+    MENORQUE        reduce using rule 19 (primary_expression -> literal .)
+    MAYORQUE        reduce using rule 19 (primary_expression -> literal .)
+    MENORIGUAL      reduce using rule 19 (primary_expression -> literal .)
+    MAYORIGUAL      reduce using rule 19 (primary_expression -> literal .)
+    IGUALIGUAL      reduce using rule 19 (primary_expression -> literal .)
+    NOIGUAL         reduce using rule 19 (primary_expression -> literal .)
+    AND             reduce using rule 19 (primary_expression -> literal .)
+    OR              reduce using rule 19 (primary_expression -> literal .)
+    PUNTOCOMA       reduce using rule 19 (primary_expression -> literal .)
+    RPAREN          reduce using rule 19 (primary_expression -> literal .)
+    LPAREN          reduce using rule 19 (primary_expression -> literal .)
+    COMA            reduce using rule 19 (primary_expression -> literal .)
+
+
+state 23
+
+    (37) or_expression -> and_expression .
+    (36) and_expression -> and_expression . AND equality_expression
+
+    OR              reduce using rule 37 (or_expression -> and_expression .)
+    PUNTOCOMA       reduce using rule 37 (or_expression -> and_expression .)
+    RPAREN          reduce using rule 37 (or_expression -> and_expression .)
+    LPAREN          reduce using rule 37 (or_expression -> and_expression .)
+    COMA            reduce using rule 37 (or_expression -> and_expression .)
+    AND             shift and go to state 57
+
+
+state 24
+
+    (14) literal -> REAL .
+
+    ASSIGN          reduce using rule 14 (literal -> REAL .)
+    PLUS            reduce using rule 14 (literal -> REAL .)
+    MINUS           reduce using rule 14 (literal -> REAL .)
+    TIMES           reduce using rule 14 (literal -> REAL .)
+    DIVIDE          reduce using rule 14 (literal -> REAL .)
+    MENORQUE        reduce using rule 14 (literal -> REAL .)
+    MAYORQUE        reduce using rule 14 (literal -> REAL .)
+    MENORIGUAL      reduce using rule 14 (literal -> REAL .)
+    MAYORIGUAL      reduce using rule 14 (literal -> REAL .)
+    IGUALIGUAL      reduce using rule 14 (literal -> REAL .)
+    NOIGUAL         reduce using rule 14 (literal -> REAL .)
+    AND             reduce using rule 14 (literal -> REAL .)
+    OR              reduce using rule 14 (literal -> REAL .)
+    PUNTOCOMA       reduce using rule 14 (literal -> REAL .)
+    RPAREN          reduce using rule 14 (literal -> REAL .)
+    LPAREN          reduce using rule 14 (literal -> REAL .)
+    COMA            reduce using rule 14 (literal -> REAL .)
+
+
+state 25
+
+    (15) literal -> TEXT .
+
+    ASSIGN          reduce using rule 15 (literal -> TEXT .)
+    PLUS            reduce using rule 15 (literal -> TEXT .)
+    MINUS           reduce using rule 15 (literal -> TEXT .)
+    TIMES           reduce using rule 15 (literal -> TEXT .)
+    DIVIDE          reduce using rule 15 (literal -> TEXT .)
+    MENORQUE        reduce using rule 15 (literal -> TEXT .)
+    MAYORQUE        reduce using rule 15 (literal -> TEXT .)
+    MENORIGUAL      reduce using rule 15 (literal -> TEXT .)
+    MAYORIGUAL      reduce using rule 15 (literal -> TEXT .)
+    IGUALIGUAL      reduce using rule 15 (literal -> TEXT .)
+    NOIGUAL         reduce using rule 15 (literal -> TEXT .)
+    AND             reduce using rule 15 (literal -> TEXT .)
+    OR              reduce using rule 15 (literal -> TEXT .)
+    PUNTOCOMA       reduce using rule 15 (literal -> TEXT .)
+    RPAREN          reduce using rule 15 (literal -> TEXT .)
+    LPAREN          reduce using rule 15 (literal -> TEXT .)
+    COMA            reduce using rule 15 (literal -> TEXT .)
+
+
+state 26
+
+    (16) literal -> TRUE .
+
+    ASSIGN          reduce using rule 16 (literal -> TRUE .)
+    PLUS            reduce using rule 16 (literal -> TRUE .)
+    MINUS           reduce using rule 16 (literal -> TRUE .)
+    TIMES           reduce using rule 16 (literal -> TRUE .)
+    DIVIDE          reduce using rule 16 (literal -> TRUE .)
+    MENORQUE        reduce using rule 16 (literal -> TRUE .)
+    MAYORQUE        reduce using rule 16 (literal -> TRUE .)
+    MENORIGUAL      reduce using rule 16 (literal -> TRUE .)
+    MAYORIGUAL      reduce using rule 16 (literal -> TRUE .)
+    IGUALIGUAL      reduce using rule 16 (literal -> TRUE .)
+    NOIGUAL         reduce using rule 16 (literal -> TRUE .)
+    AND             reduce using rule 16 (literal -> TRUE .)
+    OR              reduce using rule 16 (literal -> TRUE .)
+    PUNTOCOMA       reduce using rule 16 (literal -> TRUE .)
+    RPAREN          reduce using rule 16 (literal -> TRUE .)
+    LPAREN          reduce using rule 16 (literal -> TRUE .)
+    COMA            reduce using rule 16 (literal -> TRUE .)
+
+
+state 27
+
+    (17) literal -> FALSE .
+
+    ASSIGN          reduce using rule 17 (literal -> FALSE .)
+    PLUS            reduce using rule 17 (literal -> FALSE .)
+    MINUS           reduce using rule 17 (literal -> FALSE .)
+    TIMES           reduce using rule 17 (literal -> FALSE .)
+    DIVIDE          reduce using rule 17 (literal -> FALSE .)
+    MENORQUE        reduce using rule 17 (literal -> FALSE .)
+    MAYORQUE        reduce using rule 17 (literal -> FALSE .)
+    MENORIGUAL      reduce using rule 17 (literal -> FALSE .)
+    MAYORIGUAL      reduce using rule 17 (literal -> FALSE .)
+    IGUALIGUAL      reduce using rule 17 (literal -> FALSE .)
+    NOIGUAL         reduce using rule 17 (literal -> FALSE .)
+    AND             reduce using rule 17 (literal -> FALSE .)
+    OR              reduce using rule 17 (literal -> FALSE .)
+    PUNTOCOMA       reduce using rule 17 (literal -> FALSE .)
+    RPAREN          reduce using rule 17 (literal -> FALSE .)
+    LPAREN          reduce using rule 17 (literal -> FALSE .)
+    COMA            reduce using rule 17 (literal -> FALSE .)
+
+
+state 28
+
+    (35) and_expression -> equality_expression .
+    (33) equality_expression -> equality_expression . IGUALIGUAL relational_expression
+    (34) equality_expression -> equality_expression . NOIGUAL relational_expression
+
+    AND             reduce using rule 35 (and_expression -> equality_expression .)
+    OR              reduce using rule 35 (and_expression -> equality_expression .)
+    PUNTOCOMA       reduce using rule 35 (and_expression -> equality_expression .)
+    RPAREN          reduce using rule 35 (and_expression -> equality_expression .)
+    LPAREN          reduce using rule 35 (and_expression -> equality_expression .)
+    COMA            reduce using rule 35 (and_expression -> equality_expression .)
+    IGUALIGUAL      shift and go to state 58
+    NOIGUAL         shift and go to state 59
+
+
+state 29
+
+    (32) equality_expression -> relational_expression .
+    (28) relational_expression -> relational_expression . MENORQUE multiplicative_expression
+    (29) relational_expression -> relational_expression . MAYORQUE multiplicative_expression
+    (30) relational_expression -> relational_expression . MENORIGUAL multiplicative_expression
+    (31) relational_expression -> relational_expression . MAYORIGUAL multiplicative_expression
+
+    IGUALIGUAL      reduce using rule 32 (equality_expression -> relational_expression .)
+    NOIGUAL         reduce using rule 32 (equality_expression -> relational_expression .)
+    AND             reduce using rule 32 (equality_expression -> relational_expression .)
+    OR              reduce using rule 32 (equality_expression -> relational_expression .)
+    PUNTOCOMA       reduce using rule 32 (equality_expression -> relational_expression .)
+    RPAREN          reduce using rule 32 (equality_expression -> relational_expression .)
+    LPAREN          reduce using rule 32 (equality_expression -> relational_expression .)
+    COMA            reduce using rule 32 (equality_expression -> relational_expression .)
+    MENORQUE        shift and go to state 60
+    MAYORQUE        shift and go to state 61
+    MENORIGUAL      shift and go to state 62
+    MAYORIGUAL      shift and go to state 63
+
+
+state 30
+
+    (24) multiplicative_expression -> additive_expression .
+    (22) additive_expression -> additive_expression . PLUS primary_expression
+    (23) additive_expression -> additive_expression . MINUS primary_expression
+
+    TIMES           reduce using rule 24 (multiplicative_expression -> additive_expression .)
+    DIVIDE          reduce using rule 24 (multiplicative_expression -> additive_expression .)
+    MENORQUE        reduce using rule 24 (multiplicative_expression -> additive_expression .)
+    MAYORQUE        reduce using rule 24 (multiplicative_expression -> additive_expression .)
+    MENORIGUAL      reduce using rule 24 (multiplicative_expression -> additive_expression .)
+    MAYORIGUAL      reduce using rule 24 (multiplicative_expression -> additive_expression .)
+    IGUALIGUAL      reduce using rule 24 (multiplicative_expression -> additive_expression .)
+    NOIGUAL         reduce using rule 24 (multiplicative_expression -> additive_expression .)
+    AND             reduce using rule 24 (multiplicative_expression -> additive_expression .)
+    OR              reduce using rule 24 (multiplicative_expression -> additive_expression .)
+    PUNTOCOMA       reduce using rule 24 (multiplicative_expression -> additive_expression .)
+    RPAREN          reduce using rule 24 (multiplicative_expression -> additive_expression .)
+    LPAREN          reduce using rule 24 (multiplicative_expression -> additive_expression .)
+    COMA            reduce using rule 24 (multiplicative_expression -> additive_expression .)
+    PLUS            shift and go to state 64
+    MINUS           shift and go to state 65
+
+
+state 31
+
+    (2) program -> program statement .
+
+    ID              reduce using rule 2 (program -> program statement .)
+    LPAREN          reduce using rule 2 (program -> program statement .)
+    DEF             reduce using rule 2 (program -> program statement .)
+    IF              reduce using rule 2 (program -> program statement .)
+    FOR             reduce using rule 2 (program -> program statement .)
+    NUMERO          reduce using rule 2 (program -> program statement .)
+    REAL            reduce using rule 2 (program -> program statement .)
+    TEXT            reduce using rule 2 (program -> program statement .)
+    TRUE            reduce using rule 2 (program -> program statement .)
+    FALSE           reduce using rule 2 (program -> program statement .)
+    $end            reduce using rule 2 (program -> program statement .)
+
+
+state 32
+
+    (61) function_call -> ID LPAREN . parameter_list RPAREN PUNTOCOMA
+    (57) parameter_list -> . empty
+    (58) parameter_list -> . assignment_expression
+    (59) parameter_list -> . parameter_list COMA assignment_expression
+    (65) empty -> .
+    (39) assignment_expression -> . or_expression
+    (40) assignment_expression -> . primary_expression ASSIGN multiplicative_expression
+    (37) or_expression -> . and_expression
+    (38) or_expression -> . or_expression OR and_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (35) and_expression -> . equality_expression
+    (36) and_expression -> . and_expression AND equality_expression
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+    (32) equality_expression -> . relational_expression
+    (33) equality_expression -> . equality_expression IGUALIGUAL relational_expression
+    (34) equality_expression -> . equality_expression NOIGUAL relational_expression
+    (27) relational_expression -> . multiplicative_expression
+    (28) relational_expression -> . relational_expression MENORQUE multiplicative_expression
+    (29) relational_expression -> . relational_expression MAYORQUE multiplicative_expression
+    (30) relational_expression -> . relational_expression MENORIGUAL multiplicative_expression
+    (31) relational_expression -> . relational_expression MAYORIGUAL multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+
+    RPAREN          reduce using rule 65 (empty -> .)
+    COMA            reduce using rule 65 (empty -> .)
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    parameter_list                 shift and go to state 66
+    empty                          shift and go to state 67
+    assignment_expression          shift and go to state 68
+    or_expression                  shift and go to state 20
+    primary_expression             shift and go to state 48
+    multiplicative_expression      shift and go to state 21
+    and_expression                 shift and go to state 23
+    literal                        shift and go to state 22
+    equality_expression            shift and go to state 28
+    relational_expression          shift and go to state 29
+    additive_expression            shift and go to state 30
+
+state 33
+
+    (7) declarator -> ID DOSPUNTOS . type_specifier
+    (9) type_specifier -> . INT
+    (10) type_specifier -> . FLOAT
+    (11) type_specifier -> . STRING
+    (12) type_specifier -> . BOOL
+
+    INT             shift and go to state 70
+    FLOAT           shift and go to state 71
+    STRING          shift and go to state 72
+    BOOL            shift and go to state 73
+
+    type_specifier                 shift and go to state 69
+
+state 34
+
+    (20) primary_expression -> LPAREN . assignment_expression RPAREN
+    (50) compound_statement -> LPAREN . RPAREN
+    (51) compound_statement -> LPAREN . statement_list RPAREN
+    (39) assignment_expression -> . or_expression
+    (40) assignment_expression -> . primary_expression ASSIGN multiplicative_expression
+    (48) statement_list -> . statement
+    (49) statement_list -> . statement_list statement
+    (37) or_expression -> . and_expression
+    (38) or_expression -> . or_expression OR and_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (41) statement -> . function_call
+    (42) statement -> . compound_statement
+    (43) statement -> . assignment_statement
+    (44) statement -> . function_definition
+    (45) statement -> . declaration
+    (46) statement -> . selection_statement
+    (47) statement -> . iteration_statement
+    (35) and_expression -> . equality_expression
+    (36) and_expression -> . and_expression AND equality_expression
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+    (61) function_call -> . ID LPAREN parameter_list RPAREN PUNTOCOMA
+    (50) compound_statement -> . LPAREN RPAREN
+    (51) compound_statement -> . LPAREN statement_list RPAREN
+    (52) assignment_statement -> . assignment_expression PUNTOCOMA
+    (53) assignment_statement -> . primary_expression ASSIGN function_call
+    (60) function_definition -> . DEF ID LPAREN ID_list RPAREN compound_statement
+    (3) declaration -> . init_declarator PUNTOCOMA
+    (4) declaration -> . declarator ASSIGN function_call
+    (62) selection_statement -> . IF assignment_expression compound_statement
+    (63) selection_statement -> . IF assignment_expression compound_statement ELSE compound_statement
+    (64) iteration_statement -> . FOR LPAREN NUMERO RPAREN DOSPUNTOS
+    (32) equality_expression -> . relational_expression
+    (33) equality_expression -> . equality_expression IGUALIGUAL relational_expression
+    (34) equality_expression -> . equality_expression NOIGUAL relational_expression
+    (5) init_declarator -> . declarator
+    (6) init_declarator -> . declarator ASSIGN assignment_expression
+    (7) declarator -> . ID DOSPUNTOS type_specifier
+    (8) declarator -> . NUMERO ID DOSPUNTOS type_specifier
+    (27) relational_expression -> . multiplicative_expression
+    (28) relational_expression -> . relational_expression MENORQUE multiplicative_expression
+    (29) relational_expression -> . relational_expression MAYORQUE multiplicative_expression
+    (30) relational_expression -> . relational_expression MENORIGUAL multiplicative_expression
+    (31) relational_expression -> . relational_expression MAYORIGUAL multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+
+    RPAREN          shift and go to state 35
+    ID              shift and go to state 40
+    LPAREN          shift and go to state 34
+    NUMERO          shift and go to state 41
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+    DEF             shift and go to state 14
+    IF              shift and go to state 17
+    FOR             shift and go to state 18
+
+    assignment_expression          shift and go to state 37
+    statement_list                 shift and go to state 36
+    or_expression                  shift and go to state 20
+    primary_expression             shift and go to state 39
+    multiplicative_expression      shift and go to state 21
+    statement                      shift and go to state 38
+    and_expression                 shift and go to state 23
+    literal                        shift and go to state 22
+    function_call                  shift and go to state 3
+    compound_statement             shift and go to state 4
+    assignment_statement           shift and go to state 5
+    function_definition            shift and go to state 6
+    declaration                    shift and go to state 7
+    selection_statement            shift and go to state 8
+    iteration_statement            shift and go to state 9
+    equality_expression            shift and go to state 28
+    init_declarator                shift and go to state 15
+    declarator                     shift and go to state 16
+    relational_expression          shift and go to state 29
+    additive_expression            shift and go to state 30
+
+state 35
+
+    (50) compound_statement -> LPAREN RPAREN .
+
+    ID              reduce using rule 50 (compound_statement -> LPAREN RPAREN .)
+    LPAREN          reduce using rule 50 (compound_statement -> LPAREN RPAREN .)
+    DEF             reduce using rule 50 (compound_statement -> LPAREN RPAREN .)
+    IF              reduce using rule 50 (compound_statement -> LPAREN RPAREN .)
+    FOR             reduce using rule 50 (compound_statement -> LPAREN RPAREN .)
+    NUMERO          reduce using rule 50 (compound_statement -> LPAREN RPAREN .)
+    REAL            reduce using rule 50 (compound_statement -> LPAREN RPAREN .)
+    TEXT            reduce using rule 50 (compound_statement -> LPAREN RPAREN .)
+    TRUE            reduce using rule 50 (compound_statement -> LPAREN RPAREN .)
+    FALSE           reduce using rule 50 (compound_statement -> LPAREN RPAREN .)
+    $end            reduce using rule 50 (compound_statement -> LPAREN RPAREN .)
+    RPAREN          reduce using rule 50 (compound_statement -> LPAREN RPAREN .)
+    ELSE            reduce using rule 50 (compound_statement -> LPAREN RPAREN .)
+
+
+state 36
+
+    (51) compound_statement -> LPAREN statement_list . RPAREN
+    (49) statement_list -> statement_list . statement
+    (41) statement -> . function_call
+    (42) statement -> . compound_statement
+    (43) statement -> . assignment_statement
+    (44) statement -> . function_definition
+    (45) statement -> . declaration
+    (46) statement -> . selection_statement
+    (47) statement -> . iteration_statement
+    (61) function_call -> . ID LPAREN parameter_list RPAREN PUNTOCOMA
+    (50) compound_statement -> . LPAREN RPAREN
+    (51) compound_statement -> . LPAREN statement_list RPAREN
+    (52) assignment_statement -> . assignment_expression PUNTOCOMA
+    (53) assignment_statement -> . primary_expression ASSIGN function_call
+    (60) function_definition -> . DEF ID LPAREN ID_list RPAREN compound_statement
+    (3) declaration -> . init_declarator PUNTOCOMA
+    (4) declaration -> . declarator ASSIGN function_call
+    (62) selection_statement -> . IF assignment_expression compound_statement
+    (63) selection_statement -> . IF assignment_expression compound_statement ELSE compound_statement
+    (64) iteration_statement -> . FOR LPAREN NUMERO RPAREN DOSPUNTOS
+    (39) assignment_expression -> . or_expression
+    (40) assignment_expression -> . primary_expression ASSIGN multiplicative_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (5) init_declarator -> . declarator
+    (6) init_declarator -> . declarator ASSIGN assignment_expression
+    (7) declarator -> . ID DOSPUNTOS type_specifier
+    (8) declarator -> . NUMERO ID DOSPUNTOS type_specifier
+    (37) or_expression -> . and_expression
+    (38) or_expression -> . or_expression OR and_expression
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+    (35) and_expression -> . equality_expression
+    (36) and_expression -> . and_expression AND equality_expression
+    (32) equality_expression -> . relational_expression
+    (33) equality_expression -> . equality_expression IGUALIGUAL relational_expression
+    (34) equality_expression -> . equality_expression NOIGUAL relational_expression
+    (27) relational_expression -> . multiplicative_expression
+    (28) relational_expression -> . relational_expression MENORQUE multiplicative_expression
+    (29) relational_expression -> . relational_expression MAYORQUE multiplicative_expression
+    (30) relational_expression -> . relational_expression MENORIGUAL multiplicative_expression
+    (31) relational_expression -> . relational_expression MAYORIGUAL multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+
+    RPAREN          shift and go to state 74
+    ID              shift and go to state 10
+    LPAREN          shift and go to state 11
+    DEF             shift and go to state 14
+    IF              shift and go to state 17
+    FOR             shift and go to state 18
+    NUMERO          shift and go to state 19
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    statement                      shift and go to state 75
+    function_call                  shift and go to state 3
+    compound_statement             shift and go to state 4
+    assignment_statement           shift and go to state 5
+    function_definition            shift and go to state 6
+    declaration                    shift and go to state 7
+    selection_statement            shift and go to state 8
+    iteration_statement            shift and go to state 9
+    assignment_expression          shift and go to state 12
+    primary_expression             shift and go to state 13
+    init_declarator                shift and go to state 15
+    declarator                     shift and go to state 16
+    or_expression                  shift and go to state 20
+    multiplicative_expression      shift and go to state 21
+    literal                        shift and go to state 22
+    and_expression                 shift and go to state 23
+    equality_expression            shift and go to state 28
+    relational_expression          shift and go to state 29
+    additive_expression            shift and go to state 30
+
+state 37
+
+    (20) primary_expression -> LPAREN assignment_expression . RPAREN
+    (52) assignment_statement -> assignment_expression . PUNTOCOMA
+
+    RPAREN          shift and go to state 76
+    PUNTOCOMA       shift and go to state 42
+
+
+state 38
+
+    (48) statement_list -> statement .
+
+    RPAREN          reduce using rule 48 (statement_list -> statement .)
+    ID              reduce using rule 48 (statement_list -> statement .)
+    LPAREN          reduce using rule 48 (statement_list -> statement .)
+    DEF             reduce using rule 48 (statement_list -> statement .)
+    IF              reduce using rule 48 (statement_list -> statement .)
+    FOR             reduce using rule 48 (statement_list -> statement .)
+    NUMERO          reduce using rule 48 (statement_list -> statement .)
+    REAL            reduce using rule 48 (statement_list -> statement .)
+    TEXT            reduce using rule 48 (statement_list -> statement .)
+    TRUE            reduce using rule 48 (statement_list -> statement .)
+    FALSE           reduce using rule 48 (statement_list -> statement .)
+
+
+state 39
+
+    (40) assignment_expression -> primary_expression . ASSIGN multiplicative_expression
+    (53) assignment_statement -> primary_expression . ASSIGN function_call
+    (21) additive_expression -> primary_expression .
+
+    ASSIGN          shift and go to state 77
+    PLUS            reduce using rule 21 (additive_expression -> primary_expression .)
+    MINUS           reduce using rule 21 (additive_expression -> primary_expression .)
+    TIMES           reduce using rule 21 (additive_expression -> primary_expression .)
+    DIVIDE          reduce using rule 21 (additive_expression -> primary_expression .)
+    MENORQUE        reduce using rule 21 (additive_expression -> primary_expression .)
+    MAYORQUE        reduce using rule 21 (additive_expression -> primary_expression .)
+    MENORIGUAL      reduce using rule 21 (additive_expression -> primary_expression .)
+    MAYORIGUAL      reduce using rule 21 (additive_expression -> primary_expression .)
+    IGUALIGUAL      reduce using rule 21 (additive_expression -> primary_expression .)
+    NOIGUAL         reduce using rule 21 (additive_expression -> primary_expression .)
+    AND             reduce using rule 21 (additive_expression -> primary_expression .)
+    OR              reduce using rule 21 (additive_expression -> primary_expression .)
+    RPAREN          reduce using rule 21 (additive_expression -> primary_expression .)
+    PUNTOCOMA       reduce using rule 21 (additive_expression -> primary_expression .)
+
+
+state 40
+
+    (18) primary_expression -> ID .
+    (61) function_call -> ID . LPAREN parameter_list RPAREN PUNTOCOMA
+    (7) declarator -> ID . DOSPUNTOS type_specifier
+
+    ASSIGN          reduce using rule 18 (primary_expression -> ID .)
+    PLUS            reduce using rule 18 (primary_expression -> ID .)
+    MINUS           reduce using rule 18 (primary_expression -> ID .)
+    TIMES           reduce using rule 18 (primary_expression -> ID .)
+    DIVIDE          reduce using rule 18 (primary_expression -> ID .)
+    MENORQUE        reduce using rule 18 (primary_expression -> ID .)
+    MAYORQUE        reduce using rule 18 (primary_expression -> ID .)
+    MENORIGUAL      reduce using rule 18 (primary_expression -> ID .)
+    MAYORIGUAL      reduce using rule 18 (primary_expression -> ID .)
+    IGUALIGUAL      reduce using rule 18 (primary_expression -> ID .)
+    NOIGUAL         reduce using rule 18 (primary_expression -> ID .)
+    AND             reduce using rule 18 (primary_expression -> ID .)
+    OR              reduce using rule 18 (primary_expression -> ID .)
+    RPAREN          reduce using rule 18 (primary_expression -> ID .)
+    PUNTOCOMA       reduce using rule 18 (primary_expression -> ID .)
+    LPAREN          shift and go to state 32
+    DOSPUNTOS       shift and go to state 33
+
+
+state 41
+
+    (13) literal -> NUMERO .
+    (8) declarator -> NUMERO . ID DOSPUNTOS type_specifier
+
+    ASSIGN          reduce using rule 13 (literal -> NUMERO .)
+    PLUS            reduce using rule 13 (literal -> NUMERO .)
+    MINUS           reduce using rule 13 (literal -> NUMERO .)
+    TIMES           reduce using rule 13 (literal -> NUMERO .)
+    DIVIDE          reduce using rule 13 (literal -> NUMERO .)
+    MENORQUE        reduce using rule 13 (literal -> NUMERO .)
+    MAYORQUE        reduce using rule 13 (literal -> NUMERO .)
+    MENORIGUAL      reduce using rule 13 (literal -> NUMERO .)
+    MAYORIGUAL      reduce using rule 13 (literal -> NUMERO .)
+    IGUALIGUAL      reduce using rule 13 (literal -> NUMERO .)
+    NOIGUAL         reduce using rule 13 (literal -> NUMERO .)
+    AND             reduce using rule 13 (literal -> NUMERO .)
+    OR              reduce using rule 13 (literal -> NUMERO .)
+    RPAREN          reduce using rule 13 (literal -> NUMERO .)
+    PUNTOCOMA       reduce using rule 13 (literal -> NUMERO .)
+    ID              shift and go to state 53
+
+
+state 42
+
+    (52) assignment_statement -> assignment_expression PUNTOCOMA .
+
+    ID              reduce using rule 52 (assignment_statement -> assignment_expression PUNTOCOMA .)
+    LPAREN          reduce using rule 52 (assignment_statement -> assignment_expression PUNTOCOMA .)
+    DEF             reduce using rule 52 (assignment_statement -> assignment_expression PUNTOCOMA .)
+    IF              reduce using rule 52 (assignment_statement -> assignment_expression PUNTOCOMA .)
+    FOR             reduce using rule 52 (assignment_statement -> assignment_expression PUNTOCOMA .)
+    NUMERO          reduce using rule 52 (assignment_statement -> assignment_expression PUNTOCOMA .)
+    REAL            reduce using rule 52 (assignment_statement -> assignment_expression PUNTOCOMA .)
+    TEXT            reduce using rule 52 (assignment_statement -> assignment_expression PUNTOCOMA .)
+    TRUE            reduce using rule 52 (assignment_statement -> assignment_expression PUNTOCOMA .)
+    FALSE           reduce using rule 52 (assignment_statement -> assignment_expression PUNTOCOMA .)
+    $end            reduce using rule 52 (assignment_statement -> assignment_expression PUNTOCOMA .)
+    RPAREN          reduce using rule 52 (assignment_statement -> assignment_expression PUNTOCOMA .)
+
+
+state 43
+
+    (53) assignment_statement -> primary_expression ASSIGN . function_call
+    (40) assignment_expression -> primary_expression ASSIGN . multiplicative_expression
+    (61) function_call -> . ID LPAREN parameter_list RPAREN PUNTOCOMA
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+
+    ID              shift and go to state 81
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    primary_expression             shift and go to state 78
+    function_call                  shift and go to state 79
+    multiplicative_expression      shift and go to state 80
+    additive_expression            shift and go to state 30
+    literal                        shift and go to state 22
+
+state 44
+
+    (60) function_definition -> DEF ID . LPAREN ID_list RPAREN compound_statement
+
+    LPAREN          shift and go to state 82
+
+
+state 45
+
+    (3) declaration -> init_declarator PUNTOCOMA .
+
+    ID              reduce using rule 3 (declaration -> init_declarator PUNTOCOMA .)
+    LPAREN          reduce using rule 3 (declaration -> init_declarator PUNTOCOMA .)
+    DEF             reduce using rule 3 (declaration -> init_declarator PUNTOCOMA .)
+    IF              reduce using rule 3 (declaration -> init_declarator PUNTOCOMA .)
+    FOR             reduce using rule 3 (declaration -> init_declarator PUNTOCOMA .)
+    NUMERO          reduce using rule 3 (declaration -> init_declarator PUNTOCOMA .)
+    REAL            reduce using rule 3 (declaration -> init_declarator PUNTOCOMA .)
+    TEXT            reduce using rule 3 (declaration -> init_declarator PUNTOCOMA .)
+    TRUE            reduce using rule 3 (declaration -> init_declarator PUNTOCOMA .)
+    FALSE           reduce using rule 3 (declaration -> init_declarator PUNTOCOMA .)
+    $end            reduce using rule 3 (declaration -> init_declarator PUNTOCOMA .)
+    RPAREN          reduce using rule 3 (declaration -> init_declarator PUNTOCOMA .)
+
+
+state 46
+
+    (4) declaration -> declarator ASSIGN . function_call
+    (6) init_declarator -> declarator ASSIGN . assignment_expression
+    (61) function_call -> . ID LPAREN parameter_list RPAREN PUNTOCOMA
+    (39) assignment_expression -> . or_expression
+    (40) assignment_expression -> . primary_expression ASSIGN multiplicative_expression
+    (37) or_expression -> . and_expression
+    (38) or_expression -> . or_expression OR and_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (35) and_expression -> . equality_expression
+    (36) and_expression -> . and_expression AND equality_expression
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+    (32) equality_expression -> . relational_expression
+    (33) equality_expression -> . equality_expression IGUALIGUAL relational_expression
+    (34) equality_expression -> . equality_expression NOIGUAL relational_expression
+    (27) relational_expression -> . multiplicative_expression
+    (28) relational_expression -> . relational_expression MENORQUE multiplicative_expression
+    (29) relational_expression -> . relational_expression MAYORQUE multiplicative_expression
+    (30) relational_expression -> . relational_expression MENORIGUAL multiplicative_expression
+    (31) relational_expression -> . relational_expression MAYORIGUAL multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+
+    ID              shift and go to state 81
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    function_call                  shift and go to state 83
+    assignment_expression          shift and go to state 84
+    or_expression                  shift and go to state 20
+    primary_expression             shift and go to state 48
+    multiplicative_expression      shift and go to state 21
+    and_expression                 shift and go to state 23
+    literal                        shift and go to state 22
+    equality_expression            shift and go to state 28
+    relational_expression          shift and go to state 29
+    additive_expression            shift and go to state 30
+
+state 47
+
+    (62) selection_statement -> IF assignment_expression . compound_statement
+    (63) selection_statement -> IF assignment_expression . compound_statement ELSE compound_statement
+    (50) compound_statement -> . LPAREN RPAREN
+    (51) compound_statement -> . LPAREN statement_list RPAREN
+
+    LPAREN          shift and go to state 86
+
+    compound_statement             shift and go to state 85
+
+state 48
+
+    (40) assignment_expression -> primary_expression . ASSIGN multiplicative_expression
+    (21) additive_expression -> primary_expression .
+
+    ASSIGN          shift and go to state 87
+    PLUS            reduce using rule 21 (additive_expression -> primary_expression .)
+    MINUS           reduce using rule 21 (additive_expression -> primary_expression .)
+    TIMES           reduce using rule 21 (additive_expression -> primary_expression .)
+    DIVIDE          reduce using rule 21 (additive_expression -> primary_expression .)
+    MENORQUE        reduce using rule 21 (additive_expression -> primary_expression .)
+    MAYORQUE        reduce using rule 21 (additive_expression -> primary_expression .)
+    MENORIGUAL      reduce using rule 21 (additive_expression -> primary_expression .)
+    MAYORIGUAL      reduce using rule 21 (additive_expression -> primary_expression .)
+    IGUALIGUAL      reduce using rule 21 (additive_expression -> primary_expression .)
+    NOIGUAL         reduce using rule 21 (additive_expression -> primary_expression .)
+    AND             reduce using rule 21 (additive_expression -> primary_expression .)
+    OR              reduce using rule 21 (additive_expression -> primary_expression .)
+    LPAREN          reduce using rule 21 (additive_expression -> primary_expression .)
+    RPAREN          reduce using rule 21 (additive_expression -> primary_expression .)
+    COMA            reduce using rule 21 (additive_expression -> primary_expression .)
+    PUNTOCOMA       reduce using rule 21 (additive_expression -> primary_expression .)
+
+
+state 49
+
+    (18) primary_expression -> ID .
+
+    ASSIGN          reduce using rule 18 (primary_expression -> ID .)
+    PLUS            reduce using rule 18 (primary_expression -> ID .)
+    MINUS           reduce using rule 18 (primary_expression -> ID .)
+    TIMES           reduce using rule 18 (primary_expression -> ID .)
+    DIVIDE          reduce using rule 18 (primary_expression -> ID .)
+    MENORQUE        reduce using rule 18 (primary_expression -> ID .)
+    MAYORQUE        reduce using rule 18 (primary_expression -> ID .)
+    MENORIGUAL      reduce using rule 18 (primary_expression -> ID .)
+    MAYORIGUAL      reduce using rule 18 (primary_expression -> ID .)
+    IGUALIGUAL      reduce using rule 18 (primary_expression -> ID .)
+    NOIGUAL         reduce using rule 18 (primary_expression -> ID .)
+    AND             reduce using rule 18 (primary_expression -> ID .)
+    OR              reduce using rule 18 (primary_expression -> ID .)
+    LPAREN          reduce using rule 18 (primary_expression -> ID .)
+    RPAREN          reduce using rule 18 (primary_expression -> ID .)
+    COMA            reduce using rule 18 (primary_expression -> ID .)
+    PUNTOCOMA       reduce using rule 18 (primary_expression -> ID .)
+
+
+state 50
+
+    (20) primary_expression -> LPAREN . assignment_expression RPAREN
+    (39) assignment_expression -> . or_expression
+    (40) assignment_expression -> . primary_expression ASSIGN multiplicative_expression
+    (37) or_expression -> . and_expression
+    (38) or_expression -> . or_expression OR and_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (35) and_expression -> . equality_expression
+    (36) and_expression -> . and_expression AND equality_expression
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+    (32) equality_expression -> . relational_expression
+    (33) equality_expression -> . equality_expression IGUALIGUAL relational_expression
+    (34) equality_expression -> . equality_expression NOIGUAL relational_expression
+    (27) relational_expression -> . multiplicative_expression
+    (28) relational_expression -> . relational_expression MENORQUE multiplicative_expression
+    (29) relational_expression -> . relational_expression MAYORQUE multiplicative_expression
+    (30) relational_expression -> . relational_expression MENORIGUAL multiplicative_expression
+    (31) relational_expression -> . relational_expression MAYORIGUAL multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    assignment_expression          shift and go to state 88
+    or_expression                  shift and go to state 20
+    primary_expression             shift and go to state 48
+    multiplicative_expression      shift and go to state 21
+    and_expression                 shift and go to state 23
+    literal                        shift and go to state 22
+    equality_expression            shift and go to state 28
+    relational_expression          shift and go to state 29
+    additive_expression            shift and go to state 30
+
+state 51
+
+    (13) literal -> NUMERO .
+
+    ASSIGN          reduce using rule 13 (literal -> NUMERO .)
+    PLUS            reduce using rule 13 (literal -> NUMERO .)
+    MINUS           reduce using rule 13 (literal -> NUMERO .)
+    TIMES           reduce using rule 13 (literal -> NUMERO .)
+    DIVIDE          reduce using rule 13 (literal -> NUMERO .)
+    MENORQUE        reduce using rule 13 (literal -> NUMERO .)
+    MAYORQUE        reduce using rule 13 (literal -> NUMERO .)
+    MENORIGUAL      reduce using rule 13 (literal -> NUMERO .)
+    MAYORIGUAL      reduce using rule 13 (literal -> NUMERO .)
+    IGUALIGUAL      reduce using rule 13 (literal -> NUMERO .)
+    NOIGUAL         reduce using rule 13 (literal -> NUMERO .)
+    AND             reduce using rule 13 (literal -> NUMERO .)
+    OR              reduce using rule 13 (literal -> NUMERO .)
+    LPAREN          reduce using rule 13 (literal -> NUMERO .)
+    RPAREN          reduce using rule 13 (literal -> NUMERO .)
+    COMA            reduce using rule 13 (literal -> NUMERO .)
+    PUNTOCOMA       reduce using rule 13 (literal -> NUMERO .)
+
+
+state 52
+
+    (64) iteration_statement -> FOR LPAREN . NUMERO RPAREN DOSPUNTOS
+
+    NUMERO          shift and go to state 89
+
+
+state 53
+
+    (8) declarator -> NUMERO ID . DOSPUNTOS type_specifier
+
+    DOSPUNTOS       shift and go to state 90
+
+
+state 54
+
+    (38) or_expression -> or_expression OR . and_expression
+    (35) and_expression -> . equality_expression
+    (36) and_expression -> . and_expression AND equality_expression
+    (32) equality_expression -> . relational_expression
+    (33) equality_expression -> . equality_expression IGUALIGUAL relational_expression
+    (34) equality_expression -> . equality_expression NOIGUAL relational_expression
+    (27) relational_expression -> . multiplicative_expression
+    (28) relational_expression -> . relational_expression MENORQUE multiplicative_expression
+    (29) relational_expression -> . relational_expression MAYORQUE multiplicative_expression
+    (30) relational_expression -> . relational_expression MENORIGUAL multiplicative_expression
+    (31) relational_expression -> . relational_expression MAYORIGUAL multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    and_expression                 shift and go to state 91
+    equality_expression            shift and go to state 28
+    relational_expression          shift and go to state 29
+    multiplicative_expression      shift and go to state 21
+    additive_expression            shift and go to state 30
+    primary_expression             shift and go to state 78
+    literal                        shift and go to state 22
+
+state 55
+
+    (25) multiplicative_expression -> multiplicative_expression TIMES . additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    additive_expression            shift and go to state 92
+    primary_expression             shift and go to state 78
+    literal                        shift and go to state 22
+
+state 56
+
+    (26) multiplicative_expression -> multiplicative_expression DIVIDE . additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    additive_expression            shift and go to state 93
+    primary_expression             shift and go to state 78
+    literal                        shift and go to state 22
+
+state 57
+
+    (36) and_expression -> and_expression AND . equality_expression
+    (32) equality_expression -> . relational_expression
+    (33) equality_expression -> . equality_expression IGUALIGUAL relational_expression
+    (34) equality_expression -> . equality_expression NOIGUAL relational_expression
+    (27) relational_expression -> . multiplicative_expression
+    (28) relational_expression -> . relational_expression MENORQUE multiplicative_expression
+    (29) relational_expression -> . relational_expression MAYORQUE multiplicative_expression
+    (30) relational_expression -> . relational_expression MENORIGUAL multiplicative_expression
+    (31) relational_expression -> . relational_expression MAYORIGUAL multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    equality_expression            shift and go to state 94
+    relational_expression          shift and go to state 29
+    multiplicative_expression      shift and go to state 21
+    additive_expression            shift and go to state 30
+    primary_expression             shift and go to state 78
+    literal                        shift and go to state 22
+
+state 58
+
+    (33) equality_expression -> equality_expression IGUALIGUAL . relational_expression
+    (27) relational_expression -> . multiplicative_expression
+    (28) relational_expression -> . relational_expression MENORQUE multiplicative_expression
+    (29) relational_expression -> . relational_expression MAYORQUE multiplicative_expression
+    (30) relational_expression -> . relational_expression MENORIGUAL multiplicative_expression
+    (31) relational_expression -> . relational_expression MAYORIGUAL multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    relational_expression          shift and go to state 95
+    multiplicative_expression      shift and go to state 21
+    additive_expression            shift and go to state 30
+    primary_expression             shift and go to state 78
+    literal                        shift and go to state 22
+
+state 59
+
+    (34) equality_expression -> equality_expression NOIGUAL . relational_expression
+    (27) relational_expression -> . multiplicative_expression
+    (28) relational_expression -> . relational_expression MENORQUE multiplicative_expression
+    (29) relational_expression -> . relational_expression MAYORQUE multiplicative_expression
+    (30) relational_expression -> . relational_expression MENORIGUAL multiplicative_expression
+    (31) relational_expression -> . relational_expression MAYORIGUAL multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    relational_expression          shift and go to state 96
+    multiplicative_expression      shift and go to state 21
+    additive_expression            shift and go to state 30
+    primary_expression             shift and go to state 78
+    literal                        shift and go to state 22
+
+state 60
+
+    (28) relational_expression -> relational_expression MENORQUE . multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    multiplicative_expression      shift and go to state 97
+    additive_expression            shift and go to state 30
+    primary_expression             shift and go to state 78
+    literal                        shift and go to state 22
+
+state 61
+
+    (29) relational_expression -> relational_expression MAYORQUE . multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    multiplicative_expression      shift and go to state 98
+    additive_expression            shift and go to state 30
+    primary_expression             shift and go to state 78
+    literal                        shift and go to state 22
+
+state 62
+
+    (30) relational_expression -> relational_expression MENORIGUAL . multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    multiplicative_expression      shift and go to state 99
+    additive_expression            shift and go to state 30
+    primary_expression             shift and go to state 78
+    literal                        shift and go to state 22
+
+state 63
+
+    (31) relational_expression -> relational_expression MAYORIGUAL . multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    multiplicative_expression      shift and go to state 100
+    additive_expression            shift and go to state 30
+    primary_expression             shift and go to state 78
+    literal                        shift and go to state 22
+
+state 64
+
+    (22) additive_expression -> additive_expression PLUS . primary_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    primary_expression             shift and go to state 101
+    literal                        shift and go to state 22
+
+state 65
+
+    (23) additive_expression -> additive_expression MINUS . primary_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    primary_expression             shift and go to state 102
+    literal                        shift and go to state 22
+
+state 66
+
+    (61) function_call -> ID LPAREN parameter_list . RPAREN PUNTOCOMA
+    (59) parameter_list -> parameter_list . COMA assignment_expression
+
+    RPAREN          shift and go to state 103
+    COMA            shift and go to state 104
+
+
+state 67
+
+    (57) parameter_list -> empty .
+
+    RPAREN          reduce using rule 57 (parameter_list -> empty .)
+    COMA            reduce using rule 57 (parameter_list -> empty .)
+
+
+state 68
+
+    (58) parameter_list -> assignment_expression .
+
+    RPAREN          reduce using rule 58 (parameter_list -> assignment_expression .)
+    COMA            reduce using rule 58 (parameter_list -> assignment_expression .)
+
+
+state 69
+
+    (7) declarator -> ID DOSPUNTOS type_specifier .
+
+    ASSIGN          reduce using rule 7 (declarator -> ID DOSPUNTOS type_specifier .)
+    PUNTOCOMA       reduce using rule 7 (declarator -> ID DOSPUNTOS type_specifier .)
+
+
+state 70
+
+    (9) type_specifier -> INT .
+
+    ASSIGN          reduce using rule 9 (type_specifier -> INT .)
+    PUNTOCOMA       reduce using rule 9 (type_specifier -> INT .)
+    RPAREN          reduce using rule 9 (type_specifier -> INT .)
+    COMA            reduce using rule 9 (type_specifier -> INT .)
+
+
+state 71
+
+    (10) type_specifier -> FLOAT .
+
+    ASSIGN          reduce using rule 10 (type_specifier -> FLOAT .)
+    PUNTOCOMA       reduce using rule 10 (type_specifier -> FLOAT .)
+    RPAREN          reduce using rule 10 (type_specifier -> FLOAT .)
+    COMA            reduce using rule 10 (type_specifier -> FLOAT .)
+
+
+state 72
+
+    (11) type_specifier -> STRING .
+
+    ASSIGN          reduce using rule 11 (type_specifier -> STRING .)
+    PUNTOCOMA       reduce using rule 11 (type_specifier -> STRING .)
+    RPAREN          reduce using rule 11 (type_specifier -> STRING .)
+    COMA            reduce using rule 11 (type_specifier -> STRING .)
+
+
+state 73
+
+    (12) type_specifier -> BOOL .
+
+    ASSIGN          reduce using rule 12 (type_specifier -> BOOL .)
+    PUNTOCOMA       reduce using rule 12 (type_specifier -> BOOL .)
+    RPAREN          reduce using rule 12 (type_specifier -> BOOL .)
+    COMA            reduce using rule 12 (type_specifier -> BOOL .)
+
+
+state 74
+
+    (51) compound_statement -> LPAREN statement_list RPAREN .
+
+    ID              reduce using rule 51 (compound_statement -> LPAREN statement_list RPAREN .)
+    LPAREN          reduce using rule 51 (compound_statement -> LPAREN statement_list RPAREN .)
+    DEF             reduce using rule 51 (compound_statement -> LPAREN statement_list RPAREN .)
+    IF              reduce using rule 51 (compound_statement -> LPAREN statement_list RPAREN .)
+    FOR             reduce using rule 51 (compound_statement -> LPAREN statement_list RPAREN .)
+    NUMERO          reduce using rule 51 (compound_statement -> LPAREN statement_list RPAREN .)
+    REAL            reduce using rule 51 (compound_statement -> LPAREN statement_list RPAREN .)
+    TEXT            reduce using rule 51 (compound_statement -> LPAREN statement_list RPAREN .)
+    TRUE            reduce using rule 51 (compound_statement -> LPAREN statement_list RPAREN .)
+    FALSE           reduce using rule 51 (compound_statement -> LPAREN statement_list RPAREN .)
+    $end            reduce using rule 51 (compound_statement -> LPAREN statement_list RPAREN .)
+    RPAREN          reduce using rule 51 (compound_statement -> LPAREN statement_list RPAREN .)
+    ELSE            reduce using rule 51 (compound_statement -> LPAREN statement_list RPAREN .)
+
+
+state 75
+
+    (49) statement_list -> statement_list statement .
+
+    RPAREN          reduce using rule 49 (statement_list -> statement_list statement .)
+    ID              reduce using rule 49 (statement_list -> statement_list statement .)
+    LPAREN          reduce using rule 49 (statement_list -> statement_list statement .)
+    DEF             reduce using rule 49 (statement_list -> statement_list statement .)
+    IF              reduce using rule 49 (statement_list -> statement_list statement .)
+    FOR             reduce using rule 49 (statement_list -> statement_list statement .)
+    NUMERO          reduce using rule 49 (statement_list -> statement_list statement .)
+    REAL            reduce using rule 49 (statement_list -> statement_list statement .)
+    TEXT            reduce using rule 49 (statement_list -> statement_list statement .)
+    TRUE            reduce using rule 49 (statement_list -> statement_list statement .)
+    FALSE           reduce using rule 49 (statement_list -> statement_list statement .)
+
+
+state 76
+
+    (20) primary_expression -> LPAREN assignment_expression RPAREN .
+
+    ASSIGN          reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+    PLUS            reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+    MINUS           reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+    TIMES           reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+    DIVIDE          reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+    MENORQUE        reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+    MAYORQUE        reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+    MENORIGUAL      reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+    MAYORIGUAL      reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+    IGUALIGUAL      reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+    NOIGUAL         reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+    AND             reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+    OR              reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+    PUNTOCOMA       reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+    RPAREN          reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+    LPAREN          reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+    COMA            reduce using rule 20 (primary_expression -> LPAREN assignment_expression RPAREN .)
+
+
+state 77
+
+    (40) assignment_expression -> primary_expression ASSIGN . multiplicative_expression
+    (53) assignment_statement -> primary_expression ASSIGN . function_call
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (61) function_call -> . ID LPAREN parameter_list RPAREN PUNTOCOMA
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+
+    ID              shift and go to state 81
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    primary_expression             shift and go to state 78
+    multiplicative_expression      shift and go to state 80
+    function_call                  shift and go to state 79
+    additive_expression            shift and go to state 30
+    literal                        shift and go to state 22
+
+state 78
+
+    (21) additive_expression -> primary_expression .
+
+    PLUS            reduce using rule 21 (additive_expression -> primary_expression .)
+    MINUS           reduce using rule 21 (additive_expression -> primary_expression .)
+    TIMES           reduce using rule 21 (additive_expression -> primary_expression .)
+    DIVIDE          reduce using rule 21 (additive_expression -> primary_expression .)
+    PUNTOCOMA       reduce using rule 21 (additive_expression -> primary_expression .)
+    MENORQUE        reduce using rule 21 (additive_expression -> primary_expression .)
+    MAYORQUE        reduce using rule 21 (additive_expression -> primary_expression .)
+    MENORIGUAL      reduce using rule 21 (additive_expression -> primary_expression .)
+    MAYORIGUAL      reduce using rule 21 (additive_expression -> primary_expression .)
+    IGUALIGUAL      reduce using rule 21 (additive_expression -> primary_expression .)
+    NOIGUAL         reduce using rule 21 (additive_expression -> primary_expression .)
+    AND             reduce using rule 21 (additive_expression -> primary_expression .)
+    OR              reduce using rule 21 (additive_expression -> primary_expression .)
+    RPAREN          reduce using rule 21 (additive_expression -> primary_expression .)
+    LPAREN          reduce using rule 21 (additive_expression -> primary_expression .)
+    COMA            reduce using rule 21 (additive_expression -> primary_expression .)
+
+
+state 79
+
+    (53) assignment_statement -> primary_expression ASSIGN function_call .
+
+    ID              reduce using rule 53 (assignment_statement -> primary_expression ASSIGN function_call .)
+    LPAREN          reduce using rule 53 (assignment_statement -> primary_expression ASSIGN function_call .)
+    DEF             reduce using rule 53 (assignment_statement -> primary_expression ASSIGN function_call .)
+    IF              reduce using rule 53 (assignment_statement -> primary_expression ASSIGN function_call .)
+    FOR             reduce using rule 53 (assignment_statement -> primary_expression ASSIGN function_call .)
+    NUMERO          reduce using rule 53 (assignment_statement -> primary_expression ASSIGN function_call .)
+    REAL            reduce using rule 53 (assignment_statement -> primary_expression ASSIGN function_call .)
+    TEXT            reduce using rule 53 (assignment_statement -> primary_expression ASSIGN function_call .)
+    TRUE            reduce using rule 53 (assignment_statement -> primary_expression ASSIGN function_call .)
+    FALSE           reduce using rule 53 (assignment_statement -> primary_expression ASSIGN function_call .)
+    $end            reduce using rule 53 (assignment_statement -> primary_expression ASSIGN function_call .)
+    RPAREN          reduce using rule 53 (assignment_statement -> primary_expression ASSIGN function_call .)
+
+
+state 80
+
+    (40) assignment_expression -> primary_expression ASSIGN multiplicative_expression .
+    (25) multiplicative_expression -> multiplicative_expression . TIMES additive_expression
+    (26) multiplicative_expression -> multiplicative_expression . DIVIDE additive_expression
+
+    PUNTOCOMA       reduce using rule 40 (assignment_expression -> primary_expression ASSIGN multiplicative_expression .)
+    RPAREN          reduce using rule 40 (assignment_expression -> primary_expression ASSIGN multiplicative_expression .)
+    LPAREN          reduce using rule 40 (assignment_expression -> primary_expression ASSIGN multiplicative_expression .)
+    COMA            reduce using rule 40 (assignment_expression -> primary_expression ASSIGN multiplicative_expression .)
+    TIMES           shift and go to state 55
+    DIVIDE          shift and go to state 56
+
+
+state 81
+
+    (61) function_call -> ID . LPAREN parameter_list RPAREN PUNTOCOMA
+    (18) primary_expression -> ID .
+
+    LPAREN          shift and go to state 32
+    PLUS            reduce using rule 18 (primary_expression -> ID .)
+    MINUS           reduce using rule 18 (primary_expression -> ID .)
+    TIMES           reduce using rule 18 (primary_expression -> ID .)
+    DIVIDE          reduce using rule 18 (primary_expression -> ID .)
+    PUNTOCOMA       reduce using rule 18 (primary_expression -> ID .)
+    ASSIGN          reduce using rule 18 (primary_expression -> ID .)
+    MENORQUE        reduce using rule 18 (primary_expression -> ID .)
+    MAYORQUE        reduce using rule 18 (primary_expression -> ID .)
+    MENORIGUAL      reduce using rule 18 (primary_expression -> ID .)
+    MAYORIGUAL      reduce using rule 18 (primary_expression -> ID .)
+    IGUALIGUAL      reduce using rule 18 (primary_expression -> ID .)
+    NOIGUAL         reduce using rule 18 (primary_expression -> ID .)
+    AND             reduce using rule 18 (primary_expression -> ID .)
+    OR              reduce using rule 18 (primary_expression -> ID .)
+    RPAREN          reduce using rule 18 (primary_expression -> ID .)
+
+
+state 82
+
+    (60) function_definition -> DEF ID LPAREN . ID_list RPAREN compound_statement
+    (54) ID_list -> . empty
+    (55) ID_list -> . ID DOSPUNTOS type_specifier
+    (56) ID_list -> . ID_list COMA ID DOSPUNTOS type_specifier
+    (65) empty -> .
+
+    ID              shift and go to state 105
+    RPAREN          reduce using rule 65 (empty -> .)
+    COMA            reduce using rule 65 (empty -> .)
+
+    ID_list                        shift and go to state 106
+    empty                          shift and go to state 107
+
+state 83
+
+    (4) declaration -> declarator ASSIGN function_call .
+
+    ID              reduce using rule 4 (declaration -> declarator ASSIGN function_call .)
+    LPAREN          reduce using rule 4 (declaration -> declarator ASSIGN function_call .)
+    DEF             reduce using rule 4 (declaration -> declarator ASSIGN function_call .)
+    IF              reduce using rule 4 (declaration -> declarator ASSIGN function_call .)
+    FOR             reduce using rule 4 (declaration -> declarator ASSIGN function_call .)
+    NUMERO          reduce using rule 4 (declaration -> declarator ASSIGN function_call .)
+    REAL            reduce using rule 4 (declaration -> declarator ASSIGN function_call .)
+    TEXT            reduce using rule 4 (declaration -> declarator ASSIGN function_call .)
+    TRUE            reduce using rule 4 (declaration -> declarator ASSIGN function_call .)
+    FALSE           reduce using rule 4 (declaration -> declarator ASSIGN function_call .)
+    $end            reduce using rule 4 (declaration -> declarator ASSIGN function_call .)
+    RPAREN          reduce using rule 4 (declaration -> declarator ASSIGN function_call .)
+
+
+state 84
+
+    (6) init_declarator -> declarator ASSIGN assignment_expression .
+
+    PUNTOCOMA       reduce using rule 6 (init_declarator -> declarator ASSIGN assignment_expression .)
+
+
+state 85
+
+    (62) selection_statement -> IF assignment_expression compound_statement .
+    (63) selection_statement -> IF assignment_expression compound_statement . ELSE compound_statement
+
+    ID              reduce using rule 62 (selection_statement -> IF assignment_expression compound_statement .)
+    LPAREN          reduce using rule 62 (selection_statement -> IF assignment_expression compound_statement .)
+    DEF             reduce using rule 62 (selection_statement -> IF assignment_expression compound_statement .)
+    IF              reduce using rule 62 (selection_statement -> IF assignment_expression compound_statement .)
+    FOR             reduce using rule 62 (selection_statement -> IF assignment_expression compound_statement .)
+    NUMERO          reduce using rule 62 (selection_statement -> IF assignment_expression compound_statement .)
+    REAL            reduce using rule 62 (selection_statement -> IF assignment_expression compound_statement .)
+    TEXT            reduce using rule 62 (selection_statement -> IF assignment_expression compound_statement .)
+    TRUE            reduce using rule 62 (selection_statement -> IF assignment_expression compound_statement .)
+    FALSE           reduce using rule 62 (selection_statement -> IF assignment_expression compound_statement .)
+    $end            reduce using rule 62 (selection_statement -> IF assignment_expression compound_statement .)
+    RPAREN          reduce using rule 62 (selection_statement -> IF assignment_expression compound_statement .)
+    ELSE            shift and go to state 108
+
+
+state 86
+
+    (50) compound_statement -> LPAREN . RPAREN
+    (51) compound_statement -> LPAREN . statement_list RPAREN
+    (48) statement_list -> . statement
+    (49) statement_list -> . statement_list statement
+    (41) statement -> . function_call
+    (42) statement -> . compound_statement
+    (43) statement -> . assignment_statement
+    (44) statement -> . function_definition
+    (45) statement -> . declaration
+    (46) statement -> . selection_statement
+    (47) statement -> . iteration_statement
+    (61) function_call -> . ID LPAREN parameter_list RPAREN PUNTOCOMA
+    (50) compound_statement -> . LPAREN RPAREN
+    (51) compound_statement -> . LPAREN statement_list RPAREN
+    (52) assignment_statement -> . assignment_expression PUNTOCOMA
+    (53) assignment_statement -> . primary_expression ASSIGN function_call
+    (60) function_definition -> . DEF ID LPAREN ID_list RPAREN compound_statement
+    (3) declaration -> . init_declarator PUNTOCOMA
+    (4) declaration -> . declarator ASSIGN function_call
+    (62) selection_statement -> . IF assignment_expression compound_statement
+    (63) selection_statement -> . IF assignment_expression compound_statement ELSE compound_statement
+    (64) iteration_statement -> . FOR LPAREN NUMERO RPAREN DOSPUNTOS
+    (39) assignment_expression -> . or_expression
+    (40) assignment_expression -> . primary_expression ASSIGN multiplicative_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (5) init_declarator -> . declarator
+    (6) init_declarator -> . declarator ASSIGN assignment_expression
+    (7) declarator -> . ID DOSPUNTOS type_specifier
+    (8) declarator -> . NUMERO ID DOSPUNTOS type_specifier
+    (37) or_expression -> . and_expression
+    (38) or_expression -> . or_expression OR and_expression
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+    (35) and_expression -> . equality_expression
+    (36) and_expression -> . and_expression AND equality_expression
+    (32) equality_expression -> . relational_expression
+    (33) equality_expression -> . equality_expression IGUALIGUAL relational_expression
+    (34) equality_expression -> . equality_expression NOIGUAL relational_expression
+    (27) relational_expression -> . multiplicative_expression
+    (28) relational_expression -> . relational_expression MENORQUE multiplicative_expression
+    (29) relational_expression -> . relational_expression MAYORQUE multiplicative_expression
+    (30) relational_expression -> . relational_expression MENORIGUAL multiplicative_expression
+    (31) relational_expression -> . relational_expression MAYORIGUAL multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+
+    RPAREN          shift and go to state 35
+    ID              shift and go to state 10
+    LPAREN          shift and go to state 11
+    DEF             shift and go to state 14
+    IF              shift and go to state 17
+    FOR             shift and go to state 18
+    NUMERO          shift and go to state 19
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    statement_list                 shift and go to state 36
+    statement                      shift and go to state 38
+    function_call                  shift and go to state 3
+    compound_statement             shift and go to state 4
+    assignment_statement           shift and go to state 5
+    function_definition            shift and go to state 6
+    declaration                    shift and go to state 7
+    selection_statement            shift and go to state 8
+    iteration_statement            shift and go to state 9
+    assignment_expression          shift and go to state 12
+    primary_expression             shift and go to state 13
+    init_declarator                shift and go to state 15
+    declarator                     shift and go to state 16
+    or_expression                  shift and go to state 20
+    multiplicative_expression      shift and go to state 21
+    literal                        shift and go to state 22
+    and_expression                 shift and go to state 23
+    equality_expression            shift and go to state 28
+    relational_expression          shift and go to state 29
+    additive_expression            shift and go to state 30
+
+state 87
+
+    (40) assignment_expression -> primary_expression ASSIGN . multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    primary_expression             shift and go to state 78
+    multiplicative_expression      shift and go to state 80
+    additive_expression            shift and go to state 30
+    literal                        shift and go to state 22
+
+state 88
+
+    (20) primary_expression -> LPAREN assignment_expression . RPAREN
+
+    RPAREN          shift and go to state 76
+
+
+state 89
+
+    (64) iteration_statement -> FOR LPAREN NUMERO . RPAREN DOSPUNTOS
+
+    RPAREN          shift and go to state 109
+
+
+state 90
+
+    (8) declarator -> NUMERO ID DOSPUNTOS . type_specifier
+    (9) type_specifier -> . INT
+    (10) type_specifier -> . FLOAT
+    (11) type_specifier -> . STRING
+    (12) type_specifier -> . BOOL
+
+    INT             shift and go to state 70
+    FLOAT           shift and go to state 71
+    STRING          shift and go to state 72
+    BOOL            shift and go to state 73
+
+    type_specifier                 shift and go to state 110
+
+state 91
+
+    (38) or_expression -> or_expression OR and_expression .
+    (36) and_expression -> and_expression . AND equality_expression
+
+    OR              reduce using rule 38 (or_expression -> or_expression OR and_expression .)
+    PUNTOCOMA       reduce using rule 38 (or_expression -> or_expression OR and_expression .)
+    RPAREN          reduce using rule 38 (or_expression -> or_expression OR and_expression .)
+    LPAREN          reduce using rule 38 (or_expression -> or_expression OR and_expression .)
+    COMA            reduce using rule 38 (or_expression -> or_expression OR and_expression .)
+    AND             shift and go to state 57
+
+
+state 92
+
+    (25) multiplicative_expression -> multiplicative_expression TIMES additive_expression .
+    (22) additive_expression -> additive_expression . PLUS primary_expression
+    (23) additive_expression -> additive_expression . MINUS primary_expression
+
+    TIMES           reduce using rule 25 (multiplicative_expression -> multiplicative_expression TIMES additive_expression .)
+    DIVIDE          reduce using rule 25 (multiplicative_expression -> multiplicative_expression TIMES additive_expression .)
+    MENORQUE        reduce using rule 25 (multiplicative_expression -> multiplicative_expression TIMES additive_expression .)
+    MAYORQUE        reduce using rule 25 (multiplicative_expression -> multiplicative_expression TIMES additive_expression .)
+    MENORIGUAL      reduce using rule 25 (multiplicative_expression -> multiplicative_expression TIMES additive_expression .)
+    MAYORIGUAL      reduce using rule 25 (multiplicative_expression -> multiplicative_expression TIMES additive_expression .)
+    IGUALIGUAL      reduce using rule 25 (multiplicative_expression -> multiplicative_expression TIMES additive_expression .)
+    NOIGUAL         reduce using rule 25 (multiplicative_expression -> multiplicative_expression TIMES additive_expression .)
+    AND             reduce using rule 25 (multiplicative_expression -> multiplicative_expression TIMES additive_expression .)
+    OR              reduce using rule 25 (multiplicative_expression -> multiplicative_expression TIMES additive_expression .)
+    PUNTOCOMA       reduce using rule 25 (multiplicative_expression -> multiplicative_expression TIMES additive_expression .)
+    RPAREN          reduce using rule 25 (multiplicative_expression -> multiplicative_expression TIMES additive_expression .)
+    LPAREN          reduce using rule 25 (multiplicative_expression -> multiplicative_expression TIMES additive_expression .)
+    COMA            reduce using rule 25 (multiplicative_expression -> multiplicative_expression TIMES additive_expression .)
+    PLUS            shift and go to state 64
+    MINUS           shift and go to state 65
+
+
+state 93
+
+    (26) multiplicative_expression -> multiplicative_expression DIVIDE additive_expression .
+    (22) additive_expression -> additive_expression . PLUS primary_expression
+    (23) additive_expression -> additive_expression . MINUS primary_expression
+
+    TIMES           reduce using rule 26 (multiplicative_expression -> multiplicative_expression DIVIDE additive_expression .)
+    DIVIDE          reduce using rule 26 (multiplicative_expression -> multiplicative_expression DIVIDE additive_expression .)
+    MENORQUE        reduce using rule 26 (multiplicative_expression -> multiplicative_expression DIVIDE additive_expression .)
+    MAYORQUE        reduce using rule 26 (multiplicative_expression -> multiplicative_expression DIVIDE additive_expression .)
+    MENORIGUAL      reduce using rule 26 (multiplicative_expression -> multiplicative_expression DIVIDE additive_expression .)
+    MAYORIGUAL      reduce using rule 26 (multiplicative_expression -> multiplicative_expression DIVIDE additive_expression .)
+    IGUALIGUAL      reduce using rule 26 (multiplicative_expression -> multiplicative_expression DIVIDE additive_expression .)
+    NOIGUAL         reduce using rule 26 (multiplicative_expression -> multiplicative_expression DIVIDE additive_expression .)
+    AND             reduce using rule 26 (multiplicative_expression -> multiplicative_expression DIVIDE additive_expression .)
+    OR              reduce using rule 26 (multiplicative_expression -> multiplicative_expression DIVIDE additive_expression .)
+    PUNTOCOMA       reduce using rule 26 (multiplicative_expression -> multiplicative_expression DIVIDE additive_expression .)
+    RPAREN          reduce using rule 26 (multiplicative_expression -> multiplicative_expression DIVIDE additive_expression .)
+    LPAREN          reduce using rule 26 (multiplicative_expression -> multiplicative_expression DIVIDE additive_expression .)
+    COMA            reduce using rule 26 (multiplicative_expression -> multiplicative_expression DIVIDE additive_expression .)
+    PLUS            shift and go to state 64
+    MINUS           shift and go to state 65
+
+
+state 94
+
+    (36) and_expression -> and_expression AND equality_expression .
+    (33) equality_expression -> equality_expression . IGUALIGUAL relational_expression
+    (34) equality_expression -> equality_expression . NOIGUAL relational_expression
+
+    AND             reduce using rule 36 (and_expression -> and_expression AND equality_expression .)
+    OR              reduce using rule 36 (and_expression -> and_expression AND equality_expression .)
+    PUNTOCOMA       reduce using rule 36 (and_expression -> and_expression AND equality_expression .)
+    RPAREN          reduce using rule 36 (and_expression -> and_expression AND equality_expression .)
+    LPAREN          reduce using rule 36 (and_expression -> and_expression AND equality_expression .)
+    COMA            reduce using rule 36 (and_expression -> and_expression AND equality_expression .)
+    IGUALIGUAL      shift and go to state 58
+    NOIGUAL         shift and go to state 59
+
+
+state 95
+
+    (33) equality_expression -> equality_expression IGUALIGUAL relational_expression .
+    (28) relational_expression -> relational_expression . MENORQUE multiplicative_expression
+    (29) relational_expression -> relational_expression . MAYORQUE multiplicative_expression
+    (30) relational_expression -> relational_expression . MENORIGUAL multiplicative_expression
+    (31) relational_expression -> relational_expression . MAYORIGUAL multiplicative_expression
+
+    IGUALIGUAL      reduce using rule 33 (equality_expression -> equality_expression IGUALIGUAL relational_expression .)
+    NOIGUAL         reduce using rule 33 (equality_expression -> equality_expression IGUALIGUAL relational_expression .)
+    AND             reduce using rule 33 (equality_expression -> equality_expression IGUALIGUAL relational_expression .)
+    OR              reduce using rule 33 (equality_expression -> equality_expression IGUALIGUAL relational_expression .)
+    PUNTOCOMA       reduce using rule 33 (equality_expression -> equality_expression IGUALIGUAL relational_expression .)
+    RPAREN          reduce using rule 33 (equality_expression -> equality_expression IGUALIGUAL relational_expression .)
+    LPAREN          reduce using rule 33 (equality_expression -> equality_expression IGUALIGUAL relational_expression .)
+    COMA            reduce using rule 33 (equality_expression -> equality_expression IGUALIGUAL relational_expression .)
+    MENORQUE        shift and go to state 60
+    MAYORQUE        shift and go to state 61
+    MENORIGUAL      shift and go to state 62
+    MAYORIGUAL      shift and go to state 63
+
+
+state 96
+
+    (34) equality_expression -> equality_expression NOIGUAL relational_expression .
+    (28) relational_expression -> relational_expression . MENORQUE multiplicative_expression
+    (29) relational_expression -> relational_expression . MAYORQUE multiplicative_expression
+    (30) relational_expression -> relational_expression . MENORIGUAL multiplicative_expression
+    (31) relational_expression -> relational_expression . MAYORIGUAL multiplicative_expression
+
+    IGUALIGUAL      reduce using rule 34 (equality_expression -> equality_expression NOIGUAL relational_expression .)
+    NOIGUAL         reduce using rule 34 (equality_expression -> equality_expression NOIGUAL relational_expression .)
+    AND             reduce using rule 34 (equality_expression -> equality_expression NOIGUAL relational_expression .)
+    OR              reduce using rule 34 (equality_expression -> equality_expression NOIGUAL relational_expression .)
+    PUNTOCOMA       reduce using rule 34 (equality_expression -> equality_expression NOIGUAL relational_expression .)
+    RPAREN          reduce using rule 34 (equality_expression -> equality_expression NOIGUAL relational_expression .)
+    LPAREN          reduce using rule 34 (equality_expression -> equality_expression NOIGUAL relational_expression .)
+    COMA            reduce using rule 34 (equality_expression -> equality_expression NOIGUAL relational_expression .)
+    MENORQUE        shift and go to state 60
+    MAYORQUE        shift and go to state 61
+    MENORIGUAL      shift and go to state 62
+    MAYORIGUAL      shift and go to state 63
+
+
+state 97
+
+    (28) relational_expression -> relational_expression MENORQUE multiplicative_expression .
+    (25) multiplicative_expression -> multiplicative_expression . TIMES additive_expression
+    (26) multiplicative_expression -> multiplicative_expression . DIVIDE additive_expression
+
+    MENORQUE        reduce using rule 28 (relational_expression -> relational_expression MENORQUE multiplicative_expression .)
+    MAYORQUE        reduce using rule 28 (relational_expression -> relational_expression MENORQUE multiplicative_expression .)
+    MENORIGUAL      reduce using rule 28 (relational_expression -> relational_expression MENORQUE multiplicative_expression .)
+    MAYORIGUAL      reduce using rule 28 (relational_expression -> relational_expression MENORQUE multiplicative_expression .)
+    IGUALIGUAL      reduce using rule 28 (relational_expression -> relational_expression MENORQUE multiplicative_expression .)
+    NOIGUAL         reduce using rule 28 (relational_expression -> relational_expression MENORQUE multiplicative_expression .)
+    AND             reduce using rule 28 (relational_expression -> relational_expression MENORQUE multiplicative_expression .)
+    OR              reduce using rule 28 (relational_expression -> relational_expression MENORQUE multiplicative_expression .)
+    PUNTOCOMA       reduce using rule 28 (relational_expression -> relational_expression MENORQUE multiplicative_expression .)
+    RPAREN          reduce using rule 28 (relational_expression -> relational_expression MENORQUE multiplicative_expression .)
+    LPAREN          reduce using rule 28 (relational_expression -> relational_expression MENORQUE multiplicative_expression .)
+    COMA            reduce using rule 28 (relational_expression -> relational_expression MENORQUE multiplicative_expression .)
+    TIMES           shift and go to state 55
+    DIVIDE          shift and go to state 56
+
+
+state 98
+
+    (29) relational_expression -> relational_expression MAYORQUE multiplicative_expression .
+    (25) multiplicative_expression -> multiplicative_expression . TIMES additive_expression
+    (26) multiplicative_expression -> multiplicative_expression . DIVIDE additive_expression
+
+    MENORQUE        reduce using rule 29 (relational_expression -> relational_expression MAYORQUE multiplicative_expression .)
+    MAYORQUE        reduce using rule 29 (relational_expression -> relational_expression MAYORQUE multiplicative_expression .)
+    MENORIGUAL      reduce using rule 29 (relational_expression -> relational_expression MAYORQUE multiplicative_expression .)
+    MAYORIGUAL      reduce using rule 29 (relational_expression -> relational_expression MAYORQUE multiplicative_expression .)
+    IGUALIGUAL      reduce using rule 29 (relational_expression -> relational_expression MAYORQUE multiplicative_expression .)
+    NOIGUAL         reduce using rule 29 (relational_expression -> relational_expression MAYORQUE multiplicative_expression .)
+    AND             reduce using rule 29 (relational_expression -> relational_expression MAYORQUE multiplicative_expression .)
+    OR              reduce using rule 29 (relational_expression -> relational_expression MAYORQUE multiplicative_expression .)
+    PUNTOCOMA       reduce using rule 29 (relational_expression -> relational_expression MAYORQUE multiplicative_expression .)
+    RPAREN          reduce using rule 29 (relational_expression -> relational_expression MAYORQUE multiplicative_expression .)
+    LPAREN          reduce using rule 29 (relational_expression -> relational_expression MAYORQUE multiplicative_expression .)
+    COMA            reduce using rule 29 (relational_expression -> relational_expression MAYORQUE multiplicative_expression .)
+    TIMES           shift and go to state 55
+    DIVIDE          shift and go to state 56
+
+
+state 99
+
+    (30) relational_expression -> relational_expression MENORIGUAL multiplicative_expression .
+    (25) multiplicative_expression -> multiplicative_expression . TIMES additive_expression
+    (26) multiplicative_expression -> multiplicative_expression . DIVIDE additive_expression
+
+    MENORQUE        reduce using rule 30 (relational_expression -> relational_expression MENORIGUAL multiplicative_expression .)
+    MAYORQUE        reduce using rule 30 (relational_expression -> relational_expression MENORIGUAL multiplicative_expression .)
+    MENORIGUAL      reduce using rule 30 (relational_expression -> relational_expression MENORIGUAL multiplicative_expression .)
+    MAYORIGUAL      reduce using rule 30 (relational_expression -> relational_expression MENORIGUAL multiplicative_expression .)
+    IGUALIGUAL      reduce using rule 30 (relational_expression -> relational_expression MENORIGUAL multiplicative_expression .)
+    NOIGUAL         reduce using rule 30 (relational_expression -> relational_expression MENORIGUAL multiplicative_expression .)
+    AND             reduce using rule 30 (relational_expression -> relational_expression MENORIGUAL multiplicative_expression .)
+    OR              reduce using rule 30 (relational_expression -> relational_expression MENORIGUAL multiplicative_expression .)
+    PUNTOCOMA       reduce using rule 30 (relational_expression -> relational_expression MENORIGUAL multiplicative_expression .)
+    RPAREN          reduce using rule 30 (relational_expression -> relational_expression MENORIGUAL multiplicative_expression .)
+    LPAREN          reduce using rule 30 (relational_expression -> relational_expression MENORIGUAL multiplicative_expression .)
+    COMA            reduce using rule 30 (relational_expression -> relational_expression MENORIGUAL multiplicative_expression .)
+    TIMES           shift and go to state 55
+    DIVIDE          shift and go to state 56
+
+
+state 100
+
+    (31) relational_expression -> relational_expression MAYORIGUAL multiplicative_expression .
+    (25) multiplicative_expression -> multiplicative_expression . TIMES additive_expression
+    (26) multiplicative_expression -> multiplicative_expression . DIVIDE additive_expression
+
+    MENORQUE        reduce using rule 31 (relational_expression -> relational_expression MAYORIGUAL multiplicative_expression .)
+    MAYORQUE        reduce using rule 31 (relational_expression -> relational_expression MAYORIGUAL multiplicative_expression .)
+    MENORIGUAL      reduce using rule 31 (relational_expression -> relational_expression MAYORIGUAL multiplicative_expression .)
+    MAYORIGUAL      reduce using rule 31 (relational_expression -> relational_expression MAYORIGUAL multiplicative_expression .)
+    IGUALIGUAL      reduce using rule 31 (relational_expression -> relational_expression MAYORIGUAL multiplicative_expression .)
+    NOIGUAL         reduce using rule 31 (relational_expression -> relational_expression MAYORIGUAL multiplicative_expression .)
+    AND             reduce using rule 31 (relational_expression -> relational_expression MAYORIGUAL multiplicative_expression .)
+    OR              reduce using rule 31 (relational_expression -> relational_expression MAYORIGUAL multiplicative_expression .)
+    PUNTOCOMA       reduce using rule 31 (relational_expression -> relational_expression MAYORIGUAL multiplicative_expression .)
+    RPAREN          reduce using rule 31 (relational_expression -> relational_expression MAYORIGUAL multiplicative_expression .)
+    LPAREN          reduce using rule 31 (relational_expression -> relational_expression MAYORIGUAL multiplicative_expression .)
+    COMA            reduce using rule 31 (relational_expression -> relational_expression MAYORIGUAL multiplicative_expression .)
+    TIMES           shift and go to state 55
+    DIVIDE          shift and go to state 56
+
+
+state 101
+
+    (22) additive_expression -> additive_expression PLUS primary_expression .
+
+    PLUS            reduce using rule 22 (additive_expression -> additive_expression PLUS primary_expression .)
+    MINUS           reduce using rule 22 (additive_expression -> additive_expression PLUS primary_expression .)
+    TIMES           reduce using rule 22 (additive_expression -> additive_expression PLUS primary_expression .)
+    DIVIDE          reduce using rule 22 (additive_expression -> additive_expression PLUS primary_expression .)
+    MENORQUE        reduce using rule 22 (additive_expression -> additive_expression PLUS primary_expression .)
+    MAYORQUE        reduce using rule 22 (additive_expression -> additive_expression PLUS primary_expression .)
+    MENORIGUAL      reduce using rule 22 (additive_expression -> additive_expression PLUS primary_expression .)
+    MAYORIGUAL      reduce using rule 22 (additive_expression -> additive_expression PLUS primary_expression .)
+    IGUALIGUAL      reduce using rule 22 (additive_expression -> additive_expression PLUS primary_expression .)
+    NOIGUAL         reduce using rule 22 (additive_expression -> additive_expression PLUS primary_expression .)
+    AND             reduce using rule 22 (additive_expression -> additive_expression PLUS primary_expression .)
+    OR              reduce using rule 22 (additive_expression -> additive_expression PLUS primary_expression .)
+    PUNTOCOMA       reduce using rule 22 (additive_expression -> additive_expression PLUS primary_expression .)
+    RPAREN          reduce using rule 22 (additive_expression -> additive_expression PLUS primary_expression .)
+    LPAREN          reduce using rule 22 (additive_expression -> additive_expression PLUS primary_expression .)
+    COMA            reduce using rule 22 (additive_expression -> additive_expression PLUS primary_expression .)
+
+
+state 102
+
+    (23) additive_expression -> additive_expression MINUS primary_expression .
+
+    PLUS            reduce using rule 23 (additive_expression -> additive_expression MINUS primary_expression .)
+    MINUS           reduce using rule 23 (additive_expression -> additive_expression MINUS primary_expression .)
+    TIMES           reduce using rule 23 (additive_expression -> additive_expression MINUS primary_expression .)
+    DIVIDE          reduce using rule 23 (additive_expression -> additive_expression MINUS primary_expression .)
+    MENORQUE        reduce using rule 23 (additive_expression -> additive_expression MINUS primary_expression .)
+    MAYORQUE        reduce using rule 23 (additive_expression -> additive_expression MINUS primary_expression .)
+    MENORIGUAL      reduce using rule 23 (additive_expression -> additive_expression MINUS primary_expression .)
+    MAYORIGUAL      reduce using rule 23 (additive_expression -> additive_expression MINUS primary_expression .)
+    IGUALIGUAL      reduce using rule 23 (additive_expression -> additive_expression MINUS primary_expression .)
+    NOIGUAL         reduce using rule 23 (additive_expression -> additive_expression MINUS primary_expression .)
+    AND             reduce using rule 23 (additive_expression -> additive_expression MINUS primary_expression .)
+    OR              reduce using rule 23 (additive_expression -> additive_expression MINUS primary_expression .)
+    PUNTOCOMA       reduce using rule 23 (additive_expression -> additive_expression MINUS primary_expression .)
+    RPAREN          reduce using rule 23 (additive_expression -> additive_expression MINUS primary_expression .)
+    LPAREN          reduce using rule 23 (additive_expression -> additive_expression MINUS primary_expression .)
+    COMA            reduce using rule 23 (additive_expression -> additive_expression MINUS primary_expression .)
+
+
+state 103
+
+    (61) function_call -> ID LPAREN parameter_list RPAREN . PUNTOCOMA
+
+    PUNTOCOMA       shift and go to state 111
+
+
+state 104
+
+    (59) parameter_list -> parameter_list COMA . assignment_expression
+    (39) assignment_expression -> . or_expression
+    (40) assignment_expression -> . primary_expression ASSIGN multiplicative_expression
+    (37) or_expression -> . and_expression
+    (38) or_expression -> . or_expression OR and_expression
+    (18) primary_expression -> . ID
+    (19) primary_expression -> . literal
+    (20) primary_expression -> . LPAREN assignment_expression RPAREN
+    (35) and_expression -> . equality_expression
+    (36) and_expression -> . and_expression AND equality_expression
+    (13) literal -> . NUMERO
+    (14) literal -> . REAL
+    (15) literal -> . TEXT
+    (16) literal -> . TRUE
+    (17) literal -> . FALSE
+    (32) equality_expression -> . relational_expression
+    (33) equality_expression -> . equality_expression IGUALIGUAL relational_expression
+    (34) equality_expression -> . equality_expression NOIGUAL relational_expression
+    (27) relational_expression -> . multiplicative_expression
+    (28) relational_expression -> . relational_expression MENORQUE multiplicative_expression
+    (29) relational_expression -> . relational_expression MAYORQUE multiplicative_expression
+    (30) relational_expression -> . relational_expression MENORIGUAL multiplicative_expression
+    (31) relational_expression -> . relational_expression MAYORIGUAL multiplicative_expression
+    (24) multiplicative_expression -> . additive_expression
+    (25) multiplicative_expression -> . multiplicative_expression TIMES additive_expression
+    (26) multiplicative_expression -> . multiplicative_expression DIVIDE additive_expression
+    (21) additive_expression -> . primary_expression
+    (22) additive_expression -> . additive_expression PLUS primary_expression
+    (23) additive_expression -> . additive_expression MINUS primary_expression
+
+    ID              shift and go to state 49
+    LPAREN          shift and go to state 50
+    NUMERO          shift and go to state 51
+    REAL            shift and go to state 24
+    TEXT            shift and go to state 25
+    TRUE            shift and go to state 26
+    FALSE           shift and go to state 27
+
+    assignment_expression          shift and go to state 112
+    or_expression                  shift and go to state 20
+    primary_expression             shift and go to state 48
+    multiplicative_expression      shift and go to state 21
+    and_expression                 shift and go to state 23
+    literal                        shift and go to state 22
+    equality_expression            shift and go to state 28
+    relational_expression          shift and go to state 29
+    additive_expression            shift and go to state 30
+
+state 105
+
+    (55) ID_list -> ID . DOSPUNTOS type_specifier
+
+    DOSPUNTOS       shift and go to state 113
+
+
+state 106
+
+    (60) function_definition -> DEF ID LPAREN ID_list . RPAREN compound_statement
+    (56) ID_list -> ID_list . COMA ID DOSPUNTOS type_specifier
+
+    RPAREN          shift and go to state 114
+    COMA            shift and go to state 115
+
+
+state 107
+
+    (54) ID_list -> empty .
+
+    RPAREN          reduce using rule 54 (ID_list -> empty .)
+    COMA            reduce using rule 54 (ID_list -> empty .)
+
+
+state 108
+
+    (63) selection_statement -> IF assignment_expression compound_statement ELSE . compound_statement
+    (50) compound_statement -> . LPAREN RPAREN
+    (51) compound_statement -> . LPAREN statement_list RPAREN
+
+    LPAREN          shift and go to state 86
+
+    compound_statement             shift and go to state 116
+
+state 109
+
+    (64) iteration_statement -> FOR LPAREN NUMERO RPAREN . DOSPUNTOS
+
+    DOSPUNTOS       shift and go to state 117
+
+
+state 110
+
+    (8) declarator -> NUMERO ID DOSPUNTOS type_specifier .
+
+    ASSIGN          reduce using rule 8 (declarator -> NUMERO ID DOSPUNTOS type_specifier .)
+    PUNTOCOMA       reduce using rule 8 (declarator -> NUMERO ID DOSPUNTOS type_specifier .)
+
+
+state 111
+
+    (61) function_call -> ID LPAREN parameter_list RPAREN PUNTOCOMA .
+
+    ID              reduce using rule 61 (function_call -> ID LPAREN parameter_list RPAREN PUNTOCOMA .)
+    LPAREN          reduce using rule 61 (function_call -> ID LPAREN parameter_list RPAREN PUNTOCOMA .)
+    DEF             reduce using rule 61 (function_call -> ID LPAREN parameter_list RPAREN PUNTOCOMA .)
+    IF              reduce using rule 61 (function_call -> ID LPAREN parameter_list RPAREN PUNTOCOMA .)
+    FOR             reduce using rule 61 (function_call -> ID LPAREN parameter_list RPAREN PUNTOCOMA .)
+    NUMERO          reduce using rule 61 (function_call -> ID LPAREN parameter_list RPAREN PUNTOCOMA .)
+    REAL            reduce using rule 61 (function_call -> ID LPAREN parameter_list RPAREN PUNTOCOMA .)
+    TEXT            reduce using rule 61 (function_call -> ID LPAREN parameter_list RPAREN PUNTOCOMA .)
+    TRUE            reduce using rule 61 (function_call -> ID LPAREN parameter_list RPAREN PUNTOCOMA .)
+    FALSE           reduce using rule 61 (function_call -> ID LPAREN parameter_list RPAREN PUNTOCOMA .)
+    $end            reduce using rule 61 (function_call -> ID LPAREN parameter_list RPAREN PUNTOCOMA .)
+    RPAREN          reduce using rule 61 (function_call -> ID LPAREN parameter_list RPAREN PUNTOCOMA .)
+
+
+state 112
+
+    (59) parameter_list -> parameter_list COMA assignment_expression .
+
+    RPAREN          reduce using rule 59 (parameter_list -> parameter_list COMA assignment_expression .)
+    COMA            reduce using rule 59 (parameter_list -> parameter_list COMA assignment_expression .)
+
+
+state 113
+
+    (55) ID_list -> ID DOSPUNTOS . type_specifier
+    (9) type_specifier -> . INT
+    (10) type_specifier -> . FLOAT
+    (11) type_specifier -> . STRING
+    (12) type_specifier -> . BOOL
+
+    INT             shift and go to state 70
+    FLOAT           shift and go to state 71
+    STRING          shift and go to state 72
+    BOOL            shift and go to state 73
+
+    type_specifier                 shift and go to state 118
+
+state 114
+
+    (60) function_definition -> DEF ID LPAREN ID_list RPAREN . compound_statement
+    (50) compound_statement -> . LPAREN RPAREN
+    (51) compound_statement -> . LPAREN statement_list RPAREN
+
+    LPAREN          shift and go to state 86
+
+    compound_statement             shift and go to state 119
+
+state 115
+
+    (56) ID_list -> ID_list COMA . ID DOSPUNTOS type_specifier
+
+    ID              shift and go to state 120
+
+
+state 116
+
+    (63) selection_statement -> IF assignment_expression compound_statement ELSE compound_statement .
+
+    ID              reduce using rule 63 (selection_statement -> IF assignment_expression compound_statement ELSE compound_statement .)
+    LPAREN          reduce using rule 63 (selection_statement -> IF assignment_expression compound_statement ELSE compound_statement .)
+    DEF             reduce using rule 63 (selection_statement -> IF assignment_expression compound_statement ELSE compound_statement .)
+    IF              reduce using rule 63 (selection_statement -> IF assignment_expression compound_statement ELSE compound_statement .)
+    FOR             reduce using rule 63 (selection_statement -> IF assignment_expression compound_statement ELSE compound_statement .)
+    NUMERO          reduce using rule 63 (selection_statement -> IF assignment_expression compound_statement ELSE compound_statement .)
+    REAL            reduce using rule 63 (selection_statement -> IF assignment_expression compound_statement ELSE compound_statement .)
+    TEXT            reduce using rule 63 (selection_statement -> IF assignment_expression compound_statement ELSE compound_statement .)
+    TRUE            reduce using rule 63 (selection_statement -> IF assignment_expression compound_statement ELSE compound_statement .)
+    FALSE           reduce using rule 63 (selection_statement -> IF assignment_expression compound_statement ELSE compound_statement .)
+    $end            reduce using rule 63 (selection_statement -> IF assignment_expression compound_statement ELSE compound_statement .)
+    RPAREN          reduce using rule 63 (selection_statement -> IF assignment_expression compound_statement ELSE compound_statement .)
+
+
+state 117
+
+    (64) iteration_statement -> FOR LPAREN NUMERO RPAREN DOSPUNTOS .
+
+    ID              reduce using rule 64 (iteration_statement -> FOR LPAREN NUMERO RPAREN DOSPUNTOS .)
+    LPAREN          reduce using rule 64 (iteration_statement -> FOR LPAREN NUMERO RPAREN DOSPUNTOS .)
+    DEF             reduce using rule 64 (iteration_statement -> FOR LPAREN NUMERO RPAREN DOSPUNTOS .)
+    IF              reduce using rule 64 (iteration_statement -> FOR LPAREN NUMERO RPAREN DOSPUNTOS .)
+    FOR             reduce using rule 64 (iteration_statement -> FOR LPAREN NUMERO RPAREN DOSPUNTOS .)
+    NUMERO          reduce using rule 64 (iteration_statement -> FOR LPAREN NUMERO RPAREN DOSPUNTOS .)
+    REAL            reduce using rule 64 (iteration_statement -> FOR LPAREN NUMERO RPAREN DOSPUNTOS .)
+    TEXT            reduce using rule 64 (iteration_statement -> FOR LPAREN NUMERO RPAREN DOSPUNTOS .)
+    TRUE            reduce using rule 64 (iteration_statement -> FOR LPAREN NUMERO RPAREN DOSPUNTOS .)
+    FALSE           reduce using rule 64 (iteration_statement -> FOR LPAREN NUMERO RPAREN DOSPUNTOS .)
+    $end            reduce using rule 64 (iteration_statement -> FOR LPAREN NUMERO RPAREN DOSPUNTOS .)
+    RPAREN          reduce using rule 64 (iteration_statement -> FOR LPAREN NUMERO RPAREN DOSPUNTOS .)
+
+
+state 118
+
+    (55) ID_list -> ID DOSPUNTOS type_specifier .
+
+    RPAREN          reduce using rule 55 (ID_list -> ID DOSPUNTOS type_specifier .)
+    COMA            reduce using rule 55 (ID_list -> ID DOSPUNTOS type_specifier .)
+
+
+state 119
+
+    (60) function_definition -> DEF ID LPAREN ID_list RPAREN compound_statement .
+
+    ID              reduce using rule 60 (function_definition -> DEF ID LPAREN ID_list RPAREN compound_statement .)
+    LPAREN          reduce using rule 60 (function_definition -> DEF ID LPAREN ID_list RPAREN compound_statement .)
+    DEF             reduce using rule 60 (function_definition -> DEF ID LPAREN ID_list RPAREN compound_statement .)
+    IF              reduce using rule 60 (function_definition -> DEF ID LPAREN ID_list RPAREN compound_statement .)
+    FOR             reduce using rule 60 (function_definition -> DEF ID LPAREN ID_list RPAREN compound_statement .)
+    NUMERO          reduce using rule 60 (function_definition -> DEF ID LPAREN ID_list RPAREN compound_statement .)
+    REAL            reduce using rule 60 (function_definition -> DEF ID LPAREN ID_list RPAREN compound_statement .)
+    TEXT            reduce using rule 60 (function_definition -> DEF ID LPAREN ID_list RPAREN compound_statement .)
+    TRUE            reduce using rule 60 (function_definition -> DEF ID LPAREN ID_list RPAREN compound_statement .)
+    FALSE           reduce using rule 60 (function_definition -> DEF ID LPAREN ID_list RPAREN compound_statement .)
+    $end            reduce using rule 60 (function_definition -> DEF ID LPAREN ID_list RPAREN compound_statement .)
+    RPAREN          reduce using rule 60 (function_definition -> DEF ID LPAREN ID_list RPAREN compound_statement .)
+
+
+state 120
+
+    (56) ID_list -> ID_list COMA ID . DOSPUNTOS type_specifier
+
+    DOSPUNTOS       shift and go to state 121
+
+
+state 121
+
+    (56) ID_list -> ID_list COMA ID DOSPUNTOS . type_specifier
+    (9) type_specifier -> . INT
+    (10) type_specifier -> . FLOAT
+    (11) type_specifier -> . STRING
+    (12) type_specifier -> . BOOL
+
+    INT             shift and go to state 70
+    FLOAT           shift and go to state 71
+    STRING          shift and go to state 72
+    BOOL            shift and go to state 73
+
+    type_specifier                 shift and go to state 122
+
+state 122
+
+    (56) ID_list -> ID_list COMA ID DOSPUNTOS type_specifier .
+
+    RPAREN          reduce using rule 56 (ID_list -> ID_list COMA ID DOSPUNTOS type_specifier .)
+    COMA            reduce using rule 56 (ID_list -> ID_list COMA ID DOSPUNTOS type_specifier .)
 
